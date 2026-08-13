@@ -80,6 +80,18 @@ function useLocal<T>(key: string, initial: T) {
 }
 
 export default function App() {
+   const ordemTamanhos = ["PP","P","M","G","GG","XG","XGG","G1","G2","G3","8","10","12","14","16","2"];
+  const ordenarTamanhos = (lista: string[]) => {
+    if(!lista) return [];
+    return [...lista].sort((a,b) => {
+      const ia = ordemTamanhos.indexOf(a);
+      const ib = ordemTamanhos.indexOf(b);
+      if(ia === -1 && ib === -1) return a.localeCompare(b);
+      if(ia === -1) return 1;
+      if(ib === -1) return -1;
+      return ia - ib;
+    });
+  }
   // Views
   const [view, setView] = useLocal<'shop'|'admin'>('thita_view', 'shop');
   const [isAuth, setIsAuth] = useLocal<boolean>('thita_auth', false);
@@ -942,7 +954,7 @@ export default function App() {
                  <div className="p-2.5 lg:p-3">
                    <p className="text-[12px] lg:text-[13px] leading-[1.3] text-[#3A3A3A] line-clamp-2 min-h-[32px] lg:min-h-[34px] font-medium">{p.nome}</p>
                    <div className="flex flex-wrap gap-1 mt-2 lg:mt-2">
-                      {p.tamanhos.map(sz=>(
+                      {ordenarTamanhos(p.tamanhos).map(sz=>(
                         <span key={sz} className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border border-[#2B2B2B] text-[#2B2B2B] text-[9px] lg:text-[10px] flex items-center justify-center font-medium bg-white">
                           {sz}
                         </span>
@@ -1016,7 +1028,7 @@ export default function App() {
                    </div>
                     <p className="text-[14px] text-zinc-600 mt-4 leading-relaxed">{selProd.desc}</p>
                     <div className="flex gap-1.5 mt-4 flex-wrap">
-                      {selProd.tamanhos.map(sz=>(
+                      ordenarTamanhos(selProd.tamanhos).map(sz=>(
                         <span key={sz} className="w-8 h-8 rounded-full border border-zinc-900 text-zinc-900 text-[11px] flex items-center justify-center font-semibold bg-white">
                           {sz}
                         </span>
