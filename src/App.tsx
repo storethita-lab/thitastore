@@ -1028,7 +1028,7 @@ export default function App() {
                    </div>
                     <p className="text-[14px] text-zinc-600 mt-4 leading-relaxed">{selProd.desc}</p>
                     <div className="flex gap-1.5 mt-4 flex-wrap">
-                      ordenarTamanhos(selProd.tamanhos).map(sz=>(
+                      {ordenarTamanhos(selProd.tamanhos).map(sz=>(
                         <span key={sz} className="w-8 h-8 rounded-full border border-zinc-900 text-zinc-900 text-[11px] flex items-center justify-center font-semibold bg-white">
                           {sz}
                         </span>
