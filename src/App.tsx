@@ -293,7 +293,7 @@ export default function App() {
 
   // produto form
   const [prodForm, setProdForm] = useState<Produto>({
-    id: '', nome: '', desc: '', cat: categorias[0] || 'Blusas', custo: 0, margem: 30, venda: 0, forn: fornecedores[0]?.id || 'f1', img: '', imagem: '', imagens: [], estoque: 0, novo: false, promo: false, tamanhos: ["M","G"]
+    id: '', nome: '', desc: '', cat: categorias[0] || 'Blusas', custo: 0, margem: 70, venda: 0, forn: fornecedores[0]?.id || 'f1', img: '', imagem: '', imagens: [], estoque: 0, novo: false, promo: false, tamanhos: ["M","G"]
   });
   const [editingProdId, setEditingProdId] = useState<string | null>(null);
   const [prodImgError, setProdImgError] = useState('');
@@ -1470,7 +1470,7 @@ export default function App() {
               </div>
                 <div className="mt-4 flex gap-2">
                   <button onClick={saveProduto} className="h-10 px-5 rounded-[10px] bg-[#111] text-white text-[13px] font-semibold">Salvar</button>
-                  {editingProdId && <button onClick={()=>{ setEditingProdId(null); setProdForm({ id: '', nome: '', desc: '', cat: categorias[0], custo: 0, margem: 30, venda: 0, forn: fornecedores[0]?.id || '', img: '', estoque: 0, novo: false, promo: false, tamanhos: ["M","G"] }); setProdImgError(''); if(prodFileRef.current) prodFileRef.current.value=''; }} className="h-10 px-4 rounded-[10px] bg-zinc-100 text-[13px]">Cancelar</button>}
+                  {editingProdId && <button onClick={()=>{ setEditingProdId(null); setProdForm({ id: '', nome: '', desc: '', cat: categorias[0], custo: 0, margem: 70, venda: 0, forn: fornecedores[0]?.id || '', img: '', estoque: 0, novo: false, promo: false, tamanhos: ["M","G"] }); setProdImgError(''); if(prodFileRef.current) prodFileRef.current.value=''; }} className="h-10 px-4 rounded-[10px] bg-zinc-100 text-[13px]">Cancelar</button>}
                 </div>
               </div>
 
