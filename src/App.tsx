@@ -1433,18 +1433,18 @@ const onVendaChange = (venda: number) => {
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de custo</label>
-                    <input type="number" value={prodForm.custo} onChange={e=>{ const c=Number(e.target.value); setProdForm({...prodForm,custo:c, venda: recalcVenda(c, prodForm.margem)}); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input type="number" value={prodForm.custo} onCustoChange={e=>{ const c=Number(e.target.value); setProdForm({...prodForm,custo:c, venda: recalcVenda(c, prodForm.margem)}); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">margem %</label>
                     <div className="flex gap-2">
-                      <input type="number" value={prodForm.margem} onChange={e=>{ const m=Number(e.target.value); setProdForm({...prodForm,margem:m, venda: recalcVenda(prodForm.custo,m)}); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                      <input type="number" value={prodForm.margem} onMargemChange={e=>{ const m=Number(e.target.value); setProdForm({...prodForm,margem:m, venda: recalcVenda(prodForm.custo,m)}); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                       <span className="h-10 px-3 rounded-[10px] bg-zinc-100 flex items-center text-[12px] border border-zinc-200">%</span>
                     </div>
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de venda</label>
-                    <input type="number" value={prodForm.venda} onChange={e=>{ const v=Number(e.target.value); setProdForm({...prodForm,venda:v, margem: recalcMargem(prodForm.custo, v)}); }} placeholder="Calculado ou editável" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input type="number" value={prodForm.venda} onVendaChange={e=>{ const v=Number(e.target.value); setProdForm({...prodForm,venda:v, margem: recalcMargem(prodForm.custo, v)}); }} placeholder="Calculado ou editável" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">imagem URL</label>
