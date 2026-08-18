@@ -51,11 +51,11 @@ const SIDEBAR_ORDER: Categoria[] = ["Baby doll","Blusas","Camisolas","Conjuntos 
 
 const mockFornecedores: Fornecedor[] = [
   { id: 'f1', nome: 'Malhas Primavera LTDA', cnpj: '12.345.678/0001-90', endereco: 'Rua das Flores, 123 - Brusque/SC', contato: '(47) 98800-1122' },
-  { id: 'f2', nome: 'ConfeccÃ§Ãµes Sol & Lua', cnpj: '98.765.432/0001-11', endereco: 'Av. Central, 456 - JaraguÃ¡ do Sul/SC', contato: '(47) 99988-7766' },
+  { id: 'f2', nome: 'Confeccções Sol & Lua', cnpj: '98.765.432/0001-11', endereco: 'Av. Central, 456 - Jaraguá do Sul/SC', contato: '(47) 99988-7766' },
 ];
 const mockClientes: Cliente[] = [
   { id: 'c1', nome: 'Maria Silva', doc: '123.456.789-00', contato: '(47) 98888-1111', endereco: 'Rua A, 10' },
-  { id: 'c2', nome: 'JoÃ£o Souza', doc: '987.654.321-00', contato: '(47) 97777-2222', endereco: 'Rua B, 20' },
+  { id: 'c2', nome: 'João Souza', doc: '987.654.321-00', contato: '(47) 97777-2222', endereco: 'Rua B, 20' },
 ];
 const img = (u:string)=>u;
 const mockProdutos: Produto[] = [];
@@ -351,7 +351,7 @@ export default function App() {
         setProdForm(prev => {
           const existing = prev.imagens || [];
           const newImagens = [...existing, result];
-          // primeira vira capa se nÃ£o tiver
+          // primeira vira capa se não tiver
           const first = prev.img || result;
           return { ...prev, img: first, imagem: result.startsWith('data:') ? result : prev.imagem, imagens: newImagens };
         });
@@ -393,10 +393,10 @@ export default function App() {
     return '55'+digits;
   };
   const waNumber = useMemo(()=> cleanWhatsNumber(empresa?.contato||''), [empresa]);
-  const waGenericMsg = encodeURIComponent('OlÃ¡! Vim pelo catÃ¡logo THITA e gostaria de saber mais sobre os produtos.');
+  const waGenericMsg = encodeURIComponent('Olá! Vim pelo catálogo THITA e gostaria de saber mais sobre os produtos.');
   const waLinkGeneric = `https://wa.me/${waNumber}?text=${waGenericMsg}`;
   const getWaLinkForProduct = (nomeProd: string) => {
-    const msg = encodeURIComponent(`OlÃ¡! Vim pelo catÃ¡logo THITA e gostaria de saber mais sobre: ${nomeProd}`);
+    const msg = encodeURIComponent(`Olá! Vim pelo catálogo THITA e gostaria de saber mais sobre: ${nomeProd}`);
     return `https://wa.me/${waNumber}?text=${msg}`;
   };
 
@@ -409,7 +409,7 @@ export default function App() {
   const [carrinho, setCarrinho] = useState<{ prodId: string; qtd: number }[]>([]);
   const [cartProd, setCartProd] = useState({ prodId: '', qtd: 1 });
   const [showFinalizar, setShowFinalizar] = useState(false);
-  const [finalForm, setFinalForm] = useState({ desconto: 0, forma: 'Ã€ vista', parcelas: 1, venc: new Date().toISOString().slice(0,10), embalagem: false, embalagemValor: 3.5, entrega: false, entregaValor: 10 });
+  const [finalForm, setFinalForm] = useState({ desconto: 0, forma: 'À vista', parcelas: 1, venc: new Date().toISOString().slice(0,10), embalagem: false, embalagemValor: 3.5, entrega: false, entregaValor: 10 });
 
   // Relatorios
   const [repIni, setRepIni] = useState('');
@@ -418,15 +418,15 @@ export default function App() {
   const [repCli, setRepCli] = useState('todos');
   const [repEntradaSel, setRepEntradaSel] = useState<Entrada | null>(null);
   const [repVendaSel, setRepVendaSel] = useState<Venda | null>(null);
-  // Novos estados para exportaÃ§Ã£o formatada (sem window.print)
+  // Novos estados para exportação formatada (sem window.print)
   const [showSinteticoModal, setShowSinteticoModal] = useState(false);
   const [analiticoExport, setAnaliticoExport] = useState<{tipo:'entrada'|'saida', data: Entrada|Venda} | null>(null);
 
-  // ConfiguraÃ§Ã£o form
+  // Configuração form
   const [configForm, setConfigForm] = useState({ atualUser: '', atualPass: '', novoUser: '', novaPass: '', confirmarPass: '' });
   const [configMsg, setConfigMsg] = useState<{type:'ok'|'err', text:string}|null>(null);
 
-  // Backup e SeguranÃ§a
+  // Backup e Segurança
   const [lastBackup, setLastBackup] = useLocal<string>('thita_last_backup', '');
   const restoreInputRef = React.useRef<HTMLInputElement>(null);
   const [backupMsg, setBackupMsg] = useState<{type:'ok'|'err', text:string}|null>(null);
@@ -486,15 +486,15 @@ export default function App() {
       try {
         const parsed = JSON.parse(reader.result as string);
         if(!parsed || typeof parsed !== 'object'){
-          setBackupMsg({type:'err', text:'Arquivo invÃ¡lido'});
+          setBackupMsg({type:'err', text:'Arquivo inválido'});
           return;
         }
         const hasData = parsed.produtos || parsed.clientes || parsed.vendas;
         if(!hasData){
-          setBackupMsg({type:'err', text:'Backup nÃ£o contÃ©m dados reconhecÃ­veis'});
+          setBackupMsg({type:'err', text:'Backup não contém dados reconhecíveis'});
           return;
         }
-        const confirmRestore = window.confirm('Tem certeza que deseja restaurar este backup? Todos os dados atuais serÃ£o substituÃ­dos.');
+        const confirmRestore = window.confirm('Tem certeza que deseja restaurar este backup? Todos os dados atuais serão substituídos.');
         if(!confirmRestore) return;
         // Restore to localStorage directly for reliability
         if(parsed.produtos) localStorage.setItem('thita_produtos', JSON.stringify(parsed.produtos));
@@ -508,7 +508,7 @@ export default function App() {
         if(parsed.empresa) localStorage.setItem('thita_empresa', JSON.stringify(parsed.empresa));
         const nowIso = new Date().toISOString();
         localStorage.setItem('thita_last_backup', JSON.stringify(nowIso));
-        alert('Backup restaurado com sucesso! A pÃ¡gina serÃ¡ recarregada.');
+        alert('Backup restaurado com sucesso! A página será recarregada.');
         window.location.reload();
       } catch(e){
         setBackupMsg({type:'err', text:'Erro ao ler backup: '+(e as Error).message});
@@ -541,7 +541,7 @@ export default function App() {
     const vendaRows = vendas.map(v=>{
       const cli = clientes.find(c=>c.id===v.clienteId);
       const st = (()=>{ 
-        if(v.forma !== 'CrediÃ¡rio') return 'Quitado';
+        if(v.forma !== 'Crediário') return 'Quitado';
         const parts = crediario.filter(c=>c.vendaId===v.id);
         if(parts.length===0) return 'Aberto';
         return parts.every(p=>p.status==='pago') ? 'Quitado' : 'Aberto';
@@ -574,26 +574,13 @@ export default function App() {
       setView('admin');
       setShowLogin(false);
       setLoginErr('');
-    } else setLoginErr('UsuÃ¡rio ou senha invÃ¡lidos');
+    } else setLoginErr('Usuário ou senha inválidos');
   };
 
-  // quando muda o CUSTO, recalcula venda pela margem atual
-const onCustoChange = (custo: number) => {
-  const venda = custo * (1 + prodForm.margem / 100);
-  setProdForm(f => ({...f, custo, venda}));
-};
+  // helpers de calculo
+  const calcVenda = (c:number,m:number)=> Number((c*(1+m/100)).toFixed(2));
+  const calcMargem = (c:number,v:number)=> c>0? Number((((v/c)-1)*100).toFixed(1)):0;
 
-// quando muda a MARGEM, recalcula venda
-const onMargemChange = (margem: number) => {
-  const venda = prodForm.custo * (1 + margem / 100);
-  setProdForm(f => ({...f, margem, venda}));
-};
-
-// quando muda a VENDA, recalcula margem (Ã‰ ISSO QUE TÃ FALTANDO!)
-const onVendaChange = (venda: number) => {
-  const margem = prodForm.custo > 0 ? ((venda / prodForm.custo) - 1) * 100 : 0;
-  setProdForm(f => ({...f, venda, margem}));
-};
 
   // Produto save
   const saveProduto = async () => {
@@ -656,7 +643,7 @@ const onVendaChange = (venda: number) => {
   }, [cliHist, vendas, cliHistIni, cliHistFim]);
 
   const getStatusVenda = (v: Venda): 'Quitado'|'Aberto' => {
-    if (v.forma !== 'CrediÃ¡rio') return 'Quitado';
+    if (v.forma !== 'Crediário') return 'Quitado';
     const parcelas = crediario.filter(c=>c.vendaId===v.id);
     if (parcelas.length===0) return 'Aberto';
     const todasPagas = parcelas.every(p=>p.status==='pago');
@@ -673,7 +660,7 @@ const onVendaChange = (venda: number) => {
     return crediario.filter(c=>c.vendaId===selectedVenda.id).sort((a,b)=>a.num-b.num);
   }, [selectedVenda, crediario]);
 
-  // relatÃ³rio filtros
+  // relatório filtros
   const entradasFiltradas = useMemo(()=>{
     let list = [...entradas];
     if(repIni) list = list.filter(e=>e.data >= repIni);
@@ -690,12 +677,12 @@ const onVendaChange = (venda: number) => {
     return list;
   }, [vendas, repIni, repFim, repCli]);
 
-  const formaSemParcelas = useMemo(()=>['Ã€ vista','Pix','CartÃ£o de DÃ©bito'].includes(finalForm.forma), [finalForm.forma]);
+  const formaSemParcelas = useMemo(()=>['À vista','Pix','Cartão de Débito'].includes(finalForm.forma), [finalForm.forma]);
   
   const cancelarVenda = (vendaId: string) => {
     const venda = vendas.find(v=>v.id===vendaId);
     if(!venda) return;
-    if(!window.confirm(`Cancelar venda de ${venda.data}? Os produtos voltarÃ£o ao estoque e o crediÃ¡rio serÃ¡ apagado.`)) return;
+    if(!window.confirm(`Cancelar venda de ${venda.data}? Os produtos voltarão ao estoque e o crediário será apagado.`)) return;
     setProdutos(prev=>prev.map(p=>{
       const it = venda.itens.find(i=>i.prodId===p.id);
       return it? {...p, estoque: p.estoque + it.qtd} : p;
@@ -709,7 +696,7 @@ const onVendaChange = (venda: number) => {
   const cancelarEntrada = (entradaId: string) => {
     const entrada = entradas.find(e=>e.id===entradaId);
     if(!entrada) return;
-    if(!window.confirm(`Cancelar entrada ${entrada.numNota || entrada.id}? Os produtos sairÃ£o do estoque.`)) return;
+    if(!window.confirm(`Cancelar entrada ${entrada.numNota || entrada.id}? Os produtos sairão do estoque.`)) return;
     setProdutos(prev=>prev.map(p=>{
       const it = entrada.itens.find(i=>i.prodId===p.id);
       return it? {...p, estoque: Math.max(0, p.estoque - it.qtd)} : p;
@@ -724,7 +711,7 @@ const onVendaChange = (venda: number) => {
   }, [formaSemParcelas]);
 
   useEffect(()=>{
-    // reset venda selecionada ao trocar cliente histÃ³rico
+    // reset venda selecionada ao trocar cliente histórico
     setCliVendaSel(null);
   }, [cliHist?.id]);
 
@@ -766,7 +753,7 @@ const onVendaChange = (venda: number) => {
 
           <div className="flex-1 max-w-[560px] hidden md:flex">
             <div className="relative w-full">
-              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="O que vocÃª procura?" className="w-full h-[44px] rounded-full pl-6 pr-[56px] text-[14px] outline-none bg-white placeholder:text-zinc-400 shadow-sm border border-white/60" />
+              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="O que você procura?" className="w-full h-[44px] rounded-full pl-6 pr-[56px] text-[14px] outline-none bg-white placeholder:text-zinc-400 shadow-sm border border-white/60" />
               <button onClick={triggerSearchFeedback} className="absolute right-1 top-1 h-[36px] w-[44px] rounded-full bg-[#C80082] flex items-center justify-center text-white hover:bg-[#B0006E] transition">
                 <Search size={18} />
               </button>
@@ -785,13 +772,13 @@ const onVendaChange = (venda: number) => {
         {/* Mobile search */}
         <div className="md:hidden px-4 pb-3 pt-1 bg-[#FF9EBB]">
           <div className="relative w-full">
-            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="O que vocÃª procura?" className="w-full h-[42px] rounded-full pl-6 pr-[56px] text-[14px] outline-none bg-white placeholder:text-zinc-400 shadow-sm" />
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="O que você procura?" className="w-full h-[42px] rounded-full pl-6 pr-[56px] text-[14px] outline-none bg-white placeholder:text-zinc-400 shadow-sm" />
             <button onClick={triggerSearchFeedback} className="absolute right-1 top-1 h-[34px] w-[44px] rounded-full bg-[#C80082] flex items-center justify-center text-white hover:bg-[#B0006E] transition"><Search size={18}/></button>
             {searchFeedback && <span className="absolute -bottom-5 left-2 text-[10px] text-white font-semibold bg-black/20 px-2 py-0.5 rounded-full">buscando...</span>}
           </div>
         </div>
 
-        {/* BANNER TOPO - carrossel dinÃ¢mico com banners separados desktop/mobile */}
+        {/* BANNER TOPO - carrossel dinâmico com banners separados desktop/mobile */}
         <div className="w-full max-w-[1440px] mx-auto pt-4">
           {bannersAtivos.length > 0 ? (
             <div className="banner-carousel group">
@@ -843,7 +830,7 @@ const onVendaChange = (venda: number) => {
                     <span className="text-[10px] font-bold tracking-[0.08em] text-[#C0006B]">THITA STORE</span>
                   </div>
                   <h2 className="mt-3 text-[17px] lg:text-[22px] leading-[1.15] font-bold text-[#6A0A3A] max-w-[210px] lg:max-w-[320px]">
-                    Conforto que abraÃ§a, <span className="text-[#C0006B]">estilo que fica.</span>
+                    Conforto que abraça, <span className="text-[#C0006B]">estilo que fica.</span>
                   </h2>
                   <div className="mt-3.5 flex flex-wrap gap-1.5 lg:gap-2">
                     <span className="inline-flex items-center gap-1 bg-white/90 backdrop-blur px-2.5 h-[26px] rounded-full text-[11px] font-medium text-[#6A0A3A] border border-white shadow-sm">
@@ -853,11 +840,11 @@ const onVendaChange = (venda: number) => {
                       <Sparkles size={12} className="text-[#C0006B]"/> Estilo
                     </span>
                     <span className="inline-flex items-center gap-1 bg-white/90 backdrop-blur px-2.5 h-[26px] rounded-full text-[11px] font-medium text-[#6A0A3A] border border-white shadow-sm">
-                      <Shirt size={12} className="text-[#C0006B]"/> PeÃ§as feitas p/ durar
+                      <Shirt size={12} className="text-[#C0006B]"/> Peças feitas p/ durar
                     </span>
                   </div>
                 </div>
-                {/* right image - 562x300 centralizada dentro do espaÃ§o 420px */}
+                {/* right image - 562x300 centralizada dentro do espaço 420px */}
                 <div className="banner-model-wrap">
                   <img
                     src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=562&h=300&fit=crop&crop=top"
@@ -927,7 +914,7 @@ const onVendaChange = (venda: number) => {
                     {hasMore && (
                       <div className="pt-2">
                         <button onClick={()=>setShowVerMais(v=>!v)} className="flex items-center gap-1 text-[12px] font-bold tracking-wide uppercase text-[#B0006E]/80 hover:text-[#B0006E]">
-                          {showVerMais ? "VER MENOS â–´" : "VER MAIS â–¾"} <ChevronDown size={14} className={`transition ${showVerMais?'rotate-180':''}`} />
+                          {showVerMais ? "VER MENOS ▴" : "VER MAIS ▾"} <ChevronDown size={14} className={`transition ${showVerMais?'rotate-180':''}`} />
                         </button>
                       </div>
                     )}
@@ -936,7 +923,7 @@ const onVendaChange = (venda: number) => {
               })()}
             </div>
             <div className="mt-8">
-              <h3 className="text-[#C80082] font-bold text-[14px] uppercase tracking-wide mb-4">PromoÃ§Ãµes</h3>
+              <h3 className="text-[#C80082] font-bold text-[14px] uppercase tracking-wide mb-4">Promoções</h3>
               <div className="space-y-2.5">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="radio" name="promo" checked={promoFilter==='todos'} onChange={()=>setPromoFilter('todos')} className="accent-[#C80082]" />
@@ -944,11 +931,11 @@ const onVendaChange = (venda: number) => {
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="radio" name="promo" checked={promoFilter==='promo'} onChange={()=>setPromoFilter('promo')} className="accent-[#C80082]" />
-                  <span className="text-[13px] text-zinc-600">Somente promoÃ§Ã£o</span>
+                  <span className="text-[13px] text-zinc-600">Somente promoção</span>
                 </label>
               </div>
             </div>
-            {/* Contatos - abaixo de Somente promoÃ§Ã£o conforme image_91767e.png */}
+            {/* Contatos - abaixo de Somente promoção conforme image_91767e.png */}
             <div className="mt-8 pt-6 border-t border-[#E8DDD5]/80">
               <div className="space-y-3.5">
                 <div className="flex items-center gap-2.5">
@@ -997,8 +984,8 @@ const onVendaChange = (venda: number) => {
                 <span>Resultado {filtered.length} produtos</span>
                 <select value={orderBy} onChange={e=>setOrderBy(e.target.value as any)} className="border border-zinc-200 rounded-full px-3 py-1.5 text-[12px] bg-white outline-none">
                   <option value="relev">Ordenar por</option>
-                  <option value="menor">Menor preÃ§o</option>
-                  <option value="maior">Maior preÃ§o</option>
+                  <option value="menor">Menor preço</option>
+                  <option value="maior">Maior preço</option>
                   <option value="nome">Nome A-Z</option>
                 </select>
               </div>
@@ -1107,11 +1094,11 @@ const onVendaChange = (venda: number) => {
                       <a href={getWaLinkForProduct(selProd.nome)} target="_blank" rel="noopener" className="w-full h-11 rounded-[12px] bg-[#25D366] text-white font-bold text-[13px] flex items-center justify-center gap-2 hover:bg-[#1ebe5d] transition">
                         <MessageCircle size={16}/> Chamar no WhatsApp
                       </a>
-                      <p className="text-[11px] text-zinc-400 mt-2 text-center">Atendimento via {empresa.nome} â€¢ {waNumber.replace('55','')}</p>
+                      <p className="text-[11px] text-zinc-400 mt-2 text-center">Atendimento via {empresa.nome} • {waNumber.replace('55','')}</p>
                     </div>
                     <div className="mt-auto pt-6">
                       <div className="bg-[#FFF0F6] border border-[#FF9EBB]/30 rounded-[12px] p-3 text-[12px] text-[#B0006E]">
-                        ðŸ’¬ Atendimento exclusivo via WhatsApp. Clique no botÃ£o acima para tirar dÃºvidas sobre este produto.
+                        💬 Atendimento exclusivo via WhatsApp. Clique no botão acima para tirar dúvidas sobre este produto.
                       </div>
                     </div>
                   </div>
@@ -1130,9 +1117,9 @@ const onVendaChange = (venda: number) => {
                 <button onClick={()=>setShowLogin(false)} className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center"><X size={16}/></button>
               </div>
              <h3 className="font-bold text-[18px] text-zinc-900">Acesso administrativo</h3>
-              {/* Credenciais removidas por seguranÃ§a */}
+              {/* Credenciais removidas por segurança */}
               <div className="mt-5 space-y-3">
-                <input value={loginForm.user} onChange={e=>setLoginForm(f=>({...f,user:e.target.value}))} placeholder="UsuÃ¡rio" className="w-full h-11 rounded-[12px] border border-zinc-200 px-4 text-[14px] outline-none focus:border-[#C80082]" />
+                <input value={loginForm.user} onChange={e=>setLoginForm(f=>({...f,user:e.target.value}))} placeholder="Usuário" className="w-full h-11 rounded-[12px] border border-zinc-200 px-4 text-[14px] outline-none focus:border-[#C80082]" />
                 <input type="password" value={loginForm.pass} onChange={e=>setLoginForm(f=>({...f,pass:e.target.value}))} placeholder="Senha" className="w-full h-11 rounded-[12px] border border-zinc-200 px-4 text-[14px] outline-none focus:border-[#C80082]" />
                 {loginErr && <p className="text-[12px] text-red-600 flex items-center gap-1"><AlertCircle size={14}/>{loginErr}</p>}
                 <button onClick={handleLogin} className="w-full h-11 rounded-[12px] bg-[#C80082] text-white font-bold text-[14px] hover:bg-[#B0006E] transition">Entrar</button>
@@ -1165,9 +1152,9 @@ const onVendaChange = (venda: number) => {
             {k:'Fornecedores', ic: Truck},
             {k:'Clientes', ic: Users},
             {k:'Entrada NF', ic: FileInput},
-            {k:'SaÃ­da Venda', ic: FileOutput},
-            {k:'RelatÃ³rios', ic: BarChart3},
-            {k:'ConfiguraÃ§Ã£o', ic: Settings},
+            {k:'Saída Venda', ic: FileOutput},
+            {k:'Relatórios', ic: BarChart3},
+            {k:'Configuração', ic: Settings},
           ].map(it=>{
             const active = adminTab===it.k;
             return <button key={it.k} onClick={()=>setAdminTab(it.k)} className={`w-full flex items-center gap-3 px-3 h-10 rounded-[10px] text-[13px] font-medium transition ${active?'bg-white text-[#111]':'text-white/70 hover:bg-white/10 hover:text-white'}`}><it.ic size={16}/>{it.k}</button>
@@ -1183,9 +1170,9 @@ const onVendaChange = (venda: number) => {
         <div className="h-[64px] bg-white border-b border-zinc-200 flex items-center justify-between px-6 gap-3">
           <h1 className="font-bold text-[18px] text-zinc-900">{adminTab}</h1>
           <div className="flex items-center gap-3 text-[12px] text-zinc-500">
-            {adminTab==='RelatÃ³rios' && (
+            {adminTab==='Relatórios' && (
               <button onClick={()=>setShowSinteticoModal(true)} className="h-9 px-4 rounded-[10px] bg-[#111] text-white text-[13px] font-semibold flex items-center gap-2 hover:bg-black transition shrink-0">
-                <FileText size={16}/> Exportar sintÃ©tico
+                <FileText size={16}/> Exportar sintético
               </button>
             )}
             <span className="hidden sm:inline">thita_ localStorage ativo</span>
@@ -1214,7 +1201,7 @@ const onVendaChange = (venda: number) => {
               <div className="bg-white rounded-[12px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-zinc-100">
                 <p className="text-[11px] uppercase tracking-wide text-zinc-500 font-bold">Entradas NF</p>
                 <p className="text-[28px] font-bold text-zinc-900 mt-2">{entradas.length}</p>
-                <p className="text-[12px] text-zinc-500 mt-1">{crediario.filter(c=>c.status==='aberto').length} crediÃ¡rios abertos</p>
+                <p className="text-[12px] text-zinc-500 mt-1">{crediario.filter(c=>c.status==='aberto').length} crediários abertos</p>
               </div>
             </div>
           )}
@@ -1229,7 +1216,7 @@ const onVendaChange = (venda: number) => {
                 <button onClick={()=>{ if(newCat.trim()){ setCategorias(c=>[...c,newCat.trim()]); setNewCat(''); } }} className="h-10 px-4 rounded-[10px] bg-[#111] text-white text-[13px] font-semibold">Adicionar</button>
               </div>
               <table className="w-full mt-5 text-[13px]">
-                <thead><tr className="text-[11px] text-zinc-500 uppercase"><th className="text-left py-2">Categoria</th><th className="text-right">AÃ§Ã£o</th></tr></thead>
+                <thead><tr className="text-[11px] text-zinc-500 uppercase"><th className="text-left py-2">Categoria</th><th className="text-right">Ação</th></tr></thead>
                 <tbody>{categorias.map(cat=><tr key={cat} className="border-t border-zinc-100"><td className="py-2.5">{cat}</td><td className="text-right"><button onClick={()=>setCategorias(c=>c.filter(x=>x!==cat))} className="text-red-600 hover:underline">Excluir</button></td></tr>)}</tbody>
               </table>
             </div>
@@ -1249,8 +1236,8 @@ const onVendaChange = (venda: number) => {
                     <input value={fornForm.cnpj} onChange={e=>setFornForm({...fornForm,cnpj:e.target.value})} placeholder="00.000.000/0000-00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">EndereÃ§o</label>
-                    <input value={fornForm.endereco} onChange={e=>setFornForm({...fornForm,endereco:e.target.value})} placeholder="Rua, nÃºmero, bairro, cidade" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">Endereço</label>
+                    <input value={fornForm.endereco} onChange={e=>setFornForm({...fornForm,endereco:e.target.value})} placeholder="Rua, número, bairro, cidade" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">Contato</label>
@@ -1287,8 +1274,8 @@ const onVendaChange = (venda: number) => {
                       <input value={cliForm.contato} onChange={e=>setCliForm({...cliForm,contato:e.target.value})} placeholder="(00) 00000-0000" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-zinc-700 mb-1 block">EndereÃ§o</label>
-                      <input value={cliForm.endereco||''} onChange={e=>setCliForm({...cliForm,endereco:e.target.value})} placeholder="Rua, nÃºmero, bairro, cidade" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                      <label className="text-xs font-medium text-zinc-700 mb-1 block">Endereço</label>
+                      <input value={cliForm.endereco||''} onChange={e=>setCliForm({...cliForm,endereco:e.target.value})} placeholder="Rua, número, bairro, cidade" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                     </div>
                     <button onClick={()=>{ if(!cliForm.nome.trim()) return; if(cliForm.id){ setClientes(prev=>prev.map(c=>c.id===cliForm.id?cliForm:c)); } else { setClientes(prev=>[...prev,{...cliForm,id:`c${Date.now()}`} ]); } setCliForm({id:'',nome:'',doc:'',contato:'',endereco:''}); }} className="w-full h-10 rounded-[10px] bg-[#111] text-white text-[13px] font-semibold mt-1">Salvar</button>
                   </div>
@@ -1304,8 +1291,8 @@ const onVendaChange = (venda: number) => {
                 <div className="bg-white rounded-[12px] border border-zinc-200 p-5">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="font-bold text-[15px]">HistÃ³rico: {cliHist.nome}</h3>
-                      <p className="text-[11px] text-zinc-500 mt-1">Clique em uma compra para ver o crediÃ¡rio detalhado abaixo</p>
+                      <h3 className="font-bold text-[15px]">Histórico: {cliHist.nome}</h3>
+                      <p className="text-[11px] text-zinc-500 mt-1">Clique em uma compra para ver o crediário detalhado abaixo</p>
                     </div>
                     <button onClick={()=>{setCliHist(null); setCliVendaSel(null);}} className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center"><X size={14}/></button>
                   </div>
@@ -1338,27 +1325,27 @@ const onVendaChange = (venda: number) => {
                             </tr>
                           );
                         })}
-                        {filteredCliVendas.length===0 && <tr><td colSpan={6} className="py-6 text-center text-zinc-400">Sem vendas no perÃ­odo</td></tr>}
+                        {filteredCliVendas.length===0 && <tr><td colSpan={6} className="py-6 text-center text-zinc-400">Sem vendas no período</td></tr>}
                       </tbody>
                     </table>
                   </div>
 
-                  {/* CrediÃ¡rio detalhado sÃ³ apÃ³s selecionar compra */}
+                  {/* Crediário detalhado só após selecionar compra */}
                   {selectedVenda && (
                     <div className="mt-6 p-4 bg-[#FFFBF7] border border-[#F3E5D8] rounded-[12px]">
                       <div className="flex items-center justify-between mb-3">
                         <div>
-                          <h4 className="font-bold text-[13px] text-zinc-900">CrediÃ¡rio - Venda {selectedVenda.data} â€¢ R$ {selectedVenda.totalFinal.toFixed(2)} â€¢ {selectedVenda.forma}</h4>
-                          {selectedVenda.forma !== 'CrediÃ¡rio' ? (
-                            <p className="text-[11px] text-zinc-500 mt-1">Esta venda foi {selectedVenda.forma} â€” status automaticamente <b className="text-green-700">Quitado</b>.</p>
+                          <h4 className="font-bold text-[13px] text-zinc-900">Crediário - Venda {selectedVenda.data} • R$ {selectedVenda.totalFinal.toFixed(2)} • {selectedVenda.forma}</h4>
+                          {selectedVenda.forma !== 'Crediário' ? (
+                            <p className="text-[11px] text-zinc-500 mt-1">Esta venda foi {selectedVenda.forma} — status automaticamente <b className="text-green-700">Quitado</b>.</p>
                           ) : (
-                            <p className="text-[11px] text-zinc-500 mt-1">Marque as parcelas como pagas. Ao quitar todas, o STATUS no histÃ³rico muda para Quitado.</p>
+                            <p className="text-[11px] text-zinc-500 mt-1">Marque as parcelas como pagas. Ao quitar todas, o STATUS no histórico muda para Quitado.</p>
                           )}
                         </div>
                         <button onClick={()=>setCliVendaSel(null)} className="text-[11px] px-2 py-1 rounded bg-white border">Fechar detalhe</button>
                       </div>
-                      {selectedVenda.forma !== 'CrediÃ¡rio' ? (
-                        <div className="text-[12px] text-zinc-600 p-3 bg-white rounded-[8px] border">Sem crediÃ¡rio â€” pagamento {selectedVenda.forma} considerado quitado.</div>
+                      {selectedVenda.forma !== 'Crediário' ? (
+                        <div className="text-[12px] text-zinc-600 p-3 bg-white rounded-[8px] border">Sem crediário — pagamento {selectedVenda.forma} considerado quitado.</div>
                       ) : (
                         <div className="overflow-auto bg-white rounded-[10px] border">
                           <table className="w-full text-[12px] min-w-[700px]">
@@ -1368,7 +1355,7 @@ const onVendaChange = (venda: number) => {
                                 const isPago = cr.status==='pago';
                                 return (
                                   <tr key={cr.id} className="border-b border-zinc-100">
-                                    <td className="py-2 px-3 font-medium">{cr.num}Âª</td>
+                                    <td className="py-2 px-3 font-medium">{cr.num}ª</td>
                                     <td>{cr.vencimento}</td>
                                     <td>R$ {cr.valor.toFixed(2)}</td>
                                     <td><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${isPago?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}`}>{isPago?'Pago':'Pendente'}</span></td>
@@ -1392,7 +1379,7 @@ const onVendaChange = (venda: number) => {
                                           setCrediario(prev=>prev.map(c=>c.id===cr.id?{...c, data_pagamento: val}:c));
                                         }} className="border border-zinc-200 rounded-[6px] px-2 h-7 text-[11px]" />
                                       ) : (
-                                        <span className="text-zinc-400 text-[11px]">â€”</span>
+                                        <span className="text-zinc-400 text-[11px]">—</span>
                                       )}
                                     </td>
                                   </tr>
@@ -1417,14 +1404,14 @@ const onVendaChange = (venda: number) => {
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="md:col-span-2">
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">nome</label>
-                    <input value={prodForm.nome} onChange={e=>setProdForm({...prodForm,nome:e.target.value})} placeholder="Ex: Baby Doll Rendado RosÃª" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input value={prodForm.nome} onChange={e=>setProdForm({...prodForm,nome:e.target.value})} placeholder="Ex: Baby Doll Rendado Rosê" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">categoria</label>
                     <select value={prodForm.cat} onChange={e=>setProdForm({...prodForm,cat:e.target.value})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white focus:outline-none focus:border-zinc-900"><option value="">Selecione a categoria</option>{categorias.map(c=><option key={c} value={c}>{c}</option>)}</select>
                   </div>
                   <div className="md:col-span-3">
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">descriÃ§Ã£o</label>
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">descrição</label>
                     <textarea value={prodForm.desc} onChange={e=>setProdForm({...prodForm,desc:e.target.value})} placeholder="Descreva o produto, material, detalhes..." className="w-full rounded-[10px] border border-zinc-200 px-3 py-2 text-[13px] focus:outline-none focus:border-zinc-900" rows={2} />
                   </div>
                   <div>
@@ -1432,19 +1419,19 @@ const onVendaChange = (venda: number) => {
                     <select value={prodForm.forn} onChange={e=>setProdForm({...prodForm,forn:e.target.value})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white focus:outline-none focus:border-zinc-900"><option value="">Selecione o fornecedor</option>{fornecedores.map(f=><option key={f.id} value={f.id}>{f.nome}</option>)}</select>
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">preÃ§o de custo</label>
-                    <input type="number" value={prodForm.custo} onCustoChange={e=>{ const c=Number(e.target.value); setProdForm({...prodForm,custo:c, venda: recalcVenda(c, prodForm.margem)}); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de custo</label>
+                    <input type="number" value={prodForm.custo} onChange={e=>{ const c=Number(e.target.value); if(isNaN(c)) return; setProdForm(prev=>{ const venda = Number((c * (1 + prev.margem / 100)).toFixed(2)); return {...prev,custo:c, venda}; }); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">margem %</label>
                     <div className="flex gap-2">
-                      <input type="number" value={prodForm.margem} onMargemChange={e=>{ const m=Number(e.target.value); setProdForm({...prodForm,margem:m, venda: recalcVenda(prodForm.custo,m)}); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                      <input type="number" value={prodForm.margem} onChange={e=>{ const m=Number(e.target.value); if(isNaN(m)) return; setProdForm(prev=>{ const venda = Number((prev.custo * (1 + m / 100)).toFixed(2)); return {...prev,margem:m, venda}; }); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                       <span className="h-10 px-3 rounded-[10px] bg-zinc-100 flex items-center text-[12px] border border-zinc-200">%</span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">preÃ§o de venda</label>
-                    <input type="number" value={prodForm.venda} onVendaChange={e=>{ const v=Number(e.target.value); setProdForm({...prodForm,venda:v, margem: recalcMargem(prodForm.custo, v)}); }} placeholder="Calculado ou editÃ¡vel" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de venda</label>
+                    <input type="number" value={prodForm.venda} onChange={e=>{ const v=Number(e.target.value); if(isNaN(v)) return; setProdForm(prev=>{ const margem = prev.custo > 0 ? Number((((v / prev.custo) - 1) * 100).toFixed(1)) : 0; return {...prev,venda:v, margem}; }); }} placeholder="Calculado ou editável" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">imagem URL</label>
@@ -1459,11 +1446,11 @@ const onVendaChange = (venda: number) => {
                         }
                         setProdForm(prev=>{
                           const cur = prev.imagens || [];
-                          // se primeira, substitui capa, senÃ£o adiciona
+                          // se primeira, substitui capa, senão adiciona
                           const newList = cur.length===0 ? [url] : [cur[0], ...cur.slice(1), url].slice(0,8);
                           // se vazio, cria
                           if(cur.length===0) return {...prev, img:url, imagens:[url]};
-                          // mantÃ©m primeira como capa, adiciona url no final se nÃ£o existir
+                          // mantém primeira como capa, adiciona url no final se não existir
                           const exists = cur.includes(url);
                           return {...prev, img:cur[0], imagens: exists?cur:[...cur, url]};
                         });
@@ -1472,7 +1459,7 @@ const onVendaChange = (venda: number) => {
                       className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900"
                     />
                     <div className="mt-3 p-3 bg-zinc-50 rounded-[10px] border border-zinc-200">
-                      <label className="text-xs font-medium text-zinc-700 mb-1.5 block">Fotos do produto (mÃºltiplas) â€” 1Âª Ã© a capa do catÃ¡logo</label>
+                      <label className="text-xs font-medium text-zinc-700 mb-1.5 block">Fotos do produto (múltiplas) — 1ª é a capa do catálogo</label>
                       <div className="flex flex-wrap items-center gap-3">
                         <input ref={prodFileRef} type="file" accept="image/*" multiple className="hidden" onChange={e=>{ handleProdImageFiles(e.target.files); }} />
                         <button type="button" onClick={()=>prodFileRef.current?.click()} className="h-10 px-4 rounded-[10px] bg-zinc-900 text-white border border-zinc-900 flex items-center gap-2 text-[12px] font-semibold hover:bg-black transition">
@@ -1481,9 +1468,9 @@ const onVendaChange = (venda: number) => {
                         {getProdImages(prodForm as Produto).length>0 && (
                           <button type="button" onClick={()=>{ setProdForm({...prodForm,img:'', imagem:'', imagens:[]}); setProdImgError(''); if(prodFileRef.current) prodFileRef.current.value=''; }} className="h-10 px-3 rounded-[10px] bg-white border border-zinc-200 text-[12px] hover:bg-zinc-100">Limpar todas</button>
                         )}
-                        <span className="text-[11px] text-zinc-500">{getProdImages(prodForm as Produto).length} foto(s) â€” catÃ¡logo mostra sÃ³ capa</span>
+                        <span className="text-[11px] text-zinc-500">{getProdImages(prodForm as Produto).length} foto(s) — catálogo mostra só capa</span>
                       </div>
-                      <p className="text-[11px] text-zinc-500 mt-2 leading-tight">Suporta JPG, PNG, WEBP - mÃ¡x 2MB cada - pode selecionar vÃ¡rias de uma vez</p>
+                      <p className="text-[11px] text-zinc-500 mt-2 leading-tight">Suporta JPG, PNG, WEBP - máx 2MB cada - pode selecionar várias de uma vez</p>
                       {prodImgError && <p className="text-[11px] text-red-600 mt-1.5 flex items-center gap-1"><AlertCircle size={12}/>{prodImgError}</p>}
                       {getProdImages(prodForm as Produto).length>0 && (
                         <div className="mt-3">
@@ -1525,7 +1512,7 @@ const onVendaChange = (venda: number) => {
                   <div className="md:col-span-2 flex flex-col gap-3 pb-1">
                     <div className="flex gap-3">
                       <label className="flex items-center gap-1.5 text-[12px] text-zinc-700"><input type="checkbox" checked={prodForm.novo} onChange={e=>setProdForm({...prodForm,novo:e.target.checked})} className="accent-[#C80082]"/> Novo</label>
-                      <label className="flex items-center gap-1.5 text-[12px] text-zinc-700"><input type="checkbox" checked={prodForm.promo} onChange={e=>setProdForm({...prodForm,promo:e.target.checked})} className="accent-[#C80082]"/> PromoÃ§Ã£o</label>
+                      <label className="flex items-center gap-1.5 text-[12px] text-zinc-700"><input type="checkbox" checked={prodForm.promo} onChange={e=>setProdForm({...prodForm,promo:e.target.checked})} className="accent-[#C80082]"/> Promoção</label>
                     </div>
                     <div className="flex flex-col gap-2 bg-zinc-50 border border-zinc-200 rounded-[12px] p-3">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -1569,7 +1556,7 @@ const onVendaChange = (venda: number) => {
                     <select value={nf.fornId} onChange={e=>setNf({...nf,fornId:e.target.value})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white"><option value="">Selecione o fornecedor</option>{fornecedores.map(f=><option key={f.id} value={f.id}>{f.nome}</option>)}</select>
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">NÂº Nota</label>
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">Nº Nota</label>
                     <input value={nf.numNota} onChange={e=>setNf({...nf,numNota:e.target.value})} placeholder="Ex: 12345" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px]" />
                   </div>
                   <div>
@@ -1615,24 +1602,24 @@ const onVendaChange = (venda: number) => {
                       return p;
                     }));
                     setNf({ fornId: fornecedores[0]?.id||'', numNota:'', data: new Date().toISOString().slice(0,10), frete: 0, itens:[] });
-                  }} className="h-10 px-5 rounded-[10px] bg-[#C80082] text-white text-[13px] font-bold">LanÃ§ar no Estoque</button>
+                  }} className="h-10 px-5 rounded-[10px] bg-[#C80082] text-white text-[13px] font-bold">Lançar no Estoque</button>
                 </div>
               </div>
               <div className="bg-white rounded-[12px] border border-zinc-200 p-5 overflow-auto">
-                <h4 className="font-bold text-[13px] mb-3">Ãšltimas Entradas</h4>
-                <table className="w-full text-[12px] min-w-[500px]"><thead><tr className="text-[11px] uppercase text-zinc-500 text-left border-b"><th className="py-2">Data</th><th>Fornecedor</th><th>Nota</th><th>Frete</th><th>Total</th><th>Itens</th></tr></thead><tbody>{entradas.slice(-10).reverse().map(e=><tr key={e.id} className="border-b border-zinc-100"><td className="py-2">{e.data}</td><td>{fornecedores.find(f=>f.id===e.fornId)?.nome}</td><td>{e.numNota}</td><td>{(e.frete||0)>0 ? `R$ ${(e.frete||0).toFixed(2)}` : 'â€”'}</td><td>R$ {e.total.toFixed(2)}</td><td>{e.itens.length}</td></tr>)}</tbody></table>
+                <h4 className="font-bold text-[13px] mb-3">Últimas Entradas</h4>
+                <table className="w-full text-[12px] min-w-[500px]"><thead><tr className="text-[11px] uppercase text-zinc-500 text-left border-b"><th className="py-2">Data</th><th>Fornecedor</th><th>Nota</th><th>Frete</th><th>Total</th><th>Itens</th></tr></thead><tbody>{entradas.slice(-10).reverse().map(e=><tr key={e.id} className="border-b border-zinc-100"><td className="py-2">{e.data}</td><td>{fornecedores.find(f=>f.id===e.fornId)?.nome}</td><td>{e.numNota}</td><td>{(e.frete||0)>0 ? `R$ ${(e.frete||0).toFixed(2)}` : '—'}</td><td>R$ {e.total.toFixed(2)}</td><td>{e.itens.length}</td></tr>)}</tbody></table>
               </div>
             </div>
           )}
 
-          {adminTab==='SaÃ­da Venda' && (
+          {adminTab==='Saída Venda' && (
             <div className="space-y-4">
               <div className="bg-white rounded-[12px] border border-zinc-200 p-5">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-zinc-700">Cliente (obrigatÃ³rio)</label>
+                  <label className="text-xs font-medium text-zinc-700">Cliente (obrigatório)</label>
                   <div className="flex flex-col md:flex-row gap-3 items-start">
                     <select value={vendaClienteId} onChange={e=>setVendaClienteId(e.target.value)} className="h-11 rounded-[12px] border border-zinc-200 px-4 text-[13px] flex-1 bg-white">
-                      <option value="">Selecione o Cliente (obrigatÃ³rio)</option>
+                      <option value="">Selecione o Cliente (obrigatório)</option>
                       {clientes.map(c=><option key={c.id} value={c.id}>{c.nome} - {c.doc}</option>)}
                     </select>
                   </div>
@@ -1651,7 +1638,7 @@ const onVendaChange = (venda: number) => {
                       </div>
                       <button onClick={()=>{ if(!cartProd.prodId||cartProd.qtd<=0) return; const exists = carrinho.find(c=>c.prodId===cartProd.prodId); if(exists){ setCarrinho(carrinho.map(c=>c.prodId===cartProd.prodId?{...c,qtd:c.qtd+cartProd.qtd}:c)); } else setCarrinho([...carrinho,cartProd]); setCartProd({prodId:'',qtd:1}); }} className="h-10 px-4 rounded-[10px] bg-[#111] text-white text-[13px] flex items-center gap-1 self-end"><Plus size={14}/> Add</button>
                     </div>
-                    <table className="w-full text-[13px] mt-4"><thead><tr className="text-[11px] uppercase text-zinc-500 text-left"><th className="py-2">Produto</th><th>Qtd</th><th>PreÃ§o</th><th>Total</th><th></th></tr></thead><tbody>{carrinho.map((it,i)=>{ const p=produtos.find(pp=>pp.id===it.prodId); return <tr key={i} className="border-t border-zinc-100"><td className="py-2">{p?.nome}</td><td>{it.qtd}</td><td>R$ {p?.venda.toFixed(2)}</td><td>R$ {((p?.venda||0)*it.qtd).toFixed(2)}</td><td className="text-right"><button onClick={()=>setCarrinho(carrinho.filter((_,idx)=>idx!==i))} className="text-red-600"><Trash2 size={14}/></button></td></tr> })}</tbody></table>
+                    <table className="w-full text-[13px] mt-4"><thead><tr className="text-[11px] uppercase text-zinc-500 text-left"><th className="py-2">Produto</th><th>Qtd</th><th>Preço</th><th>Total</th><th></th></tr></thead><tbody>{carrinho.map((it,i)=>{ const p=produtos.find(pp=>pp.id===it.prodId); return <tr key={i} className="border-t border-zinc-100"><td className="py-2">{p?.nome}</td><td>{it.qtd}</td><td>R$ {p?.venda.toFixed(2)}</td><td>R$ {((p?.venda||0)*it.qtd).toFixed(2)}</td><td className="text-right"><button onClick={()=>setCarrinho(carrinho.filter((_,idx)=>idx!==i))} className="text-red-600"><Trash2 size={14}/></button></td></tr> })}</tbody></table>
                     <div className="mt-4 flex justify-between items-center"><p className="font-bold">Total: R$ {carrinhoTotal.toFixed(2)}</p><button disabled={carrinho.length===0} onClick={()=>setShowFinalizar(true)} className="h-11 px-6 rounded-[12px] bg-[#C80082] text-white font-bold text-[13px] disabled:opacity-50">Finalizar Venda</button></div>
                   </>
                 )}
@@ -1659,7 +1646,7 @@ const onVendaChange = (venda: number) => {
             </div>
           )}
 
-          {adminTab==='RelatÃ³rios' && (
+          {adminTab==='Relatórios' && (
             <div className="space-y-5">
               <div className="bg-white rounded-[12px] border border-zinc-200 p-5">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
@@ -1677,7 +1664,7 @@ const onVendaChange = (venda: number) => {
                       <select value={repForn} onChange={e=>setRepForn(e.target.value)} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white"><option value="todos">Todos Fornecedores</option>{fornecedores.map(f=><option key={f.id} value={f.id}>{f.nome}</option>)}</select>
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-zinc-700 mb-1 block">Cliente (SaÃ­das)</label>
+                      <label className="text-xs font-medium text-zinc-700 mb-1 block">Cliente (Saídas)</label>
                       <select value={repCli} onChange={e=>setRepCli(e.target.value)} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white"><option value="todos">Todos Clientes</option>{clientes.map(c=><option key={c.id} value={c.id}>{c.nome}</option>)}</select>
                     </div>
                   </div>
@@ -1685,44 +1672,44 @@ const onVendaChange = (venda: number) => {
                     <X size={14}/> Limpar filtros
                   </button>
                 </div>
-                <p className="text-[11px] text-zinc-500 mt-3">Pesquisa sintÃ©tica â€¢ Entradas filtra por fornecedor â€¢ SaÃ­das filtra por cliente â€¢ Duplo clique para ver analÃ­tico</p>
+                <p className="text-[11px] text-zinc-500 mt-3">Pesquisa sintética • Entradas filtra por fornecedor • Saídas filtra por cliente • Duplo clique para ver analítico</p>
               </div>
 
               {/* TABELA ENTRADAS */}
               <div className="bg-white rounded-[12px] border border-zinc-200 p-5">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-bold text-[14px] flex items-center gap-2"><FileInput size={16}/> Entradas (Compras)</h4>
-                  <span className="text-[11px] bg-zinc-100 px-2.5 py-1 rounded-full border">{entradasFiltradas.length} notas â€¢ R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)}</span>
+                  <span className="text-[11px] bg-zinc-100 px-2.5 py-1 rounded-full border">{entradasFiltradas.length} notas • R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)}</span>
                 </div>
                 <div className="overflow-auto rounded-[10px] border border-zinc-100">
                   <table className="w-full text-[12px] min-w-[740px]">
-                    <thead><tr className="text-[11px] uppercase text-zinc-500 text-left bg-zinc-50 border-b"><th className="py-2.5 px-3">Data</th><th>NÂº Nota</th><th>Fornecedor</th><th className="text-right">Frete</th><th className="text-right pr-4">Valor Total</th><th className="text-center">AÃ§Ã£o</th></tr></thead>
+                    <thead><tr className="text-[11px] uppercase text-zinc-500 text-left bg-zinc-50 border-b"><th className="py-2.5 px-3">Data</th><th>Nº Nota</th><th>Fornecedor</th><th className="text-right">Frete</th><th className="text-right pr-4">Valor Total</th><th className="text-center">Ação</th></tr></thead>
                     <tbody>
                       {entradasFiltradas.map(e=>(
                         <tr key={e.id} onDoubleClick={()=>setRepEntradaSel(e)} className="border-b border-zinc-100 hover:bg-zinc-50 cursor-pointer">
                           <td className="py-2.5 px-3">{e.data}</td>
                           <td className="font-medium">{e.numNota || e.id.slice(0,6)}</td>
-                          <td className="text-zinc-700">{fornecedores.find(f=>f.id===e.fornId)?.nome || 'â€”'}</td>
-                          <td className="text-right">{(e.frete||0)>0 ? `R$ ${(e.frete||0).toFixed(2)}` : 'â€”'}</td>
+                          <td className="text-zinc-700">{fornecedores.find(f=>f.id===e.fornId)?.nome || '—'}</td>
+                          <td className="text-right">{(e.frete||0)>0 ? `R$ ${(e.frete||0).toFixed(2)}` : '—'}</td>
                           <td className="text-right pr-4 font-bold">R$ {e.total.toFixed(2)}</td>
                           <td className="text-center"><div className="flex justify-center gap-1"><button onClick={()=>setRepEntradaSel(e)} className="px-2.5 h-7 rounded-full bg-zinc-900 text-white text- hover:bg-black">Ver detalhes</button><button onClick={()=>cancelarEntrada(e.id)} className="px-2.5 h-7 rounded-full bg-red-600 text-white text- font-bold hover:bg-red-700">Cancelar</button></div></td>                        </tr>
                       ))}
-                      {entradasFiltradas.length===0 && <tr><td colSpan={6} className="py-6 text-center text-zinc-400">Nenhuma entrada no perÃ­odo selecionado</td></tr>}
-                      {entradasFiltradas.length>0 && <tr className="font-bold bg-zinc-50"><td colSpan={3} className="py-2.5 px-3 text-right">Total perÃ­odo</td><td className="text-right">R$ {entradasFiltradas.reduce((a,e)=>a+(e.frete||0),0).toFixed(2)}</td><td className="text-right pr-4">R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)}</td><td></td></tr>}
+                      {entradasFiltradas.length===0 && <tr><td colSpan={6} className="py-6 text-center text-zinc-400">Nenhuma entrada no período selecionado</td></tr>}
+                      {entradasFiltradas.length>0 && <tr className="font-bold bg-zinc-50"><td colSpan={3} className="py-2.5 px-3 text-right">Total período</td><td className="text-right">R$ {entradasFiltradas.reduce((a,e)=>a+(e.frete||0),0).toFixed(2)}</td><td className="text-right pr-4">R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)}</td><td></td></tr>}
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              {/* TABELA SAÃDAS */}
+              {/* TABELA SAÍDAS */}
               <div className="bg-white rounded-[12px] border border-zinc-200 p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-bold text-[14px] flex items-center gap-2"><FileOutput size={16}/> SaÃ­das (Vendas)</h4>
-                  <span className="text-[11px] bg-zinc-100 px-2.5 py-1 rounded-full border">{vendasFiltradas.length} vendas â€¢ R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</span>
+                  <h4 className="font-bold text-[14px] flex items-center gap-2"><FileOutput size={16}/> Saídas (Vendas)</h4>
+                  <span className="text-[11px] bg-zinc-100 px-2.5 py-1 rounded-full border">{vendasFiltradas.length} vendas • R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</span>
                 </div>
                 <div className="overflow-auto rounded-[10px] border border-zinc-100">
                   <table className="w-full text-[12px] min-w-[860px]">
-                    <thead><tr className="text-[11px] uppercase text-zinc-500 text-left bg-zinc-50 border-b"><th className="py-2.5 px-3">Data</th><th>Cliente</th><th className="text-right">Total</th><th className="text-center">Entrega</th><th className="text-center">Embalagem</th><th className="text-right">LÃ­quido</th><th>Forma Pagamento</th><th>Status</th><th className="text-center">AÃ§Ã£o</th></tr></thead>
+                    <thead><tr className="text-[11px] uppercase text-zinc-500 text-left bg-zinc-50 border-b"><th className="py-2.5 px-3">Data</th><th>Cliente</th><th className="text-right">Total</th><th className="text-center">Entrega</th><th className="text-center">Embalagem</th><th className="text-right">Líquido</th><th>Forma Pagamento</th><th>Status</th><th className="text-center">Ação</th></tr></thead>
                     <tbody>
                       {vendasFiltradas.map(v=>{
                         const cli = clientes.find(c=>c.id===v.clienteId);
@@ -1731,18 +1718,18 @@ const onVendaChange = (venda: number) => {
                         return (
                           <tr key={v.id} onDoubleClick={()=>setRepVendaSel(v)} className="border-b border-zinc-100 hover:bg-zinc-50 cursor-pointer">
                             <td className="py-2.5 px-3">{v.data}</td>
-                            <td className="font-medium">{cli?.nome || 'â€”'}</td>
+                            <td className="font-medium">{cli?.nome || '—'}</td>
                             <td className="text-right font-bold">R$ {v.totalFinal.toFixed(2)}</td>
-                            <td className="text-center">{(v.entrega && (v.entregaValor||0)>0) ? <span className="bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full text-[10px]">R$ {(v.entregaValor||0).toFixed(2)}</span> : <span className="text-zinc-400">â€”</span>}</td>
-                            <td className="text-center">{(v.embalagem && (v.embalagemValor||0)>0) ? <span className="bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-full text-[10px]">R$ {(v.embalagemValor||0).toFixed(2)}</span> : <span className="text-zinc-400">â€”</span>}</td>
+                            <td className="text-center">{(v.entrega && (v.entregaValor||0)>0) ? <span className="bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full text-[10px]">R$ {(v.entregaValor||0).toFixed(2)}</span> : <span className="text-zinc-400">—</span>}</td>
+                            <td className="text-center">{(v.embalagem && (v.embalagemValor||0)>0) ? <span className="bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-full text-[10px]">R$ {(v.embalagemValor||0).toFixed(2)}</span> : <span className="text-zinc-400">—</span>}</td>
                             <td className="text-right font-bold text-green-700">R$ {liquido.toFixed(2)}</td>
-                            <td>{v.forma} {v.parcelas>1?`â€¢ ${v.parcelas}x`:''}</td>
+                            <td>{v.forma} {v.parcelas>1?`• ${v.parcelas}x`:''}</td>
                             <td><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${st==='Quitado'?'bg-green-100 text-green-700 border border-green-200':'bg-amber-100 text-amber-700 border border-amber-200'}`}>{st}</span></td>
                             <td className="text-center"><div className="flex justify-center gap-1"><button onClick={()=>setRepVendaSel(v)} className="px-2.5 h-7 rounded-full bg-zinc-900 text-white text- hover:bg-black">Ver detalhes</button><button onClick={()=>cancelarVenda(v.id)} className="px-2.5 h-7 rounded-full bg-red-600 text-white text- font-bold hover:bg-red-700">Cancelar</button></div></td>                          </tr>
                         );
                       })}
-                      {vendasFiltradas.length===0 && <tr><td colSpan={9} className="py-6 text-center text-zinc-400">Nenhuma venda no perÃ­odo selecionado</td></tr>}
-                      {vendasFiltradas.length>0 && <tr className="font-bold bg-zinc-50"><td colSpan={2} className="py-2.5 px-3 text-right">Total perÃ­odo</td><td className="text-right">R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</td><td className="text-center">R$ {vendasFiltradas.reduce((a,v)=>a+(v.entrega?(v.entregaValor||0):0),0).toFixed(2)}</td><td className="text-center">R$ {vendasFiltradas.reduce((a,v)=>a+(v.embalagem?(v.embalagemValor||0):0),0).toFixed(2)}</td><td className="text-right text-green-700">R$ {vendasFiltradas.reduce((a,v)=>a+(v.totalFinal - (v.embalagem?(v.embalagemValor||0):0)),0).toFixed(2)}</td><td colSpan={3}></td></tr>}
+                      {vendasFiltradas.length===0 && <tr><td colSpan={9} className="py-6 text-center text-zinc-400">Nenhuma venda no período selecionado</td></tr>}
+                      {vendasFiltradas.length>0 && <tr className="font-bold bg-zinc-50"><td colSpan={2} className="py-2.5 px-3 text-right">Total período</td><td className="text-right">R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</td><td className="text-center">R$ {vendasFiltradas.reduce((a,v)=>a+(v.entrega?(v.entregaValor||0):0),0).toFixed(2)}</td><td className="text-center">R$ {vendasFiltradas.reduce((a,v)=>a+(v.embalagem?(v.embalagemValor||0):0),0).toFixed(2)}</td><td className="text-right text-green-700">R$ {vendasFiltradas.reduce((a,v)=>a+(v.totalFinal - (v.embalagem?(v.embalagemValor||0):0)),0).toFixed(2)}</td><td colSpan={3}></td></tr>}
                     </tbody>
                   </table>
                 </div>
@@ -1754,10 +1741,10 @@ const onVendaChange = (venda: number) => {
                   <div className="bg-white rounded-[16px] w-full max-w-[760px] max-h-[90vh] overflow-auto shadow-2xl" onClick={e=>e.stopPropagation()}>
                     <div className="sticky top-0 bg-white border-b border-zinc-100 p-5 flex justify-between items-start">
                       <div>
-                        <h3 className="font-bold text-[18px]">RelatÃ³rio AnalÃ­tico â€” Entrada</h3>
+                        <h3 className="font-bold text-[18px]">Relatório Analítico — Entrada</h3>
                         <div className="mt-2 text-[13px] space-y-1 text-zinc-700">
-                          <p><b>NÂº Nota:</b> {repEntradaSel.numNota || repEntradaSel.id} â€¢ <b>Data:</b> {repEntradaSel.data} {(repEntradaSel.frete||0)>0 ? `â€¢ Frete R$ ${(repEntradaSel.frete||0).toFixed(2)}` : ''}</p>
-                          <p><b>Fornecedor:</b> {fornecedores.find(f=>f.id===repEntradaSel.fornId)?.nome || 'â€”'} {fornecedores.find(f=>f.id===repEntradaSel.fornId)?.cnpj ? `â€¢ CNPJ ${fornecedores.find(f=>f.id===repEntradaSel.fornId)?.cnpj}` : ''}</p>
+                          <p><b>Nº Nota:</b> {repEntradaSel.numNota || repEntradaSel.id} • <b>Data:</b> {repEntradaSel.data} {(repEntradaSel.frete||0)>0 ? `• Frete R$ ${(repEntradaSel.frete||0).toFixed(2)}` : ''}</p>
+                          <p><b>Fornecedor:</b> {fornecedores.find(f=>f.id===repEntradaSel.fornId)?.nome || '—'} {fornecedores.find(f=>f.id===repEntradaSel.fornId)?.cnpj ? `• CNPJ ${fornecedores.find(f=>f.id===repEntradaSel.fornId)?.cnpj}` : ''}</p>
                         </div>
                       </div>
                       <button onClick={()=>setRepEntradaSel(null)} className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center"><X size={16}/></button>
@@ -1789,9 +1776,9 @@ const onVendaChange = (venda: number) => {
                       </div>
                       <div className="mt-5 flex justify-end gap-2">
                         <button onClick={()=>{ setAnaliticoExport({tipo:'entrada', data: repEntradaSel}); }} className="h-10 px-5 rounded-[10px] bg-white border border-zinc-300 text-zinc-900 text-[13px] font-semibold flex items-center gap-2 hover:bg-zinc-50">
-                          <FileText size={14}/> Exportar analÃ­tico
+                          <FileText size={14}/> Exportar analítico
                         </button>
-                        <button onClick={()=>setRepEntradaSel(null)} className="h-10 px-5 rounded-[10px] bg-zinc-900 text-white text-[13px] font-bold">Fechar relatÃ³rio</button>
+                        <button onClick={()=>setRepEntradaSel(null)} className="h-10 px-5 rounded-[10px] bg-zinc-900 text-white text-[13px] font-bold">Fechar relatório</button>
                       </div>
                     </div>
                   </div>
@@ -1804,10 +1791,10 @@ const onVendaChange = (venda: number) => {
                   <div className="bg-white rounded-[16px] w-full max-w-[820px] max-h-[90vh] overflow-auto shadow-2xl" onClick={e=>e.stopPropagation()}>
                     <div className="sticky top-0 bg-white border-b border-zinc-100 p-5 flex justify-between items-start">
                       <div>
-                        <h3 className="font-bold text-[18px]">RelatÃ³rio AnalÃ­tico â€” SaÃ­da</h3>
+                        <h3 className="font-bold text-[18px]">Relatório Analítico — Saída</h3>
                         <div className="mt-2 text-[13px] space-y-1 text-zinc-700">
-                          <p><b>Data:</b> {repVendaSel.data} â€¢ <b>Cliente:</b> {clientes.find(c=>c.id===repVendaSel.clienteId)?.nome || 'â€”'} â€¢ <b>Doc:</b> {clientes.find(c=>c.id===repVendaSel.clienteId)?.doc || 'â€”'}</p>
-                          <p><b>Forma:</b> {repVendaSel.forma} â€¢ <b>Parcelas:</b> {repVendaSel.parcelas}x â€¢ <b>Venc:</b> {repVendaSel.venc} â€¢ <b>Status:</b> {getStatusVenda(repVendaSel)}</p>
+                          <p><b>Data:</b> {repVendaSel.data} • <b>Cliente:</b> {clientes.find(c=>c.id===repVendaSel.clienteId)?.nome || '—'} • <b>Doc:</b> {clientes.find(c=>c.id===repVendaSel.clienteId)?.doc || '—'}</p>
+                          <p><b>Forma:</b> {repVendaSel.forma} • <b>Parcelas:</b> {repVendaSel.parcelas}x • <b>Venc:</b> {repVendaSel.venc} • <b>Status:</b> {getStatusVenda(repVendaSel)}</p>
                         </div>
                       </div>
                       <button onClick={()=>setRepVendaSel(null)} className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center"><X size={16}/></button>
@@ -1816,7 +1803,7 @@ const onVendaChange = (venda: number) => {
                       <h4 className="font-bold text-[13px] mb-3">Itens da Venda</h4>
                       <div className="overflow-auto rounded-[10px] border border-zinc-100">
                         <table className="w-full text-[13px] min-w-[560px]">
-                          <thead><tr className="text-[11px] uppercase text-zinc-500 text-left bg-zinc-50 border-b"><th className="py-2 px-3">Produto</th><th className="text-center">Qtd</th><th className="text-right">PreÃ§o</th><th className="text-right pr-3">Subtotal</th></tr></thead>
+                          <thead><tr className="text-[11px] uppercase text-zinc-500 text-left bg-zinc-50 border-b"><th className="py-2 px-3">Produto</th><th className="text-center">Qtd</th><th className="text-right">Preço</th><th className="text-right pr-3">Subtotal</th></tr></thead>
                           <tbody>
                             {repVendaSel.itens.map((it, idx)=>{
                               const prod = produtos.find(p=>p.id===it.prodId);
@@ -1835,38 +1822,38 @@ const onVendaChange = (venda: number) => {
                       <div className="mt-4 space-y-2 bg-zinc-50 rounded-[12px] p-4 text-[13px]">
                         <div className="flex justify-between"><span>Subtotal</span><span>R$ {repVendaSel.total.toFixed(2)}</span></div>
                         <div className="flex justify-between"><span>Desconto</span><span className="text-red-600">- R$ {repVendaSel.desconto.toFixed(2)}</span></div>
-                        {(repVendaSel.entrega||false) && (repVendaSel.entregaValor||0)>0 && <div className="flex justify-between"><span className="flex items-center gap-1">ðŸšš Entrega <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">CLIENTE</span></span><span className="text-blue-600">+ R$ {(repVendaSel.entregaValor||0).toFixed(2)}</span></div>}
+                        {(repVendaSel.entrega||false) && (repVendaSel.entregaValor||0)>0 && <div className="flex justify-between"><span className="flex items-center gap-1">🚚 Entrega <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">CLIENTE</span></span><span className="text-blue-600">+ R$ {(repVendaSel.entregaValor||0).toFixed(2)}</span></div>}
                         <div className="flex justify-between font-bold text-[15px] border-t pt-2 mt-2"><span>Total final (cliente paga)</span><span>R$ {repVendaSel.totalFinal.toFixed(2)}</span></div>
                         {(repVendaSel.embalagem||false) && (repVendaSel.embalagemValor||0)>0 && (
                           <>
-                            <div className="flex justify-between text-[12px] text-zinc-600 border-t pt-2 mt-2"><span className="flex items-center gap-1">ðŸ“¦ Embalagem <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">CUSTO</span></span><span className="text-amber-700">- R$ {(repVendaSel.embalagemValor||0).toFixed(2)}</span></div>
-                            <div className="flex justify-between font-bold text-[13px] text-green-700"><span>LÃ­quido (venda - embalagem)</span><span>R$ {(repVendaSel.totalFinal - (repVendaSel.embalagemValor||0)).toFixed(2)}</span></div>
+                            <div className="flex justify-between text-[12px] text-zinc-600 border-t pt-2 mt-2"><span className="flex items-center gap-1">📦 Embalagem <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">CUSTO</span></span><span className="text-amber-700">- R$ {(repVendaSel.embalagemValor||0).toFixed(2)}</span></div>
+                            <div className="flex justify-between font-bold text-[13px] text-green-700"><span>Líquido (venda - embalagem)</span><span>R$ {(repVendaSel.totalFinal - (repVendaSel.embalagemValor||0)).toFixed(2)}</span></div>
                           </>
                         )}
                       </div>
-                      {repVendaSel.forma==='CrediÃ¡rio' && (
+                      {repVendaSel.forma==='Crediário' && (
                         <div className="mt-5">
-                          <h4 className="font-bold text-[13px] mb-2">Parcelas do crediÃ¡rio</h4>
+                          <h4 className="font-bold text-[13px] mb-2">Parcelas do crediário</h4>
                           <div className="overflow-auto rounded-[10px] border border-zinc-100">
                             <table className="w-full text-[12px] min-w-[500px]">
                               <thead><tr className="text-[11px] uppercase text-zinc-500 text-left bg-zinc-50 border-b"><th className="py-2 px-3">Parcela</th><th>Venc</th><th>Valor</th><th>Status</th><th>Dt Pgto</th></tr></thead>
-                              <tbody>{crediario.filter(c=>c.vendaId===repVendaSel.id).sort((a,b)=>a.num-b.num).map(cr=><tr key={cr.id} className="border-b border-zinc-100"><td className="py-2 px-3">{cr.num}Âª</td><td>{cr.vencimento}</td><td>R$ {cr.valor.toFixed(2)}</td><td><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${cr.status==='pago'?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}`}>{cr.status==='pago'?'Pago':'Pendente'}</span></td><td>{cr.data_pagamento || 'â€”'}</td></tr>)}</tbody>
+                              <tbody>{crediario.filter(c=>c.vendaId===repVendaSel.id).sort((a,b)=>a.num-b.num).map(cr=><tr key={cr.id} className="border-b border-zinc-100"><td className="py-2 px-3">{cr.num}ª</td><td>{cr.vencimento}</td><td>R$ {cr.valor.toFixed(2)}</td><td><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${cr.status==='pago'?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}`}>{cr.status==='pago'?'Pago':'Pendente'}</span></td><td>{cr.data_pagamento || '—'}</td></tr>)}</tbody>
                             </table>
                           </div>
                         </div>
                       )}
                       <div className="mt-5 flex justify-end gap-2">
                         <button onClick={()=>{ setAnaliticoExport({tipo:'saida', data: repVendaSel}); }} className="h-10 px-5 rounded-[10px] bg-white border border-zinc-300 text-zinc-900 text-[13px] font-semibold flex items-center gap-2 hover:bg-zinc-50">
-                          <FileText size={14}/> Exportar analÃ­tico
+                          <FileText size={14}/> Exportar analítico
                         </button>
-                        <button onClick={()=>setRepVendaSel(null)} className="h-10 px-5 rounded-[10px] bg-zinc-900 text-white text-[13px] font-bold">Fechar relatÃ³rio</button>
+                        <button onClick={()=>setRepVendaSel(null)} className="h-10 px-5 rounded-[10px] bg-zinc-900 text-white text-[13px] font-bold">Fechar relatório</button>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* MODAL SINTÃ‰TICO FORMATADO - A4 */}
+              {/* MODAL SINTÉTICO FORMATADO - A4 */}
               {showSinteticoModal && (
                 <div className="fixed inset-0 bg-black/60 z-[70] flex items-start justify-center p-3 lg:p-6 overflow-y-auto" onClick={()=>setShowSinteticoModal(false)}>
                   <div className="bg-[#F6F3EF] rounded-[16px] w-full max-w-[960px] my-4 shadow-2xl overflow-hidden" onClick={e=>e.stopPropagation()}>
@@ -1877,8 +1864,8 @@ const onVendaChange = (venda: number) => {
                         <div className="flex items-center gap-3">
                           <div className="bg-[#FFF6DD] px-3.5 py-1.5 rounded-[10px] border-0"><span className="font-serif text-[18px] text-[#8B6A3A] font-bold tracking-wide">THITA</span></div>
                           <div>
-                            <h2 className="font-bold text-[16px] text-zinc-900 leading-tight">RelatÃ³rio SintÃ©tico</h2>
-                            <p className="text-[11px] text-zinc-500 mt-0.5">PerÃ­odo: {repIni || 'â€”'} atÃ© {repFim || 'â€”'} â€¢ Gerado em {new Date().toLocaleString('pt-BR')}</p>
+                            <h2 className="font-bold text-[16px] text-zinc-900 leading-tight">Relatório Sintético</h2>
+                            <p className="text-[11px] text-zinc-500 mt-0.5">Período: {repIni || '—'} até {repFim || '—'} • Gerado em {new Date().toLocaleString('pt-BR')}</p>
                           </div>
                         </div>
                         <div className="text-right">
@@ -1891,8 +1878,8 @@ const onVendaChange = (venda: number) => {
                       <div className="px-6 lg:px-8 py-4 bg-zinc-50/70 border-b border-zinc-100 grid grid-cols-2 lg:grid-cols-4 gap-3 text-[11px]">
                         <div><span className="text-zinc-500 uppercase font-bold text-[10px] block">Fornecedor filtro</span><span className="font-medium text-zinc-800">{repForn==='todos' ? 'Todos' : (fornecedores.find(f=>f.id===repForn)?.nome || repForn)}</span></div>
                         <div><span className="text-zinc-500 uppercase font-bold text-[10px] block">Cliente filtro</span><span className="font-medium text-zinc-800">{repCli==='todos' ? 'Todos' : (clientes.find(c=>c.id===repCli)?.nome || repCli)}</span></div>
-                        <div><span className="text-zinc-500 uppercase font-bold text-[10px] block">Entradas filtradas</span><span className="font-bold text-zinc-900">{entradasFiltradas.length} notas â€¢ R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)}</span></div>
-                        <div><span className="text-zinc-500 uppercase font-bold text-[10px] block">SaÃ­das filtradas</span><span className="font-bold text-zinc-900">{vendasFiltradas.length} vendas â€¢ R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</span></div>
+                        <div><span className="text-zinc-500 uppercase font-bold text-[10px] block">Entradas filtradas</span><span className="font-bold text-zinc-900">{entradasFiltradas.length} notas • R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)}</span></div>
+                        <div><span className="text-zinc-500 uppercase font-bold text-[10px] block">Saídas filtradas</span><span className="font-bold text-zinc-900">{vendasFiltradas.length} vendas • R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</span></div>
                       </div>
 
                       {/* Content */}
@@ -1905,13 +1892,13 @@ const onVendaChange = (venda: number) => {
                           </div>
                           <div className="border border-zinc-200 rounded-[10px] overflow-hidden">
                             <table className="w-full text-[12px]">
-                              <thead><tr className="text-[10px] uppercase text-zinc-500 bg-zinc-50 border-b text-left"><th className="py-2.5 px-3">Data</th><th>NÂº Nota</th><th>Fornecedor</th><th className="text-right pr-3">Valor</th></tr></thead>
+                              <thead><tr className="text-[10px] uppercase text-zinc-500 bg-zinc-50 border-b text-left"><th className="py-2.5 px-3">Data</th><th>Nº Nota</th><th>Fornecedor</th><th className="text-right pr-3">Valor</th></tr></thead>
                               <tbody>
                                 {entradasFiltradas.map(e=>(
                                   <tr key={e.id} className="border-b border-zinc-100 last:border-0">
                                     <td className="py-2 px-3">{e.data}</td>
                                     <td className="font-medium">{e.numNota || e.id.slice(0,6)}</td>
-                                    <td className="text-zinc-600">{fornecedores.find(f=>f.id===e.fornId)?.nome || 'â€”'}</td>
+                                    <td className="text-zinc-600">{fornecedores.find(f=>f.id===e.fornId)?.nome || '—'}</td>
                                     <td className="text-right pr-3 font-bold">R$ {e.total.toFixed(2)}</td>
                                   </tr>
                                 ))}
@@ -1924,7 +1911,7 @@ const onVendaChange = (venda: number) => {
                         {/* Saidas */}
                         <section>
                           <div className="flex items-center justify-between mb-3">
-                            <h3 className="font-bold text-[13px] uppercase tracking-wide text-zinc-900 flex items-center gap-2"><FileOutput size={14}/> SaÃ­das (Vendas)</h3>
+                            <h3 className="font-bold text-[13px] uppercase tracking-wide text-zinc-900 flex items-center gap-2"><FileOutput size={14}/> Saídas (Vendas)</h3>
                             <span className="text-[11px] bg-zinc-900 text-white px-2.5 py-1 rounded-full">Total R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</span>
                           </div>
                           <div className="border border-zinc-200 rounded-[10px] overflow-hidden">
@@ -1937,7 +1924,7 @@ const onVendaChange = (venda: number) => {
                                   return (
                                     <tr key={v.id} className="border-b border-zinc-100 last:border-0">
                                       <td className="py-2 px-3">{v.data}</td>
-                                      <td className="font-medium">{cli?.nome || 'â€”'}</td>
+                                      <td className="font-medium">{cli?.nome || '—'}</td>
                                       <td className="text-right font-bold">R$ {v.totalFinal.toFixed(2)}</td>
                                       <td>{v.forma}</td>
                                       <td><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${st==='Quitado'?'bg-green-50 text-green-700 border border-green-200':'bg-amber-50 text-amber-700 border border-amber-200'}`}>{st}</span></td>
@@ -1953,11 +1940,11 @@ const onVendaChange = (venda: number) => {
                         {/* Totais Gerais */}
                         <div className="bg-[#111] text-white rounded-[12px] p-5 flex flex-col lg:flex-row justify-between gap-4">
                           <div>
-                            <p className="text-[11px] uppercase tracking-wide text-white/60 font-bold">Resumo Financeiro SintÃ©tico</p>
-                            <p className="text-[12px] text-white/70 mt-1">Entradas: R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)} â€¢ SaÃ­das: R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</p>
+                            <p className="text-[11px] uppercase tracking-wide text-white/60 font-bold">Resumo Financeiro Sintético</p>
+                            <p className="text-[12px] text-white/70 mt-1">Entradas: R$ {entradasFiltradas.reduce((a,e)=>a+e.total,0).toFixed(2)} • Saídas: R$ {vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0).toFixed(2)}</p>
                           </div>
                           <div className="text-left lg:text-right">
-                            <p className="text-[11px] text-white/60 uppercase font-bold">Saldo PerÃ­odo (SaÃ­das - Entradas)</p>
+                            <p className="text-[11px] text-white/60 uppercase font-bold">Saldo Período (Saídas - Entradas)</p>
                             <p className="text-[20px] font-bold mt-1">R$ {(vendasFiltradas.reduce((a,v)=>a+v.totalFinal,0) - entradasFiltradas.reduce((a,e)=>a+e.total,0)).toFixed(2)}</p>
                           </div>
                         </div>
@@ -1965,19 +1952,19 @@ const onVendaChange = (venda: number) => {
 
                       {/* Footer Doc */}
                       <div className="px-6 lg:px-8 py-4 border-t border-zinc-100 bg-zinc-50/50 flex justify-between items-center">
-                        <p className="text-[10px] text-zinc-400">Documento gerado automaticamente pelo sistema THITA STORE â€¢ {new Date().toLocaleDateString('pt-BR')} {new Date().toLocaleTimeString('pt-BR')}</p>
-                        <span className="text-[10px] text-zinc-400">PÃ¡g. 1/1 â€¢ SintÃ©tico</span>
+                        <p className="text-[10px] text-zinc-400">Documento gerado automaticamente pelo sistema THITA STORE • {new Date().toLocaleDateString('pt-BR')} {new Date().toLocaleTimeString('pt-BR')}</p>
+                        <span className="text-[10px] text-zinc-400">Pág. 1/1 • Sintético</span>
                       </div>
                     </div>
 
                     <div className="px-4 pb-4 flex justify-end gap-2">
-                      <button onClick={()=>setShowSinteticoModal(false)} className="h-10 px-5 rounded-[10px] bg-white border border-zinc-200 text-[13px] font-semibold hover:bg-zinc-50">Fechar visualizaÃ§Ã£o</button>
+                      <button onClick={()=>setShowSinteticoModal(false)} className="h-10 px-5 rounded-[10px] bg-white border border-zinc-200 text-[13px] font-semibold hover:bg-zinc-50">Fechar visualização</button>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* MODAL ANALÃTICO EXPORTADO - DOCUMENTO COMPLETO */}
+              {/* MODAL ANALÍTICO EXPORTADO - DOCUMENTO COMPLETO */}
               {analiticoExport && (
                 <div className="fixed inset-0 bg-black/60 z-[80] flex items-start justify-center p-3 lg:p-6 overflow-y-auto" onClick={()=>setAnaliticoExport(null)}>
                   <div className="bg-[#F6F3EF] rounded-[16px] w-full max-w-[920px] my-4 shadow-2xl overflow-hidden" onClick={e=>e.stopPropagation()}>
@@ -1988,9 +1975,9 @@ const onVendaChange = (venda: number) => {
                           <div className="bg-[#FFF6DD] px-3.5 py-1.5 rounded-[10px] border-0"><span className="font-serif text-[18px] text-[#8B6A3A] font-bold">THITA</span></div>
                           <div>
                             <h2 className="font-bold text-[16px] text-zinc-900 leading-tight">
-                              {analiticoExport.tipo==='entrada' ? 'RelatÃ³rio AnalÃ­tico â€” Entrada (Completo)' : 'RelatÃ³rio AnalÃ­tico â€” SaÃ­da (Completo)'}
+                              {analiticoExport.tipo==='entrada' ? 'Relatório Analítico — Entrada (Completo)' : 'Relatório Analítico — Saída (Completo)'}
                             </h2>
-                            <p className="text-[11px] text-zinc-500 mt-0.5">VisualizaÃ§Ã£o documento â€¢ Gerado em {new Date().toLocaleString('pt-BR')}</p>
+                            <p className="text-[11px] text-zinc-500 mt-0.5">Visualização documento • Gerado em {new Date().toLocaleString('pt-BR')}</p>
                           </div>
                         </div>
                         <button onClick={()=>setAnaliticoExport(null)} className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0"><X size={16}/></button>
@@ -2004,13 +1991,13 @@ const onVendaChange = (venda: number) => {
                             return (
                               <div className="space-y-6">
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 bg-zinc-50 rounded-[12px] border border-zinc-100 text-[12px]">
-                                  <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">NÂº Nota</span><span className="font-bold text-[13px]">{e.numNota || e.id}</span></div>
+                                  <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Nº Nota</span><span className="font-bold text-[13px]">{e.numNota || e.id}</span></div>
                                   <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Data</span><span className="font-medium">{e.data}</span></div>
                                   <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Total</span><span className="font-bold text-[14px]">R$ {e.total.toFixed(2)}</span></div>
                                   <div className="lg:col-span-3 pt-2 border-t border-zinc-200/60 mt-2">
                                     <span className="text-[10px] uppercase font-bold text-zinc-500 block">Fornecedor</span>
-                                    <span className="font-medium">{forn?.nome || 'â€”'}</span>
-                                    <span className="text-zinc-500"> {forn?.cnpj ? `â€¢ CNPJ ${forn.cnpj}` : ''} {forn?.endereco ? `â€¢ ${forn.endereco}` : ''}</span>
+                                    <span className="font-medium">{forn?.nome || '—'}</span>
+                                    <span className="text-zinc-500"> {forn?.cnpj ? `• CNPJ ${forn.cnpj}` : ''} {forn?.endereco ? `• ${forn.endereco}` : ''}</span>
                                   </div>
                                 </div>
                                 <div>
@@ -2023,7 +2010,7 @@ const onVendaChange = (venda: number) => {
                                           const prod = produtos.find(p=>p.id===it.prodId);
                                           return (
                                             <tr key={idx} className="border-b border-zinc-100 last:border-0">
-                                              <td className="py-2.5 px-3"><div className="font-medium">{prod?.nome || it.prodId}</div><div className="text-[11px] text-zinc-500">{prod?.cat || ''} â€¢ Estoque atual {prod?.estoque ?? 'â€”'}</div></td>
+                                              <td className="py-2.5 px-3"><div className="font-medium">{prod?.nome || it.prodId}</div><div className="text-[11px] text-zinc-500">{prod?.cat || ''} • Estoque atual {prod?.estoque ?? '—'}</div></td>
                                               <td className="text-center">{it.qtd}</td>
                                               <td className="text-right">R$ {it.custo.toFixed(2)}</td>
                                               <td className="text-right pr-3 font-bold">R$ {(it.qtd*it.custo).toFixed(2)}</td>
@@ -2049,15 +2036,15 @@ const onVendaChange = (venda: number) => {
                               <div className="space-y-6">
                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-zinc-50 rounded-[12px] border border-zinc-100 text-[12px]">
                                   <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Data</span><span className="font-medium">{v.data}</span></div>
-                                  <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Cliente</span><span className="font-bold">{cli?.nome || 'â€”'}</span><div className="text-[11px] text-zinc-500">{cli?.doc || ''}</div></div>
-                                  <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Forma / Parcelas</span><span className="font-medium">{v.forma} â€¢ {v.parcelas}x</span><div className="text-[11px] text-zinc-500">Venc: {v.venc}</div></div>
+                                  <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Cliente</span><span className="font-bold">{cli?.nome || '—'}</span><div className="text-[11px] text-zinc-500">{cli?.doc || ''}</div></div>
+                                  <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Forma / Parcelas</span><span className="font-medium">{v.forma} • {v.parcelas}x</span><div className="text-[11px] text-zinc-500">Venc: {v.venc}</div></div>
                                   <div><span className="text-[10px] uppercase font-bold text-zinc-500 block">Status</span><span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold mt-1 border ${getStatusVenda(v)==='Quitado'?'bg-green-50 text-green-700 border-green-200':'bg-amber-50 text-amber-700 border-amber-200'}`}>{getStatusVenda(v)}</span></div>
                                 </div>
                                 <div>
                                   <h4 className="font-bold text-[12px] uppercase tracking-wide mb-3">Itens da venda</h4>
                                   <div className="border border-zinc-200 rounded-[10px] overflow-hidden">
                                     <table className="w-full text-[13px]">
-                                      <thead><tr className="text-[10px] uppercase text-zinc-500 bg-zinc-50 border-b text-left"><th className="py-2.5 px-3">Produto</th><th className="text-center">Qtd</th><th className="text-right">PreÃ§o</th><th className="text-right pr-3">Subtotal</th></tr></thead>
+                                      <thead><tr className="text-[10px] uppercase text-zinc-500 bg-zinc-50 border-b text-left"><th className="py-2.5 px-3">Produto</th><th className="text-center">Qtd</th><th className="text-right">Preço</th><th className="text-right pr-3">Subtotal</th></tr></thead>
                                       <tbody>
                                         {v.itens.map((it,idx)=>{
                                           const prod = produtos.find(p=>p.id===it.prodId);
@@ -2076,30 +2063,30 @@ const onVendaChange = (venda: number) => {
                                   <div className="mt-3 bg-zinc-50 rounded-[12px] p-4 space-y-1.5 text-[13px] border border-zinc-100">
                                     <div className="flex justify-between"><span className="text-zinc-500">Subtotal</span><span>R$ {v.total.toFixed(2)}</span></div>
                                     <div className="flex justify-between"><span className="text-zinc-500">Desconto</span><span className="text-red-600">- R$ {v.desconto.toFixed(2)}</span></div>
-                                    {(v.entrega||false) && (v.entregaValor||0)>0 && <div className="flex justify-between"><span className="text-zinc-500 flex items-center gap-1">ðŸšš Entrega (cliente paga)</span><span className="text-blue-600">+ R$ {(v.entregaValor||0).toFixed(2)}</span></div>}
+                                    {(v.entrega||false) && (v.entregaValor||0)>0 && <div className="flex justify-between"><span className="text-zinc-500 flex items-center gap-1">🚚 Entrega (cliente paga)</span><span className="text-blue-600">+ R$ {(v.entregaValor||0).toFixed(2)}</span></div>}
                                     <div className="flex justify-between font-bold text-[15px] border-t pt-2 mt-2"><span>Total final</span><span>R$ {v.totalFinal.toFixed(2)}</span></div>
                                     {(v.embalagem||false) && (v.embalagemValor||0)>0 && (
                                       <>
-                                        <div className="flex justify-between text-[12px]"><span className="text-zinc-500 flex items-center gap-1">ðŸ“¦ Embalagem (custo loja)</span><span className="text-amber-700">- R$ {(v.embalagemValor||0).toFixed(2)}</span></div>
-                                        <div className="flex justify-between font-bold text-[13px] text-green-700 border-t pt-2 mt-1"><span>LÃ­quido</span><span>R$ {(v.totalFinal - (v.embalagemValor||0)).toFixed(2)}</span></div>
+                                        <div className="flex justify-between text-[12px]"><span className="text-zinc-500 flex items-center gap-1">📦 Embalagem (custo loja)</span><span className="text-amber-700">- R$ {(v.embalagemValor||0).toFixed(2)}</span></div>
+                                        <div className="flex justify-between font-bold text-[13px] text-green-700 border-t pt-2 mt-1"><span>Líquido</span><span>R$ {(v.totalFinal - (v.embalagemValor||0)).toFixed(2)}</span></div>
                                       </>
                                     )}
                                   </div>
                                 </div>
-                                {v.forma==='CrediÃ¡rio' && (
+                                {v.forma==='Crediário' && (
                                   <div>
-                                    <h4 className="font-bold text-[12px] uppercase tracking-wide mb-3">Parcelas crediÃ¡rio detalhado</h4>
+                                    <h4 className="font-bold text-[12px] uppercase tracking-wide mb-3">Parcelas crediário detalhado</h4>
                                     <div className="border border-zinc-200 rounded-[10px] overflow-hidden">
                                       <table className="w-full text-[12px]">
                                         <thead><tr className="text-[10px] uppercase text-zinc-500 bg-zinc-50 border-b text-left"><th className="py-2 px-3">Parcela</th><th>Vencimento</th><th>Valor</th><th>Status</th><th>Dt Pagamento</th></tr></thead>
                                         <tbody>
                                           {parcelas.map(cr=>(
                                             <tr key={cr.id} className="border-b border-zinc-100 last:border-0">
-                                              <td className="py-2 px-3 font-medium">{cr.num}Âª</td>
+                                              <td className="py-2 px-3 font-medium">{cr.num}ª</td>
                                               <td>{cr.vencimento}</td>
                                               <td>R$ {cr.valor.toFixed(2)}</td>
                                               <td><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${cr.status==='pago'?'bg-green-50 text-green-700 border border-green-200':'bg-amber-50 text-amber-700 border-amber-200'}`}>{cr.status==='pago'?'Pago':'Pendente'}</span></td>
-                                              <td>{cr.data_pagamento || 'â€”'}</td>
+                                              <td>{cr.data_pagamento || '—'}</td>
                                             </tr>
                                           ))}
                                           {parcelas.length===0 && <tr><td colSpan={5} className="py-4 text-center text-zinc-400">Nenhuma parcela</td></tr>}
@@ -2114,9 +2101,9 @@ const onVendaChange = (venda: number) => {
                         )}
                       </div>
                       <div className="px-6 lg:px-8 py-4 border-t border-zinc-100 bg-zinc-50/50 flex justify-between items-center">
-                        <p className="text-[10px] text-zinc-400">Documento analÃ­tico completo â€¢ THITA STORE â€¢ {new Date().toLocaleDateString('pt-BR')} {new Date().toLocaleTimeString('pt-BR')}</p>
+                        <p className="text-[10px] text-zinc-400">Documento analítico completo • THITA STORE • {new Date().toLocaleDateString('pt-BR')} {new Date().toLocaleTimeString('pt-BR')}</p>
                         <div className="flex gap-2">
-                          <button onClick={()=>setAnaliticoExport(null)} className="h-9 px-4 rounded-[10px] bg-[#111] text-white text-[12px] font-bold">Fechar visualizaÃ§Ã£o</button>
+                          <button onClick={()=>setAnaliticoExport(null)} className="h-9 px-4 rounded-[10px] bg-[#111] text-white text-[12px] font-bold">Fechar visualização</button>
                         </div>
                       </div>
                     </div>
@@ -2125,16 +2112,16 @@ const onVendaChange = (venda: number) => {
               )}
             </div>
           )}
-          {adminTab==='ConfiguraÃ§Ã£o' && (
+          {adminTab==='Configuração' && (
             <div className="max-w-[680px] space-y-6">
               <div className="bg-white rounded-[12px] border border-zinc-200 p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-                <h2 className="font-bold text-[16px] text-zinc-900">ConfiguraÃ§Ã£o do Sistema</h2>
-                <p className="text-[12px] text-zinc-500 mt-1">Altere o usuÃ¡rio e senha de acesso ao painel administrativo. Os dados ficam salvos em localStorage.</p>
+                <h2 className="font-bold text-[16px] text-zinc-900">Configuração do Sistema</h2>
+                <p className="text-[12px] text-zinc-500 mt-1">Altere o usuário e senha de acesso ao painel administrativo. Os dados ficam salvos em localStorage.</p>
                 <div className="mt-6 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-zinc-100">
                     <div>
-                      <label className="text-xs font-medium text-zinc-700 mb-1 block">UsuÃ¡rio atual</label>
-                      <input value={configForm.atualUser} onChange={e=>setConfigForm({...configForm, atualUser:e.target.value})} placeholder="Digite seu usuÃ¡rio atual" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                      <label className="text-xs font-medium text-zinc-700 mb-1 block">Usuário atual</label>
+                      <input value={configForm.atualUser} onChange={e=>setConfigForm({...configForm, atualUser:e.target.value})} placeholder="Digite seu usuário atual" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                     </div>
                     <div>
                       <label className="text-xs font-medium text-zinc-700 mb-1 block">Senha atual</label>
@@ -2142,12 +2129,12 @@ const onVendaChange = (venda: number) => {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">Novo usuÃ¡rio</label>
-                    <input value={configForm.novoUser} onChange={e=>setConfigForm({...configForm, novoUser:e.target.value})} placeholder="Novo usuÃ¡rio (deixe vazio para manter)" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">Novo usuário</label>
+                    <input value={configForm.novoUser} onChange={e=>setConfigForm({...configForm, novoUser:e.target.value})} placeholder="Novo usuário (deixe vazio para manter)" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">Nova senha</label>
-                    <input type="password" value={configForm.novaPass} onChange={e=>setConfigForm({...configForm, novaPass:e.target.value})} placeholder="Nova senha (mÃ­nimo 4 caracteres)" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input type="password" value={configForm.novaPass} onChange={e=>setConfigForm({...configForm, novaPass:e.target.value})} placeholder="Nova senha (mínimo 4 caracteres)" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">Confirmar nova senha</label>
@@ -2159,11 +2146,11 @@ const onVendaChange = (venda: number) => {
                       setConfigMsg(null);
                       const stored = userConfig || { usuario:'admin', senha:'thita2024' };
                       if(!configForm.atualUser || !configForm.atualPass){
-                        setConfigMsg({type:'err', text:'Preencha usuÃ¡rio atual e senha atual.'});
+                        setConfigMsg({type:'err', text:'Preencha usuário atual e senha atual.'});
                         return;
                       }
                       if(configForm.atualUser !== stored.usuario || configForm.atualPass !== stored.senha){
-                        setConfigMsg({type:'err', text:'UsuÃ¡rio atual ou senha atual incorretos.'});
+                        setConfigMsg({type:'err', text:'Usuário atual ou senha atual incorretos.'});
                         return;
                       }
                       if(configForm.novaPass && configForm.novaPass.length < 4){
@@ -2171,21 +2158,21 @@ const onVendaChange = (venda: number) => {
                         return;
                       }
                       if(configForm.novaPass && configForm.novaPass !== configForm.confirmarPass){
-                        setConfigMsg({type:'err', text:'ConfirmaÃ§Ã£o de senha nÃ£o confere.'});
+                        setConfigMsg({type:'err', text:'Confirmação de senha não confere.'});
                         return;
                       }
                       const newUser = configForm.novoUser.trim() || stored.usuario;
                       const newPass = configForm.novaPass.trim() || stored.senha;
                       setUserConfig({ usuario: newUser, senha: newPass });
-                      setConfigMsg({type:'ok', text:`Login alterado com sucesso. Novo usuÃ¡rio: ${newUser}`});
+                      setConfigMsg({type:'ok', text:`Login alterado com sucesso. Novo usuário: ${newUser}`});
                       setConfigForm({ atualUser:'', atualPass:'', novoUser:'', novaPass:'', confirmarPass:'' });
-                    }} className="h-11 px-6 rounded-[10px] bg-[#111] text-white text-[13px] font-bold hover:bg-black transition">Salvar AlteraÃ§Ãµes</button>
-                    <p className="text-[11px] text-zinc-400 mt-3">UsuÃ¡rio atual salvo: <b className="text-zinc-600">{userConfig.usuario}</b> â€¢ PadrÃ£o de fÃ¡brica: admin / thita2024</p>
+                    }} className="h-11 px-6 rounded-[10px] bg-[#111] text-white text-[13px] font-bold hover:bg-black transition">Salvar Alterações</button>
+                    <p className="text-[11px] text-zinc-400 mt-3">Usuário atual salvo: <b className="text-zinc-600">{userConfig.usuario}</b> • Padrão de fábrica: admin / thita2024</p>
                   </div>
                 </div>
               </div>
 
-              {/* Dados da Empresa THITA - NOVA SEÃ‡ÃƒO */}
+              {/* Dados da Empresa THITA - NOVA SEÇÃO */}
               <div className="bg-white rounded-[16px] border border-zinc-200 p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-8 h-8 rounded-[8px] bg-[#C80082] text-white flex items-center justify-center">
@@ -2193,7 +2180,7 @@ const onVendaChange = (venda: number) => {
                   </div>
                   <div>
                     <h2 className="font-bold text-[16px] text-zinc-900">Dados da Empresa</h2>
-                    <p className="text-[11px] text-zinc-500">InformaÃ§Ãµes usadas no catÃ¡logo e WhatsApp</p>
+                    <p className="text-[11px] text-zinc-500">Informações usadas no catálogo e WhatsApp</p>
                   </div>
                 </div>
 
@@ -2218,14 +2205,14 @@ const onVendaChange = (venda: number) => {
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">Contato WhatsApp</label>
                     <input value={empresa.contato} onChange={e=>setEmpresa({...empresa, contato:e.target.value})} placeholder="Ex: 75999999999" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
-                    <p className="text-[10px] text-zinc-500 mt-1">Usado no Ã­cone flutuante do catÃ¡logo â€¢ sÃ³ nÃºmeros com DDD</p>
+                    <p className="text-[10px] text-zinc-500 mt-1">Usado no ícone flutuante do catálogo • só números com DDD</p>
                   </div>
                   <div className="md:col-span-2">
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">Rua / Logradouro</label>
                     <input value={empresa.rua} onChange={e=>setEmpresa({...empresa, rua:e.target.value})} placeholder="Ex: Rua das Flores" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">NÃºmero</label>
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">Número</label>
                     <input value={empresa.numero} onChange={e=>setEmpresa({...empresa, numero:e.target.value})} placeholder="Ex: 123" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
@@ -2240,11 +2227,11 @@ const onVendaChange = (venda: number) => {
                 {/* BANNERS SEPARADOS - DESKTOP E CELULAR */}
                 <div className="mt-6 pt-6 border-t border-zinc-200">
                   <div className="mb-5">
-                    <h3 className="font-semibold text-[15px] text-zinc-900 flex items-center gap-2"><ImageIcon size={16}/> Banners do CatÃ¡logo</h3>
+                    <h3 className="font-semibold text-[15px] text-zinc-900 flex items-center gap-2"><ImageIcon size={16}/> Banners do Catálogo</h3>
                     <p className="text-[12px] text-zinc-500 mt-1 leading-snug">Configure banners diferentes para celular e desktop. O sistema detecta automaticamente o dispositivo do cliente.</p>
                   </div>
 
-                  {/* Toggle tabs - visÃ­vel sempre, mas em desktop os dois cards ficam lado a lado */}
+                  {/* Toggle tabs - visível sempre, mas em desktop os dois cards ficam lado a lado */}
                   <div className="flex items-center gap-2 mb-5 bg-zinc-50 p-1 rounded-[10px] border border-zinc-100 w-fit">
                     <button
                       type="button"
@@ -2277,7 +2264,7 @@ const onVendaChange = (venda: number) => {
                           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-[#E8F0FE] border border-[#C2D7FF] text-[#1A56DB] text-[11px] font-semibold">
                             <Smartphone size={13}/> Celular / Tablet
                           </div>
-                          <p className="text-[11px] text-zinc-500 mt-2 leading-snug">Tamanho recomendado: <b className="text-zinc-700">562Ã—300</b> (largura x altura)</p>
+                          <p className="text-[11px] text-zinc-500 mt-2 leading-snug">Tamanho recomendado: <b className="text-zinc-700">562×300</b> (largura x altura)</p>
                         </div>
                         <span className="text-[10px] text-zinc-500 bg-white border border-zinc-200 px-2 py-1 rounded-full">{(empresa.bannersMobile?.length||0)}/5</span>
                       </div>
@@ -2293,13 +2280,13 @@ const onVendaChange = (venda: number) => {
                         >
                           <div className="w-8 h-8 rounded-full bg-[#E8F0FE] border border-[#C2D7FF] flex items-center justify-center"><Plus size={16} className="text-[#1A56DB]"/></div>
                           <span className="text-[11px] font-medium text-[#1A56DB]">Adicionar</span>
-                          <span className="text-[9px] text-zinc-400">562Ã—300</span>
+                          <span className="text-[9px] text-zinc-400">562×300</span>
                         </button>
                         {(empresa.bannersMobile||[]).map((b,i)=>(
                           <div key={i} className="group relative bg-white rounded-[12px] overflow-hidden border border-[#E2E8F0]" style={{ aspectRatio:'562 / 300', width:'100%' }}>
                             <img src={b} alt={`Mobile ${i+1}`} onClick={()=>setBannerZoom(b)} className="w-full h-full object-cover cursor-zoom-in" />
                             <button onClick={()=>removerBannerMobile(i)} className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white border border-zinc-200 shadow flex items-center justify-center text-zinc-500 hover:text-red-600"><X size={12}/></button>
-                            <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded-full">562Ã—300</span>
+                            <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded-full">562×300</span>
                           </div>
                         ))}
                       </div>
@@ -2314,7 +2301,7 @@ const onVendaChange = (venda: number) => {
                           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-[#FFF7ED] border border-[#FED7AA] text-[#B45309] text-[11px] font-semibold">
                             <Building2 size={13}/> Desktop
                           </div>
-                          <p className="text-[11px] text-zinc-500 mt-2 leading-snug">Tamanho recomendado: <b className="text-zinc-700">1200Ã—400 ou 1920Ã—500</b></p>
+                          <p className="text-[11px] text-zinc-500 mt-2 leading-snug">Tamanho recomendado: <b className="text-zinc-700">1200×400 ou 1920×500</b></p>
                         </div>
                         <span className="text-[10px] text-zinc-500 bg-white border border-zinc-200 px-2 py-1 rounded-full">{(empresa.bannersDesktop?.length||0)}/5</span>
                       </div>
@@ -2330,18 +2317,18 @@ const onVendaChange = (venda: number) => {
                         >
                           <div className="w-8 h-8 rounded-full bg-[#FFF7ED] border border-[#FED7AA] flex items-center justify-center"><Plus size={16} className="text-[#B45309]"/></div>
                           <span className="text-[11px] font-medium text-[#B45309]">Adicionar</span>
-                          <span className="text-[9px] text-zinc-400">1200Ã—400</span>
+                          <span className="text-[9px] text-zinc-400">1200×400</span>
                         </button>
                         {(empresa.bannersDesktop||[]).map((b,i)=>(
                           <div key={i} className="group relative bg-white rounded-[12px] overflow-hidden border border-[#FDE68A]" style={{ aspectRatio:'1200 / 400', width:'100%' }}>
                             <img src={b} alt={`Desktop ${i+1}`} onClick={()=>setBannerZoom(b)} className="w-full h-full object-cover cursor-zoom-in" />
                             <button onClick={()=>removerBannerDesktop(i)} className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white border border-zinc-200 shadow flex items-center justify-center text-zinc-500 hover:text-red-600"><X size={12}/></button>
-                            <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded-full">1200Ã—400</span>
+                            <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded-full">1200×400</span>
                           </div>
                         ))}
                       </div>
                       {bannerDesktopError && <p className="text-[11px] text-red-600 mt-2 flex items-center gap-1"><AlertCircle size={12}/>{bannerDesktopError}</p>}
-                      <p className="text-[10px] text-zinc-400 mt-3">Aparece no computador. Mais largo, ocupa toda largura do catÃ¡logo.</p>
+                      <p className="text-[10px] text-zinc-400 mt-3">Aparece no computador. Mais largo, ocupa toda largura do catálogo.</p>
                     </div>
                   </div>
 
@@ -2351,7 +2338,7 @@ const onVendaChange = (venda: number) => {
                       <AlertCircle size={14} className="text-amber-600 mt-0.5 shrink-0"/>
                       <div className="text-[11px] leading-snug">
                         <p className="font-semibold text-amber-800">Banners antigos detectados ({empresa.banners.length})</p>
-                        <p className="text-amber-700 mt-1">Esses banners sÃ£o usados como fallback quando nÃ£o hÃ¡ banners especÃ­ficos de celular ou desktop. VocÃª pode mantÃª-los ou migrar copiando para as novas Ã¡reas.</p>
+                        <p className="text-amber-700 mt-1">Esses banners são usados como fallback quando não há banners específicos de celular ou desktop. Você pode mantê-los ou migrar copiando para as novas áreas.</p>
                         <div className="flex gap-2 mt-2 flex-wrap">
                           <button onClick={()=>{
                             if(!empresa.banners?.length) return;
@@ -2375,15 +2362,15 @@ const onVendaChange = (venda: number) => {
                       <div className="bg-white rounded-[16px] p-2 max-w-[95vw] max-h-[92vh] overflow-auto shadow-2xl relative" onClick={e=>e.stopPropagation()}>
                         <button onClick={()=>setBannerZoom(null)} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center shadow-md z-10"><X size={14}/></button>
                         <img src={bannerZoom} alt="Zoom banner" style={{ maxWidth:'90vw', maxHeight:'80vh', objectFit:'contain', display:'block', borderRadius:12 }} />
-                        <p className="text-[11px] text-zinc-500 text-center mt-2">Preview â€¢ clique fora para fechar</p>
+                        <p className="text-[11px] text-zinc-500 text-center mt-2">Preview • clique fora para fechar</p>
                       </div>
                     </div>
                   )}
                 </div>
                 <div className="mt-5 bg-zinc-50 border border-zinc-100 rounded-[12px] p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
-                    <p className="text-[12px] font-semibold text-zinc-800">{empresa.nome || 'THITA'} â€¢ {empresa.cidade || 'â€”'}</p>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">{empresa.rua ? `${empresa.rua}, ${empresa.numero||'s/n'} - ${empresa.bairro}` : 'EndereÃ§o nÃ£o informado'} â€¢ WhatsApp: {empresa.contato||'â€”'}</p>
+                    <p className="text-[12px] font-semibold text-zinc-800">{empresa.nome || 'THITA'} • {empresa.cidade || '—'}</p>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">{empresa.rua ? `${empresa.rua}, ${empresa.numero||'s/n'} - ${empresa.bairro}` : 'Endereço não informado'} • WhatsApp: {empresa.contato||'—'}</p>
                   </div>
                   <a href={waLinkGeneric} target="_blank" rel="noopener" className="h-9 px-4 rounded-[10px] bg-[#25D366] text-white text-[12px] font-bold flex items-center gap-1.5 hover:bg-[#1ebe5d] transition shrink-0">
                     <MessageCircle size={14}/> Testar WhatsApp
@@ -2392,17 +2379,17 @@ const onVendaChange = (venda: number) => {
                 <p className="text-[11px] text-zinc-400 mt-3">Dados salvos automaticamente em <b>thita_empresa</b> no localStorage.</p>
               </div>
 
-              {/* Backup e SeguranÃ§a - FIEL AO PRINT image_52cf7f.png */}
+              {/* Backup e Segurança - FIEL AO PRINT image_52cf7f.png */}
               <div className="bg-white rounded-[16px] border border-zinc-200 p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-8 h-8 rounded-[8px] bg-zinc-900 text-white flex items-center justify-center">
                     <Database size={16} />
                   </div>
-                  <h2 className="font-bold text-[16px] text-zinc-900">Backup e SeguranÃ§a</h2>
+                  <h2 className="font-bold text-[16px] text-zinc-900">Backup e Segurança</h2>
                 </div>
 
                 <div className="bg-[#F9F8F6] border border-zinc-100 rounded-[12px] px-4 py-3 flex items-center justify-between mb-5">
-                  <span className="text-[12px] font-medium text-zinc-500">Status Ãºltimo backup</span>
+                  <span className="text-[12px] font-medium text-zinc-500">Status último backup</span>
                   <span className="text-[13px] font-semibold text-zinc-900">{lastBackupDisplay}</span>
                 </div>
 
@@ -2427,7 +2414,7 @@ const onVendaChange = (venda: number) => {
                     <AlertCircle size={14} /> {backupMsg.text}
                   </div>
                 )}
-                <p className="text-[11px] text-zinc-400 mt-4 leading-snug">Backup inclui produtos, fornecedores, clientes, entradas, vendas e configuraÃ§Ãµes. Armazene em local seguro.</p>
+                <p className="text-[11px] text-zinc-400 mt-4 leading-snug">Backup inclui produtos, fornecedores, clientes, entradas, vendas e configurações. Armazene em local seguro.</p>
               </div>
             </div>
           )}
@@ -2471,18 +2458,18 @@ const onVendaChange = (venda: number) => {
                 <div>
                   <label className="text-xs font-medium text-zinc-700 mb-1 block">Forma de pagamento</label>
                   <select value={finalForm.forma} onChange={e=>setFinalForm({...finalForm,forma:e.target.value})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white focus:outline-none focus:border-zinc-900">
-                    <option>Ã€ vista</option>
+                    <option>À vista</option>
                     <option>Pix</option>
-                    <option>CartÃ£o de DÃ©bito</option>
-                    <option>CartÃ£o de CrÃ©dito</option>
-                    <option>CrediÃ¡rio</option>
+                    <option>Cartão de Débito</option>
+                    <option>Cartão de Crédito</option>
+                    <option>Crediário</option>
                   </select>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-medium text-zinc-700 mb-1 block">NÃºmero de parcelas</label>
+                    <label className="text-xs font-medium text-zinc-700 mb-1 block">Número de parcelas</label>
                     {formaSemParcelas ? (
-                      <div className="h-10 rounded-[10px] border border-zinc-200 bg-zinc-50 px-3 flex items-center text-[12px] text-zinc-500">Pagamento Ã  vista - sem parcelas</div>
+                      <div className="h-10 rounded-[10px] border border-zinc-200 bg-zinc-50 px-3 flex items-center text-[12px] text-zinc-500">Pagamento à vista - sem parcelas</div>
                     ) : (
                       <select value={finalForm.parcelas} onChange={e=>setFinalForm({...finalForm,parcelas:Number(e.target.value)})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white focus:outline-none focus:border-zinc-900">
                         {Array.from({length:10},(_,i)=>i+1).map(n=><option key={n} value={n}>{n}x de R$ {((carrinhoTotal-finalForm.desconto + (finalForm.entrega?finalForm.entregaValor:0))/n).toFixed(2)}</option>)}
@@ -2494,7 +2481,7 @@ const onVendaChange = (venda: number) => {
                     <input type="date" value={finalForm.venc} onChange={e=>setFinalForm({...finalForm,venc:e.target.value})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                 </div>
-                <div className="text-[12px] text-zinc-700 bg-[#FFF0F6] border border-[#FFD1E3] rounded-[10px] p-3 space-y-1"><p>Total produtos: R$ {carrinhoTotal.toFixed(2)} - Desconto R$ {finalForm.desconto.toFixed(2)} {finalForm.entrega ? `+ Entrega R$ ${finalForm.entregaValor.toFixed(2)}` : ''} = <b>R$ {(carrinhoTotal - finalForm.desconto + (finalForm.entrega?finalForm.entregaValor:0)).toFixed(2)}</b></p>{finalForm.embalagem && <p className="text-[11px] text-zinc-500">Custo embalagem: R$ {finalForm.embalagemValor.toFixed(2)} â†’ LÃ­quido: R$ {(carrinhoTotal - finalForm.desconto + (finalForm.entrega?finalForm.entregaValor:0) - finalForm.embalagemValor).toFixed(2)}</p>}<p className="text-[11px] text-zinc-500">{finalForm.parcelas>1?` em ${finalForm.parcelas}x de R$ ${((carrinhoTotal-finalForm.desconto + (finalForm.entrega?finalForm.entregaValor:0))/finalForm.parcelas).toFixed(2)}`:''}</p></div>
+                <div className="text-[12px] text-zinc-700 bg-[#FFF0F6] border border-[#FFD1E3] rounded-[10px] p-3 space-y-1"><p>Total produtos: R$ {carrinhoTotal.toFixed(2)} - Desconto R$ {finalForm.desconto.toFixed(2)} {finalForm.entrega ? `+ Entrega R$ ${finalForm.entregaValor.toFixed(2)}` : ''} = <b>R$ {(carrinhoTotal - finalForm.desconto + (finalForm.entrega?finalForm.entregaValor:0)).toFixed(2)}</b></p>{finalForm.embalagem && <p className="text-[11px] text-zinc-500">Custo embalagem: R$ {finalForm.embalagemValor.toFixed(2)} → Líquido: R$ {(carrinhoTotal - finalForm.desconto + (finalForm.entrega?finalForm.entregaValor:0) - finalForm.embalagemValor).toFixed(2)}</p>}<p className="text-[11px] text-zinc-500">{finalForm.parcelas>1?` em ${finalForm.parcelas}x de R$ ${((carrinhoTotal-finalForm.desconto + (finalForm.entrega?finalForm.entregaValor:0))/finalForm.parcelas).toFixed(2)}`:''}</p></div>
                 <div className="flex gap-2 pt-2">
                   <button onClick={()=>setShowFinalizar(false)} className="flex-1 h-10 rounded-[10px] bg-zinc-100 text-[13px]">Cancelar</button>
                   <button onClick={()=>{
@@ -2520,7 +2507,7 @@ const onVendaChange = (venda: number) => {
                     // baixa estoque
                     setProdutos(prev=>prev.map(p=>{ const inCart = carrinho.find(c=>c.prodId===p.id); if(inCart) return {...p, estoque: Math.max(0,p.estoque-inCart.qtd)}; return p; }));
                     // crediario
-                    if(finalForm.forma==='CrediÃ¡rio'){
+                    if(finalForm.forma==='Crediário'){
                       const baseDate = finalForm.venc ? new Date(finalForm.venc) : new Date();
                       const novas: Crediario[] = Array.from({length:finalForm.parcelas},(_,i)=>{
                         const d = new Date(baseDate); d.setDate(d.getDate()+30*i);
@@ -2531,7 +2518,7 @@ const onVendaChange = (venda: number) => {
                     setCarrinho([]);
                     setVendaClienteId('');
                     setShowFinalizar(false);
-                    setFinalForm({ desconto:0, forma:'Ã€ vista', parcelas:1, venc: new Date().toISOString().slice(0,10), embalagem:false, embalagemValor:3.5, entrega:false, entregaValor:10 });
+                    setFinalForm({ desconto:0, forma:'À vista', parcelas:1, venc: new Date().toISOString().slice(0,10), embalagem:false, embalagemValor:3.5, entrega:false, entregaValor:10 });
                   }} className="flex-1 h-10 rounded-[10px] bg-[#C80082] text-white font-bold text-[13px]">Confirmar</button>
                 </div>
               </div>
