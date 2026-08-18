@@ -1420,18 +1420,18 @@ export default function App() {
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de custo</label>
-                    <input type="number" value={prodForm.custo} onChange={e=>{ const c=Number(e.target.value)||0; const venda = Number((c * (1 + prodForm.margem / 100)).toFixed(2)); setProdForm({...prodForm,custo:c, venda}); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input type="number" value={prodForm.custo} onChange={e=>{ const c=Number(e.target.value); if(isNaN(c)) return; setProdForm(prev=>{ const venda = Number((c * (1 + prev.margem / 100)).toFixed(2)); return {...prev,custo:c, venda}; }); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">margem %</label>
                     <div className="flex gap-2">
-                      <input type="number" value={prodForm.margem} onChange={e=>{ const m=Number(e.target.value)||0; const venda = Number((prodForm.custo * (1 + m / 100)).toFixed(2)); setProdForm({...prodForm,margem:m, venda}); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                      <input type="number" value={prodForm.margem} onChange={e=>{ const m=Number(e.target.value); if(isNaN(m)) return; setProdForm(prev=>{ const venda = Number((prev.custo * (1 + m / 100)).toFixed(2)); return {...prev,margem:m, venda}; }); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                       <span className="h-10 px-3 rounded-[10px] bg-zinc-100 flex items-center text-[12px] border border-zinc-200">%</span>
                     </div>
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de venda</label>
-                    <input type="number" value={prodForm.venda} onChange={e=>{ const v=Number(e.target.value)||0; const margem = prodForm.custo > 0 ? Number((((v / prodForm.custo) - 1) * 100).toFixed(1)) : 0; setProdForm({...prodForm,venda:v, margem}); }} placeholder="Calculado ou editável" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input type="number" value={prodForm.venda} onChange={e=>{ const v=Number(e.target.value); if(isNaN(v)) return; setProdForm(prev=>{ const margem = prev.custo > 0 ? Number((((v / prev.custo) - 1) * 100).toFixed(1)) : 0; return {...prev,venda:v, margem}; }); }} placeholder="Calculado ou editável" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">imagem URL</label>
