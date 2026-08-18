@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { supabase } from './supabase';
 import { Search, LogOut, X, ShoppingBag, Package, Tag, Truck, Users, FileInput, FileOutput, BarChart3, Trash2, Pencil, Plus, AlertCircle, Calendar, MessageCircle, ChevronDown, Eye, Instagram, MapPin, Settings, FileText, FileStack, Upload, Image as ImageIcon, Database, Download, ChevronLeft, ChevronRight, Building2, Heart, SlidersHorizontal, Sparkles, Shirt, Smile, Smartphone } from 'lucide-react';
 
 // Types
@@ -102,7 +103,39 @@ export default function App() {
   const [userConfig, setUserConfig] = useLocal<UserConfig>('thita_user', { usuario: 'admin', senha: 'thita2024' });
 
  // Data
-  const [produtos, setProdutos] = useLocal<Produto[]>('thita_produtos', mockProdutos);
+  const [produtos, setProdutos] = useState<Produto[]>(mockProdutos);
+  const [produtosLoading, setProdutosLoading] = useState(true);
+
+  // Carrega do Supabase
+  useEffect(() => {
+    let mounted = true;
+    supabase.from('produtos').select('*').then(({ data, error }) => {
+      if (!mounted) return;
+      if (error) {
+        console.error('Supabase erro ao carregar produtos', error);
+      } else if (data && data.length > 0) {
+        const convertidos: Produto[] = data.map((p: any) => ({
+          id: p.id,
+          nome: p.nome,
+          desc: p.descricao || p.desc || '',
+          cat: (p.categoria || p.cat || 'Blusas') as any,
+          custo: Number(p.custo) || 0,
+          margem: Number(p.margem) || 0,
+          venda: Number(p.preco || p.venda) || 0,
+          forn: p.fornecedor || p.forn || 'f1',
+          img: p.foto || p.img || '',
+          imagens: p.imagens || (p.foto ? [p.foto] : []),
+          estoque: Number(p.estoque) || 0,
+          novo: !!p.novo,
+          promo: !!p.promo,
+          tamanhos: p.tamanhos || [],
+        }));
+        setProdutos(convertidos);
+      }
+      setProdutosLoading(false);
+    });
+    return () => { mounted = false; };
+  }, []);
   const [categorias, setCategorias] = useLocal<Categoria[]>('thita_categorias', ALL_CATS);
   const [fornecedores, setFornecedores] = useLocal<Fornecedor[]>('thita_fornecedores', mockFornecedores);
   const [clientes, setClientes] = useLocal<Cliente[]>('thita_clientes', mockClientes);
@@ -556,7 +589,7 @@ export default function App() {
   const recalcVenda = (custo: number, margem: number) => Number((custo * (1 + margem/100)).toFixed(2));
 
   // Produto save
-  const saveProduto = () => {
+  const saveProduto = async () => {
     if (!prodForm.nome.trim() || !prodForm.cat) return;
     const allImgs = getProdImages(prodForm as Produto);
     const finalImage = allImgs[0] || prodForm.img || '';
@@ -567,6 +600,31 @@ export default function App() {
       imagem: finalImage.startsWith('data:') ? finalImage : prodForm.imagem || (finalImage ? finalImage : ''),
       imagens: allImgs.length>0 ? allImgs : (finalImage ? [finalImage] : [])
     };
+
+    // Salva no Supabase
+    const payload = {
+      id: toSave.id,
+      nome: toSave.nome,
+      descricao: toSave.desc,
+      categoria: toSave.cat,
+      custo: toSave.custo,
+      margem: toSave.margem,
+      preco: toSave.venda,
+      fornecedor: toSave.forn,
+      foto: toSave.img,
+      imagens: toSave.imagens,
+      estoque: toSave.estoque,
+      novo: toSave.novo,
+      promo: toSave.promo,
+      tamanhos: toSave.tamanhos,
+    };
+    const { error } = await supabase.from('produtos').upsert(payload);
+    if (error) {
+      console.error(error);
+      alert('Erro ao salvar no Supabase: ' + error.message);
+      return;
+    }
+
     if (editingProdId) setProdutos(prev => prev.map(p=>p.id===editingProdId?toSave:p));
     else setProdutos(prev => [...prev, toSave]);
     setProdForm({ id: '', nome: '', desc: '', cat: categorias[0], custo: 0, margem: 70, venda: 0, forn: fornecedores[0]?.id || '', img: '', imagem: '', imagens: [], estoque: 0, novo: false, promo: false, tamanhos: ["M","G"] });
@@ -1489,7 +1547,7 @@ export default function App() {
               <div className="bg-white rounded-[12px] border border-zinc-200 p-5 overflow-auto">
                 <table className="w-full text-[13px] min-w-[800px]">
                   <thead><tr className="text-[11px] uppercase text-zinc-500 text-left"><th className="py-2">Produto</th><th>Cat</th><th>Custo</th><th>Venda</th><th>Estoque</th><th></th></tr></thead>
-                  <tbody>{produtos.map(p=><tr key={p.id} className="border-t border-zinc-100"><td className="py-2.5 flex items-center gap-2"><img src={getProdImage(p)} className="w-10 h-10 rounded-[8px] object-cover" />{p.nome}</td><td>{p.cat}</td><td>R$ {p.custo.toFixed(2)}</td><td className="font-bold">R$ {p.venda.toFixed(2)}</td><td>{p.estoque}</td><td className="text-right"><div className="flex justify-end gap-1"><button onClick={()=>{ setProdForm(p); setEditingProdId(p.id); window.scrollTo({top:0,behavior:'smooth'}); }} className="p-1.5 hover:bg-zinc-100 rounded"><Pencil size={14}/></button><button onClick={()=>setProdutos(prev=>prev.filter(x=>x.id!==p.id))} className="p-1.5 hover:bg-zinc-100 rounded text-red-600"><Trash2 size={14}/></button></div></td></tr>)}</tbody>
+                  <tbody>{produtos.map(p=><tr key={p.id} className="border-t border-zinc-100"><td className="py-2.5 flex items-center gap-2"><img src={getProdImage(p)} className="w-10 h-10 rounded-[8px] object-cover" />{p.nome}</td><td>{p.cat}</td><td>R$ {p.custo.toFixed(2)}</td><td className="font-bold">R$ {p.venda.toFixed(2)}</td><td>{p.estoque}</td><td className="text-right"><div className="flex justify-end gap-1"><button onClick={()=>{ setProdForm(p); setEditingProdId(p.id); window.scrollTo({top:0,behavior:'smooth'}); }} className="p-1.5 hover:bg-zinc-100 rounded"><Pencil size={14}/></button><button onClick={async()=>{ await supabase.from('produtos').delete().eq('id', p.id); setProdutos(prev=>prev.filter(x=>x.id!==p.id)) }} className="p-1.5 hover:bg-zinc-100 rounded text-red-600"><Trash2 size={14}/></button></div></td></tr>)}</tbody>
                 </table>
               </div>
             </div>
