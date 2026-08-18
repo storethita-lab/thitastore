@@ -577,7 +577,23 @@ export default function App() {
     } else setLoginErr('Usuário ou senha inválidos');
   };
 
-  const recalcVenda = (custo: number, margem: number) => Number((custo * (1 + margem/100)).toFixed(2));
+  // quando muda o CUSTO, recalcula venda pela margem atual
+const onCustoChange = (custo: number) => {
+  const venda = custo * (1 + prodForm.margem / 100);
+  setProdForm(f => ({...f, custo, venda}));
+};
+
+// quando muda a MARGEM, recalcula venda
+const onMargemChange = (margem: number) => {
+  const venda = prodForm.custo * (1 + margem / 100);
+  setProdForm(f => ({...f, margem, venda}));
+};
+
+// quando muda a VENDA, recalcula margem (É ISSO QUE TÁ FALTANDO!)
+const onVendaChange = (venda: number) => {
+  const margem = prodForm.custo > 0 ? ((venda / prodForm.custo) - 1) * 100 : 0;
+  setProdForm(f => ({...f, venda, margem}));
+};
 
   // Produto save
   const saveProduto = async () => {
