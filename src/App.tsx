@@ -296,7 +296,7 @@ export default function App() {
   useEffect(()=>{ setSelProdImgIdx(0); }, [selProd?.id]);
 
   const filtered = useMemo(() => {
-    let list = [...produtos];
+    let list = [...produtos].filter(p => p.estoque > 0);
     if (selCat !== 'Todos os produtos') list = list.filter(p => p.cat === selCat);
     if (promoFilter === 'promo') list = list.filter(p => p.promo);
     if (search.trim()) {
@@ -1643,7 +1643,7 @@ const onVendaChange = (venda: number) => {
                     <div className="mt-5 p-3 bg-zinc-50 rounded-[10px] flex flex-wrap gap-3 items-end">
                       <div className="flex-1 min-w-[160px]">
                         <label className="text-xs font-medium text-zinc-700 mb-1 block">Produto</label>
-                        <select value={cartProd.prodId} onChange={e=>setCartProd({...cartProd,prodId:e.target.value})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white"><option value="">Produto (estoque &gt;0)</option>{produtos.filter(p=>p.estoque>0).map(p=><option key={p.id} value={p.id}>{p.nome} - Est {p.estoque} - R$ {p.venda}</option>)}</select>
+                        <select value={cartProd.prodId} onChange={e=>setCartProd({...cartProd,prodId:e.target.value})} className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] bg-white"><option value="">Produto (estoque &gt;0)</option>{produtos.map(p=><option key={p.id} value={p.id}>{p.nome} - Est {p.estoque} - R$ {p.venda}</option>)}</select>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-zinc-700 mb-1 block">Quantidade</label>
