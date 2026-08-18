@@ -577,23 +577,10 @@ export default function App() {
     } else setLoginErr('Usuário ou senha inválidos');
   };
 
-  // quando muda o CUSTO, recalcula venda pela margem atual
-const onCustoChange = (custo: number) => {
-  const venda = custo * (1 + prodForm.margem / 100);
-  setProdForm(f => ({...f, custo, venda}));
-};
+  // helpers de calculo
+  const calcVenda = (c:number,m:number)=> Number((c*(1+m/100)).toFixed(2));
+  const calcMargem = (c:number,v:number)=> c>0? Number((((v/c)-1)*100).toFixed(1)):0;
 
-// quando muda a MARGEM, recalcula venda
-const onMargemChange = (margem: number) => {
-  const venda = prodForm.custo * (1 + margem / 100);
-  setProdForm(f => ({...f, margem, venda}));
-};
-
-// quando muda a VENDA, recalcula margem (É ISSO QUE TÁ FALTANDO!)
-const onVendaChange = (venda: number) => {
-  const margem = prodForm.custo > 0 ? ((venda / prodForm.custo) - 1) * 100 : 0;
-  setProdForm(f => ({...f, venda, margem}));
-};
 
   // Produto save
   const saveProduto = async () => {
@@ -1433,18 +1420,18 @@ const onVendaChange = (venda: number) => {
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de custo</label>
-                    <input type="number" value={prodForm.custo} onCustoChange={e=>{ const c=Number(e.target.value); setProdForm({...prodForm,custo:c, venda: recalcVenda(c, prodForm.margem)}); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input type="number" value={prodForm.custo} onChange={e=>{ const c=Number(e.target.value)||0; const venda = Number((c * (1 + prodForm.margem / 100)).toFixed(2)); setProdForm({...prodForm,custo:c, venda}); }} placeholder="Ex: 14.00" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">margem %</label>
                     <div className="flex gap-2">
-                      <input type="number" value={prodForm.margem} onMargemChange={e=>{ const m=Number(e.target.value); setProdForm({...prodForm,margem:m, venda: recalcVenda(prodForm.custo,m)}); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                      <input type="number" value={prodForm.margem} onChange={e=>{ const m=Number(e.target.value)||0; const venda = Number((prodForm.custo * (1 + m / 100)).toFixed(2)); setProdForm({...prodForm,margem:m, venda}); }} placeholder="Ex: 35" className="flex-1 h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                       <span className="h-10 px-3 rounded-[10px] bg-zinc-100 flex items-center text-[12px] border border-zinc-200">%</span>
                     </div>
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">preço de venda</label>
-                    <input type="number" value={prodForm.venda} onVendaChange={e=>{ const v=Number(e.target.value); setProdForm({...prodForm,venda:v, margem: recalcMargem(prodForm.custo, v)}); }} placeholder="Calculado ou editável" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
+                    <input type="number" value={prodForm.venda} onChange={e=>{ const v=Number(e.target.value)||0; const margem = prodForm.custo > 0 ? Number((((v / prodForm.custo) - 1) * 100).toFixed(1)) : 0; setProdForm({...prodForm,venda:v, margem}); }} placeholder="Calculado ou editável" className="w-full h-10 rounded-[10px] border border-zinc-200 px-3 text-[13px] focus:outline-none focus:border-zinc-900" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="text-xs font-medium text-zinc-700 mb-1 block">imagem URL</label>
