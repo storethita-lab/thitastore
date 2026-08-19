@@ -511,66 +511,55 @@ export default function App() {
             else if(p.img && typeof p.img==='string' && !p.img.startsWith('data:')) cleanImg = p.img;
             else if(cleanImgs[0]) cleanImg = cleanImgs[0];
 
+            // Mapeamento CORRETO conforme seu Supabase (foto, preco, fornecedor, etc)
             const row = {
               id: p.id,
               nome: p.nome,
-              descricao: p.desc || '',
-              categoria: p.cat || '',
-              preco_custo: p.custo || 0,
-              margem: p.margem || 0,
-              preco_venda: p.venda || 0,
-              fornecedor_id: p.forn || null,
-              imagem_url: cleanImg,
-              imagens: cleanImgs,
-              estoque: p.estoque || 0,
+              descricao: p.desc || p.descricao || '',
+              categoria: p.cat || p.categoria || 'Blusas',
+              custo: Number(p.custo) || 0,
+              margem: Number(p.margem) || 0,
+              preco: Number(p.venda || p.preco) || 0,
+              fornecedor: p.forn || p.fornecedor || null,
+              foto: cleanImg,
+              imagens: cleanImgs.length>0 ? cleanImgs : (cleanImg ? [cleanImg] : []),
+              estoque: Number(p.estoque) || 0,
               novo: !!p.novo,
               promo: !!p.promo,
               tamanhos: p.tamanhos || [],
             };
             const { error } = await supabase.from('produtos').upsert(row);
-            if(error) console.error('Erro produto', p.id, error);
+            if(error){
+              console.error('Erro produto', p.id, error.message, row);
+              setBackupMsg({type:'err', text:`Erro ao salvar ${p.nome}: ${error.message}`});
+            }
           }
         }
 
+        // Fornecedores, clientes e entradas ainda estão em localStorage no App atual, então salva lá também
         if(parsed.fornecedores && Array.isArray(parsed.fornecedores)){
-          await supabase.from('fornecedores').delete().neq('id','_');
+          localStorage.setItem('thita_fornecedores', JSON.stringify(parsed.fornecedores));
+          try{ await supabase.from('fornecedores').delete().neq('id','_'); }catch{}
           for(const f of parsed.fornecedores){
-            await supabase.from('fornecedores').upsert({
-              id: f.id,
-              nome: f.nome,
-              cnpj: f.cnpj || '',
-              endereco: f.endereco || '',
-              contato: f.contato || '',
-            });
+            try{ await supabase.from('fornecedores').upsert({ id: f.id, nome: f.nome, cnpj: f.cnpj || '', endereco: f.endereco || '', contato: f.contato || '' }); }catch{}
           }
         }
-
         if(parsed.clientes && Array.isArray(parsed.clientes)){
-          await supabase.from('clientes').delete().neq('id','_');
+          localStorage.setItem('thita_clientes', JSON.stringify(parsed.clientes));
+          try{ await supabase.from('clientes').delete().neq('id','_'); }catch{}
           for(const c of parsed.clientes){
-            await supabase.from('clientes').upsert({
-              id: c.id,
-              nome: c.nome,
-              doc: c.doc || '',
-              contato: c.contato || '',
-              endereco: c.endereco || '',
-            });
+            try{ await supabase.from('clientes').upsert({ id: c.id, nome: c.nome, doc: c.doc || '', contato: c.contato || '', endereco: c.endereco || '' }); }catch{}
           }
         }
-
         if(parsed.entradas && Array.isArray(parsed.entradas)){
-          await supabase.from('entradas_nf').delete().neq('id','_');
+          localStorage.setItem('thita_entradas', JSON.stringify(parsed.entradas));
+          try{ await supabase.from('entradas_nf').delete().neq('id','_'); }catch{}
           for(const e of parsed.entradas){
-            await supabase.from('entradas_nf').upsert({
-              id: e.id,
-              fornecedor_id: e.fornId || e.fornecedor_id,
-              numero_nota: e.numNota || e.numero_nota,
-              data: e.data,
-              frete: e.frete || 0,
-              itens: e.itens || [],
-              total: e.total || 0,
-            });
+            try{ await supabase.from('entradas_nf').upsert({ id: e.id, fornecedor_id: e.fornId || e.fornecedor_id, numero_nota: e.numNota || e.numero_nota, data: e.data, frete: Number(e.frete)||0, itens: e.itens || [], total: Number(e.total)||0 }); }catch{}
           }
+        }
+        if(parsed.produtos && Array.isArray(parsed.produtos)){
+          localStorage.setItem('thita_produtos', JSON.stringify(parsed.produtos));
         }
 
         if(parsed.vendas && Array.isArray(parsed.vendas) && parsed.vendas.length>0){
