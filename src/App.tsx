@@ -558,8 +558,11 @@ export default function App() {
             try{ await supabase.from('entradas_nf').upsert({ id: e.id, fornecedor_id: e.fornId || e.fornecedor_id, numero_nota: e.numNota || e.numero_nota, data: e.data, frete: Number(e.frete)||0, itens: e.itens || [], total: Number(e.total)||0 }); }catch{}
           }
         }
+        // NÃO salva produtos no localStorage mais - só no Supabase (base64 estoura quota)
+        // localStorage.setItem('thita_produtos', ...) removido para evitar exceeded the quota
         if(parsed.produtos && Array.isArray(parsed.produtos)){
-          localStorage.setItem('thita_produtos', JSON.stringify(parsed.produtos));
+          const produtosClean = parsed.produtos.map((p:any)=>({ ...p, imagem: '', img: '', imagens: [] }));
+          try{ localStorage.setItem('thita_produtos', JSON.stringify(produtosClean)); }catch{}
         }
 
         if(parsed.vendas && Array.isArray(parsed.vendas) && parsed.vendas.length>0){
