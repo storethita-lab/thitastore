@@ -482,36 +482,122 @@ export default function App() {
   const handleRestoreBackupFile = (file: File | null) => {
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const parsed = JSON.parse(reader.result as string);
         if(!parsed || typeof parsed !== 'object'){
           setBackupMsg({type:'err', text:'Arquivo inválido'});
           return;
         }
-        const hasData = parsed.produtos || parsed.clientes || parsed.vendas;
+        const hasData = parsed.produtos || parsed.fornecedores || parsed.clientes || parsed.entradas || parsed.vendas;
         if(!hasData){
           setBackupMsg({type:'err', text:'Backup não contém dados reconhecíveis'});
           return;
         }
-        const confirmRestore = window.confirm('Tem certeza que deseja restaurar este backup? Todos os dados atuais serão substituídos.');
+        const confirmRestore = window.confirm(`Tem certeza que deseja restaurar este backup?\n\nProdutos: ${parsed.produtos?.length || 0}\nFornecedores: ${parsed.fornecedores?.length || 0}\nEntradas: ${parsed.entradas?.length || 0}\n\nIsso vai gravar DIRETO no Supabase e substituir os dados atuais.`);
         if(!confirmRestore) return;
-        // Restore to localStorage directly for reliability
-        if(parsed.produtos) localStorage.setItem('thita_produtos', JSON.stringify(parsed.produtos));
-        if(parsed.fornecedores) localStorage.setItem('thita_fornecedores', JSON.stringify(parsed.fornecedores));
-        if(parsed.clientes) localStorage.setItem('thita_clientes', JSON.stringify(parsed.clientes));
-        if(parsed.entradas) localStorage.setItem('thita_entradas', JSON.stringify(parsed.entradas));
-        if(parsed.vendas) localStorage.setItem('thita_vendas', JSON.stringify(parsed.vendas));
-        if(parsed.crediario) localStorage.setItem('thita_crediario', JSON.stringify(parsed.crediario));
+
+        setBackupMsg({type:'ok', text:'Restaurando no Supabase... aguarde, pode levar 1-2 min com 180 produtos'});
+        
+        if(parsed.produtos && Array.isArray(parsed.produtos)){
+          await supabase.from('produtos').delete().neq('id','_');
+          for(const p of parsed.produtos){
+            let cleanImgs: string[] = [];
+            if(p.imagens && Array.isArray(p.imagens)){
+              cleanImgs = p.imagens.filter((im:any)=> typeof im==='string' && !im.startsWith('data:')).slice(0,5);
+            }
+            let cleanImg = '';
+            if(p.imagem && typeof p.imagem==='string' && !p.imagem.startsWith('data:')) cleanImg = p.imagem;
+            else if(p.img && typeof p.img==='string' && !p.img.startsWith('data:')) cleanImg = p.img;
+            else if(cleanImgs[0]) cleanImg = cleanImgs[0];
+
+            const row = {
+              id: p.id,
+              nome: p.nome,
+              descricao: p.desc || '',
+              categoria: p.cat || '',
+              preco_custo: p.custo || 0,
+              margem: p.margem || 0,
+              preco_venda: p.venda || 0,
+              fornecedor_id: p.forn || null,
+              imagem_url: cleanImg,
+              imagens: cleanImgs,
+              estoque: p.estoque || 0,
+              novo: !!p.novo,
+              promo: !!p.promo,
+              tamanhos: p.tamanhos || [],
+            };
+            const { error } = await supabase.from('produtos').upsert(row);
+            if(error) console.error('Erro produto', p.id, error);
+          }
+        }
+
+        if(parsed.fornecedores && Array.isArray(parsed.fornecedores)){
+          await supabase.from('fornecedores').delete().neq('id','_');
+          for(const f of parsed.fornecedores){
+            await supabase.from('fornecedores').upsert({
+              id: f.id,
+              nome: f.nome,
+              cnpj: f.cnpj || '',
+              endereco: f.endereco || '',
+              contato: f.contato || '',
+            });
+          }
+        }
+
+        if(parsed.clientes && Array.isArray(parsed.clientes)){
+          await supabase.from('clientes').delete().neq('id','_');
+          for(const c of parsed.clientes){
+            await supabase.from('clientes').upsert({
+              id: c.id,
+              nome: c.nome,
+              doc: c.doc || '',
+              contato: c.contato || '',
+              endereco: c.endereco || '',
+            });
+          }
+        }
+
+        if(parsed.entradas && Array.isArray(parsed.entradas)){
+          await supabase.from('entradas_nf').delete().neq('id','_');
+          for(const e of parsed.entradas){
+            await supabase.from('entradas_nf').upsert({
+              id: e.id,
+              fornecedor_id: e.fornId || e.fornecedor_id,
+              numero_nota: e.numNota || e.numero_nota,
+              data: e.data,
+              frete: e.frete || 0,
+              itens: e.itens || [],
+              total: e.total || 0,
+            });
+          }
+        }
+
+        if(parsed.vendas && Array.isArray(parsed.vendas) && parsed.vendas.length>0){
+          await supabase.from('vendas').delete().neq('id','_');
+          for(const v of parsed.vendas){
+            await supabase.from('vendas').upsert(v);
+          }
+        }
+        if(parsed.crediario && Array.isArray(parsed.crediario) && parsed.crediario.length>0){
+          await supabase.from('crediario').delete().neq('id','_');
+          for(const cr of parsed.crediario){
+            await supabase.from('crediario').upsert(cr);
+          }
+        }
+
         if(parsed.categorias) localStorage.setItem('thita_categorias', JSON.stringify(parsed.categorias));
-        if(parsed.userConfig) localStorage.setItem('thita_user', JSON.stringify(parsed.userConfig));
         if(parsed.empresa) localStorage.setItem('thita_empresa', JSON.stringify(parsed.empresa));
+        if(parsed.userConfig) localStorage.setItem('thita_userConfig', JSON.stringify(parsed.userConfig));
+
         const nowIso = new Date().toISOString();
         localStorage.setItem('thita_last_backup', JSON.stringify(nowIso));
-        alert('Backup restaurado com sucesso! A página será recarregada.');
-        window.location.reload();
+        
+        setBackupMsg({type:'ok', text:`Restaurado no Supabase! ${parsed.produtos?.length||0} produtos, ${parsed.fornecedores?.length||0} forn., ${parsed.entradas?.length||0} entradas. Recarregando...`});
+        setTimeout(()=> window.location.reload(), 1500);
       } catch(e){
-        setBackupMsg({type:'err', text:'Erro ao ler backup: '+(e as Error).message});
+        console.error(e);
+        setBackupMsg({type:'err', text:'Erro ao restaurar no Supabase: '+(e as Error).message});
       }
     };
     reader.readAsText(file);
