@@ -19,7 +19,6 @@ import ContasPagarAdmin from './admin/ContasPagarAdminV1711'
 import CategoriasFinanceirasAdmin from './admin/CategoriasFinanceirasAdmin'
 import CadastrosAdmin from './admin/CadastrosAdmin'
 import FinanceirosAdmin from './admin/FinanceirosAdmin'
-import AuditoriaAdmin from './admin/AuditoriaAdmin'
 
 type Variante = { id: string; tamanho: string; disponivel: boolean }
 type Imagem = { id: string; url: string | null; ordem: number; capa: boolean }
@@ -304,7 +303,7 @@ function AdminShell({ profile, onLogout, onVoltar }: { profile: AdminProfile; on
   const primeiraAba=profile.role==='admin'?'Dashboard':profile.acesso_cadastros?'Cadastros':profile.acesso_entradas?'Entradas':profile.acesso_relatorios?'Relatórios':profile.acesso_vendas?'Vendas':profile.acesso_financeiros?'Financeiros':profile.acesso_ajustes?'Ajustes':''
   const [tab, setTab] = useState(primeiraAba)
   const itens = ([
-    [LayoutDashboard,'Dashboard'], [Users,'Cadastros'], [ReceiptText,'Entradas'], [BarChart3,'Relatórios'], [ShoppingBag,'Vendas'], [CircleDollarSign,'Financeiros'], [Settings2,'Ajustes'], [ShieldCheck,'Auditoria']
+    [LayoutDashboard,'Dashboard'], [Users,'Cadastros'], [ReceiptText,'Entradas'], [BarChart3,'Relatórios'], [ShoppingBag,'Vendas'], [CircleDollarSign,'Financeiros'], [Settings2,'Ajustes']
   ] as const).filter(([,label])=>profile.role==='admin'||(label==='Cadastros'&&profile.acesso_cadastros)||(label==='Entradas'&&profile.acesso_entradas)||(label==='Relatórios'&&profile.acesso_relatorios)||(label==='Vendas'&&profile.acesso_vendas)||(label==='Financeiros'&&profile.acesso_financeiros)||(label==='Ajustes'&&profile.acesso_ajustes))
 
   return <div className="min-h-screen bg-[#f7f7f8]">
@@ -329,13 +328,12 @@ function AdminShell({ profile, onLogout, onVoltar }: { profile: AdminProfile; on
       {tab === 'Clientes' && <ClientesAdmin />}
       {tab === 'Vendas' && <VendasAdmin />}
       {tab === 'Crediário' && <CrediarioAdmin />}
-      {tab === 'Ajustes' && <AjustesAdmin />}
+      {tab === 'Ajustes' && <AjustesAdmin admin={profile.role==='admin'} />}
       {tab === 'Financeiro' && <FinanceiroAdmin />}
       {tab === 'Contas a Pagar' && <ContasPagarAdmin />}
       {tab === 'Categorias Financeiras' && <CategoriasFinanceirasAdmin />}
-      {tab === 'Auditoria' && profile.role==='admin' && <AuditoriaAdmin />}
       {!tab&&<div className="rounded-[24px] bg-white border border-zinc-200 p-10 text-center"><ShieldCheck className="mx-auto text-zinc-300"/><h2 className="mt-3 font-black">Nenhum módulo liberado</h2><p className="mt-1 text-sm text-zinc-500">Peça ao administrador para configurar suas permissões.</p></div>}
-      {!['Dashboard','Cadastros','Financeiros','Produtos','Categorias','Fornecedores','Entradas','Relatórios','Clientes','Vendas','Crediário','Financeiro','Contas a Pagar','Categorias Financeiras','Ajustes','Auditoria',''].includes(tab) && <div className="rounded-[24px] bg-white border border-zinc-200 p-10 text-center"><Package className="mx-auto text-zinc-300"/><h2 className="mt-3 font-black">{tab}</h2><p className="mt-1 text-sm text-zinc-500">Este módulo entra nas próximas etapas da migração.</p></div>}
+      {!['Dashboard','Cadastros','Financeiros','Produtos','Categorias','Fornecedores','Entradas','Relatórios','Clientes','Vendas','Crediário','Financeiro','Contas a Pagar','Categorias Financeiras','Ajustes',''].includes(tab) && <div className="rounded-[24px] bg-white border border-zinc-200 p-10 text-center"><Package className="mx-auto text-zinc-300"/><h2 className="mt-3 font-black">{tab}</h2><p className="mt-1 text-sm text-zinc-500">Este módulo entra nas próximas etapas da migração.</p></div>}
     </div>
   </div>
 }

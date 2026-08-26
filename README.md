@@ -1,5 +1,14 @@
 
-# THITA STORE V17.22
+# THITA STORE V17.22.1
+
+## Auditoria clara dentro de Ajustes
+
+Esta correção não exige SQL. A opção **Auditoria** foi removida do menu
+principal e agora aparece dentro de **Ajustes**, somente para administradores.
+
+O histórico passou a exibir módulo, ação e resumo em linguagem simples. Os
+códigos internos ficam ocultos e as informações adicionais só aparecem ao
+clicar em **Detalhes**. Os filtros e o arquivo CSV seguem a mesma apresentação.
 
 ## Aparência do Catálogo e Banners
 
