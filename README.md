@@ -1,5 +1,26 @@
 
-# THITA STORE V17.20.1
+# THITA STORE V17.21
+
+## Auditoria do Sistema
+
+Execute `V17.21_SQL.sql` depois da correção
+`V17.20.2_SQL_CORRECAO_ACESSO_OPERADOR.sql`.
+
+A V17.21 aplica as permissões dos operadores também nas funções críticas do
+Supabase, bloqueia chamadas diretas às funções internas e amplia a cobertura dos
+registros de auditoria. Uma nova aba **Auditoria**, exclusiva para
+administradores, permite filtrar o histórico por texto, operação e período e
+exportar o resultado em CSV.
+
+Depois da atualização, confira:
+
+1. administrador continua acessando todos os módulos;
+2. operador acessa somente os módulos liberados;
+3. aba Auditoria aparece apenas para administrador;
+4. uma venda, entrada ou ajuste novo aparece no histórico;
+5. o SQL termina exibindo `administrador_confirmado = true` quando executado em
+   uma sessão administrativa do sistema. No SQL Editor esse campo pode aparecer
+   como `false`, pois o editor não usa a sessão do usuário do aplicativo.
 
 ## Retorno de convite
 
