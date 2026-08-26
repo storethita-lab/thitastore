@@ -3,6 +3,14 @@
 
 ## Auditoria do Sistema
 
+### Correção V17.21.1
+
+Se o `V17.21_SQL.sql` já foi executado, execute em seguida
+`V17.21.1_SQL_CORRECAO_PARAMETROS.sql`. A correção restaura os nomes dos
+parâmetros esperados pelo Supabase ao editar clientes e nas demais operações
+protegidas. Não é necessário publicar novamente a aplicação por causa desta
+correção.
+
 Execute `V17.21_SQL.sql` depois da correção
 `V17.20.2_SQL_CORRECAO_ACESSO_OPERADOR.sql`.
 
