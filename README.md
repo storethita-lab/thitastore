@@ -1,5 +1,18 @@
 
-# THITA STORE V17.21
+# THITA STORE V17.22
+
+## Aparência do Catálogo e Banners
+
+Execute `V17.22_SQL.sql` depois de
+`V17.21.1_SQL_CORRECAO_PARAMETROS.sql` e publique os arquivos da aplicação.
+
+Administradores passam a encontrar **Cadastros → Aparência e Banners**, onde é
+possível trocar a logo e cadastrar campanhas com imagem para computador,
+imagem opcional para celular, título, texto, botão, link, período, ordem e
+situação ativa. O catálogo alterna automaticamente os banners ativos.
+
+A imagem `public/logo-thita.png` também foi substituída pela nova logo oficial
+fornecida para esta versão.
 
 ## Auditoria do Sistema
 

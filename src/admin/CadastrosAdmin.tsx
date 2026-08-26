@@ -1,20 +1,21 @@
 import React,{useState}from'react'
-import {Package,Tag,Users,Truck,WalletCards,ShieldCheck,type LucideIcon}from'lucide-react'
+import {Package,Tag,Users,Truck,WalletCards,ShieldCheck,Image as ImageIcon,type LucideIcon}from'lucide-react'
 import ProdutosAdmin from'./ProdutosAdmin'
 import CategoriasAdmin from'./CategoriasAdmin'
 import ClientesAdmin from'./ClientesAdmin'
 import FornecedoresAdmin from'./FornecedoresAdmin'
 import CategoriasFinanceirasAdmin from'./CategoriasFinanceirasAdmin'
 import UsuariosAdmin from'./UsuariosAdminV20'
+import AparenciaBannersAdmin from'./AparenciaBannersAdmin'
 
-type Aba='Clientes'|'Categorias'|'Categorias Financeiras'|'Fornecedores'|'Produtos'|'Usuários e Permissões'
+type Aba='Clientes'|'Categorias'|'Categorias Financeiras'|'Fornecedores'|'Produtos'|'Aparência e Banners'|'Usuários e Permissões'
 const itens:[Aba,LucideIcon][]=[
- ['Clientes',Users],['Categorias',Tag],['Categorias Financeiras',WalletCards],['Fornecedores',Truck],['Produtos',Package],['Usuários e Permissões',ShieldCheck]
+ ['Clientes',Users],['Categorias',Tag],['Categorias Financeiras',WalletCards],['Fornecedores',Truck],['Produtos',Package],['Aparência e Banners',ImageIcon],['Usuários e Permissões',ShieldCheck]
 ]
 
 export default function CadastrosAdmin({admin=false}:{admin?:boolean}){
  const[aba,setAba]=useState<Aba>('Clientes')
- const visiveis=admin?itens:itens.filter(([nome])=>nome!=='Usuários e Permissões')
+ const visiveis=admin?itens:itens.filter(([nome])=>nome!=='Usuários e Permissões'&&nome!=='Aparência e Banners')
  return <div className="space-y-5">
   <div className="rounded-[24px] bg-zinc-950 text-white p-6">
    <p className="text-[10px] uppercase tracking-[.2em] font-black text-[#ff70c8]">THITA Store</p>
@@ -29,6 +30,7 @@ export default function CadastrosAdmin({admin=false}:{admin?:boolean}){
   {aba==='Categorias Financeiras'&&<CategoriasFinanceirasAdmin/>}
   {aba==='Fornecedores'&&<FornecedoresAdmin/>}
   {aba==='Produtos'&&<ProdutosAdmin/>}
+  {aba==='Aparência e Banners'&&admin&&<AparenciaBannersAdmin/>}
   {aba==='Usuários e Permissões'&&<UsuariosAdmin/>}
  </div>
 }

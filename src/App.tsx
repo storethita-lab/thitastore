@@ -31,6 +31,7 @@ type ProdutoCatalogo = {
   variantes: Variante[]; imagens: Imagem[]; imagem_capa: string | null
 }
 type AdminProfile = { nome:string;role:'admin'|'operador';ativo:boolean;acesso_cadastros:boolean;acesso_entradas:boolean;acesso_vendas:boolean;acesso_relatorios:boolean;acesso_financeiros:boolean;acesso_ajustes:boolean }
+type BannerCatalogo={id:string;titulo:string;subtitulo:string|null;imagem_url:string;imagem_mobile_url:string|null;texto_botao:string|null;link_url:string|null;ordem:number}
 
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
@@ -56,6 +57,9 @@ export default function App() {
   const [novaSenha, setNovaSenha] = useState('')
   const [produtoAberto, setProdutoAberto] = useState<ProdutoCatalogo | null>(null)
   const [imagemAtual, setImagemAtual] = useState(0)
+  const [catalogoLogo,setCatalogoLogo]=useState('/logo-thita.png')
+  const [banners,setBanners]=useState<BannerCatalogo[]>([])
+  const [bannerAtual,setBannerAtual]=useState(0)
 
   async function carregarCatalogo() {
     setLoading(true); setErro('')
@@ -66,6 +70,8 @@ export default function App() {
     setLoading(false)
   }
 
+  async function carregarAparencia(){const[c,b]=await Promise.all([supabase.from('catalogo_config_v17_22').select('logo_url').eq('id',1).maybeSingle(),supabase.from('banners_catalogo_v17_22').select('id,titulo,subtitulo,imagem_url,imagem_mobile_url,texto_botao,link_url,ordem').order('ordem')]);if(c.data?.logo_url)setCatalogoLogo(c.data.logo_url);if(!b.error)setBanners((b.data||[])as BannerCatalogo[])}
+
   async function carregarPerfil(userId?: string) {
     if (!userId) { setProfile(null); return }
     const { data, error } = await supabase.from('app_usuarios')
@@ -75,7 +81,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    carregarCatalogo()
+    carregarCatalogo();void carregarAparencia()
     supabase.auth.getSession().then(async ({ data }) => {
       await carregarPerfil(data.session?.user.id); setSessionReady(true)
     })
@@ -85,6 +91,8 @@ export default function App() {
     })
     return () => listener.subscription.unsubscribe()
   }, [])
+
+  useEffect(()=>{if(banners.length<2)return;const timer=window.setInterval(()=>setBannerAtual(i=>(i+1)%banners.length),6000);return()=>window.clearInterval(timer)},[banners.length])
 
   useEffect(() => {
     localStorage.setItem('thita_favoritos', JSON.stringify([...favoritos]))
@@ -138,7 +146,7 @@ export default function App() {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6">
         <button className="md:hidden p-2" onClick={() => setMenu(true)} aria-label="Abrir menu"><Menu /></button>
         <div className="flex items-center gap-3">
-          <img src="/logo-thita.png" alt="THITA" className="h-11 w-auto" />
+          <img src={catalogoLogo} alt="THITA" className="h-14 w-auto object-contain" />
           <div className="hidden sm:block"><p className="text-[10px] uppercase tracking-[.28em] text-zinc-400">Moda & estilo</p><p className="text-xs font-semibold text-zinc-700">Catálogo online</p></div>
         </div>
         <div className="hidden md:flex items-center gap-2 rounded-full bg-zinc-50 border border-zinc-200 px-4 h-11 w-[390px]">
@@ -153,16 +161,7 @@ export default function App() {
     </header>
 
     <main>
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 pt-8">
-        <div className="relative overflow-hidden rounded-[28px] bg-zinc-950 min-h-[300px] md:min-h-[390px] flex items-end">
-          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_75%_20%,#c80082,transparent_38%)]" />
-          <div className="relative p-7 md:p-12 max-w-2xl text-white">
-            <span className="inline-flex rounded-full bg-white/10 border border-white/15 px-3 py-1 text-[11px] font-bold tracking-widest uppercase">THITA Store</span>
-            <h1 className="mt-5 text-4xl md:text-6xl font-black tracking-[-0.04em] leading-[.95]">Seu estilo,<br/><span className="text-[#ff70c8]">do seu jeito.</span></h1>
-            <p className="mt-5 max-w-lg text-sm md:text-base text-zinc-300 leading-relaxed">Conheça as novidades, encontre seu tamanho e fale conosco para garantir sua peça.</p>
-          </div>
-        </div>
-      </section>
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 pt-8">{banners.length>0?(()=>{const b=banners[Math.min(bannerAtual,banners.length-1)];return <div className="relative overflow-hidden rounded-[28px] bg-zinc-950 min-h-[300px] md:min-h-[390px]"><picture><source media="(max-width: 640px)" srcSet={b.imagem_mobile_url||b.imagem_url}/><img src={b.imagem_url} alt={b.titulo} className="absolute inset-0 w-full h-full object-cover"/></picture><div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent"/><div className="relative min-h-[300px] md:min-h-[390px] p-7 md:p-12 max-w-2xl text-white flex flex-col justify-end"><span className="inline-flex self-start rounded-full bg-white/15 border border-white/20 px-3 py-1 text-[11px] font-bold tracking-widest uppercase">Destaque THITA</span><h1 className="mt-4 text-4xl md:text-6xl font-black tracking-[-0.04em] leading-[.95]">{b.titulo}</h1>{b.subtitulo&&<p className="mt-4 max-w-lg text-sm md:text-base text-zinc-100 leading-relaxed">{b.subtitulo}</p>}{b.texto_botao&&b.link_url&&<a href={b.link_url} className="mt-5 self-start h-11 px-5 rounded-full bg-white text-zinc-950 font-black text-xs flex items-center">{b.texto_botao}</a>}</div>{banners.length>1&&<div className="absolute bottom-4 right-5 flex gap-2">{banners.map((x,i)=><button key={x.id} aria-label={`Banner ${i+1}`} onClick={()=>setBannerAtual(i)} className={`h-2 rounded-full transition-all ${i===bannerAtual?'w-8 bg-white':'w-2 bg-white/50'}`}/>)}</div>}</div>})():<div className="relative overflow-hidden rounded-[28px] bg-zinc-950 min-h-[300px] md:min-h-[390px] flex items-end"><div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_75%_20%,#c80082,transparent_38%)]"/><div className="relative p-7 md:p-12 max-w-2xl text-white"><span className="inline-flex rounded-full bg-white/10 border border-white/15 px-3 py-1 text-[11px] font-bold tracking-widest uppercase">THITA Store</span><h1 className="mt-5 text-4xl md:text-6xl font-black tracking-[-0.04em] leading-[.95]">Seu estilo,<br/><span className="text-[#ff70c8]">do seu jeito.</span></h1><p className="mt-5 max-w-lg text-sm md:text-base text-zinc-300 leading-relaxed">Conheça as novidades, encontre seu tamanho e fale conosco para garantir sua peça.</p></div></div>}</section>
 
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-7">
         <div className="md:hidden flex items-center gap-2 rounded-2xl bg-white border border-zinc-200 px-4 h-12 mb-4">
@@ -174,7 +173,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-16">
+      <section id="produtos" className="mx-auto max-w-7xl px-4 sm:px-6 pb-16">
         <div className="flex items-end justify-between mb-5"><div><p className="text-[11px] uppercase tracking-[.2em] font-bold text-[#c80082]">Catálogo</p><h2 className="text-2xl font-black tracking-tight">{categoria === 'Todos' ? 'Todos os produtos' : categoria}</h2></div><span className="text-xs text-zinc-400">{filtrados.length} produto(s)</span></div>
         {erro && <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">Não foi possível carregar o catálogo: {erro}</div>}
         {loading && <div className="py-20 grid place-items-center"><RefreshCw className="animate-spin text-[#c80082]" /></div>}
@@ -295,9 +294,9 @@ export default function App() {
     })()}
 
 
-    <footer className="bg-zinc-950 text-zinc-400"><div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs"><img src="/logo-thita.png" alt="THITA" className="h-9 brightness-0 invert opacity-80" /><p>THITA Store • Catálogo conectado à nuvem</p></div></footer>
+    <footer className="bg-zinc-950 text-zinc-400"><div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs"><img src={catalogoLogo} alt="THITA" className="h-14 w-auto object-contain"/><p>THITA Store • Catálogo conectado à nuvem</p></div></footer>
 
-    {menu && <div className="fixed inset-0 z-50 bg-black/30" onClick={()=>setMenu(false)}><aside className="h-full w-[82%] max-w-sm bg-white p-5" onClick={e=>e.stopPropagation()}><div className="flex justify-between items-center"><img src="/logo-thita.png" className="h-10"/><button onClick={()=>setMenu(false)}><X/></button></div><div className="mt-7 space-y-2">{categorias.map(cat => <button key={cat} onClick={()=>{setCategoria(cat);setMenu(false)}} className="w-full text-left py-3 border-b border-zinc-100 text-sm font-semibold">{cat}</button>)}</div></aside></div>}
+    {menu && <div className="fixed inset-0 z-50 bg-black/30" onClick={()=>setMenu(false)}><aside className="h-full w-[82%] max-w-sm bg-white p-5" onClick={e=>e.stopPropagation()}><div className="flex justify-between items-center"><img src={catalogoLogo} className="h-14 w-auto object-contain"/><button onClick={()=>setMenu(false)}><X/></button></div><div className="mt-7 space-y-2">{categorias.map(cat => <button key={cat} onClick={()=>{setCategoria(cat);setMenu(false)}} className="w-full text-left py-3 border-b border-zinc-100 text-sm font-semibold">{cat}</button>)}</div></aside></div>}
   </div>
 }
 
