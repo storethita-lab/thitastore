@@ -1,5 +1,9 @@
 
-# THITA STORE V17.23.1
+# THITA STORE V17.23.2
+
+Melhoria: a inclusão de itens na Entrada agora possui busca parcial pelo nome do
+produto. A busca ignora maiúsculas, minúsculas e acentos; por exemplo, `sam`
+encontra todos os nomes que contenham essas três letras.
 
 Correção: o salvamento do rascunho agora começa imediatamente e sua fila continua
 ativa durante a troca de telas. Ao voltar para Entrada, a restauração aguarda toda
