@@ -1,5 +1,9 @@
 
-# THITA STORE V17.23
+# THITA STORE V17.23.1
+
+Correção: o salvamento do rascunho agora começa imediatamente e sua fila continua
+ativa durante a troca de telas. Ao voltar para Entrada, a restauração aguarda toda
+gravação pendente, inclusive quando a tela foi trocada logo após adicionar um item.
 
 ## Rascunho persistente da Entrada
 
