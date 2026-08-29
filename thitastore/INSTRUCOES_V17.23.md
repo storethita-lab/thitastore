@@ -1,4 +1,4 @@
-# THITA Store V17.23.2 — instalação
+# THITA Store V17.23.3 — instalação
 
 1. Faça backup do banco e da versão atual do site.
 2. No painel do Supabase, abra **SQL Editor**.
@@ -8,7 +8,12 @@
 6. Atualize a página e confirme que os dados voltaram. Depois teste **Cancelar entrada** e uma entrada completa.
 
 Se o SQL V17.23 já foi executado na versão anterior, não é necessário executá-lo
-novamente para instalar a V17.23.2; basta publicar a nova aplicação.
+novamente para instalar a V17.23.3; basta publicar a nova aplicação.
+
+O ZIP V17.23.3 não possui uma pasta externa `thitastore`: `package.json`, `src`,
+`public` e os demais arquivos já aparecem diretamente na raiz ao extrair. No
+GitHub, substitua os arquivos da raiz do repositório por esse conteúdo. Depois do
+deploy, abra Entrada e confirme que `V17.23.3` aparece ao lado do título.
 
 O SQL é incremental: não apaga entradas antigas e não exige executar novamente os scripts anteriores. Enquanto o registro estiver como `rascunho`, não existe alteração de estoque, movimentação, financeiro ou auditoria. A conclusão usa a função já existente `registrar_entrada_v17_17` dentro da mesma transação.
 

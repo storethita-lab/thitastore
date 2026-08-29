@@ -1,5 +1,8 @@
 
-# THITA STORE V17.23.2
+# THITA STORE V17.23.3
+
+Distribuição corrigida sem pasta externa adicional. A tela de Entrada mostra
+`V17.23.3` ao lado do título para confirmar visualmente a versão publicada.
 
 Melhoria: a inclusão de itens na Entrada agora possui busca parcial pelo nome do
 produto. A busca ignora maiúsculas, minúsculas e acentos; por exemplo, `sam`
