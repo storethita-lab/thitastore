@@ -1,30 +1,5 @@
 
-# THITA STORE V17.23.3
-
-Distribuição corrigida sem pasta externa adicional. A tela de Entrada mostra
-`V17.23.3` ao lado do título para confirmar visualmente a versão publicada.
-
-Melhoria: a inclusão de itens na Entrada agora possui busca parcial pelo nome do
-produto. A busca ignora maiúsculas, minúsculas e acentos; por exemplo, `sam`
-encontra todos os nomes que contenham essas três letras.
-
-Correção: o salvamento do rascunho agora começa imediatamente e sua fila continua
-ativa durante a troca de telas. Ao voltar para Entrada, a restauração aguarda toda
-gravação pendente, inclusive quando a tela foi trocada logo após adicionar um item.
-
-## Rascunho persistente da Entrada
-
-Antes de publicar, execute `V17.23_SQL_RASCUNHO_ENTRADA.sql` uma vez no SQL
-Editor do Supabase. O arquivo cria o armazenamento de rascunhos e as funções
-protegidas por usuário; não apague tabelas nem repita os scripts anteriores.
-
-A tela Entrada cria ou reutiliza um único rascunho do usuário e salva campos e
-itens na nuvem. O conteúdo volta após F5, fechamento do navegador ou acesso em
-outro dispositivo com a mesma conta. O rascunho não altera estoque, financeiro
-ou auditoria: esses efeitos só acontecem transacionalmente em **Concluir entrada**.
-**Cancelar entrada** pede confirmação e encerra o rascunho sem movimentar estoque.
-
-# Histórico anterior — V17.22.1
+# THITA STORE V17.22.1
 
 ## Auditoria clara dentro de Ajustes
 
