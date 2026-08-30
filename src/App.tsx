@@ -33,6 +33,11 @@ type AdminProfile = { nome:string;role:'admin'|'operador';ativo:boolean;acesso_c
 type BannerCatalogo={id:string;titulo:string;subtitulo:string|null;imagem_url:string;imagem_mobile_url:string|null;texto_botao:string|null;link_url:string|null;ordem:number}
 
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+const ordemTamanhos = ['PP','P','M','G','GG','G1','G2','Único','2','4','6','8','10','12','14','16']
+const ordenarTamanhos = (variantes: Variante[] = []) => [...variantes].sort((a,b)=>{
+  const ai=ordemTamanhos.indexOf(a.tamanho), bi=ordemTamanhos.indexOf(b.tamanho)
+  return (ai<0?999:ai)-(bi<0?999:bi)||a.tamanho.localeCompare(b.tamanho,'pt-BR')
+})
 
 export default function App() {
   const [produtos, setProdutos] = useState<ProdutoCatalogo[]>([])
@@ -65,7 +70,7 @@ export default function App() {
     const { data, error } = await supabase.from('catalogo_produtos').select('*')
       .order('destaque', { ascending: false }).order('created_at', { ascending: false })
     if (error) { setErro(error.message); setProdutos([]) }
-    else setProdutos((data || []) as ProdutoCatalogo[])
+    else setProdutos(((data || []) as ProdutoCatalogo[]).map(p=>({...p,variantes:ordenarTamanhos(p.variantes)})))
     setLoading(false)
   }
 
