@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Check, Pencil, Plus, RefreshCw, Tag, X } from 'lucide-react'
 import { supabase } from '../supabase'
+const normalizar=(v:string)=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR');
 
 type Categoria = {
   id: string
@@ -20,6 +21,8 @@ export default function CategoriasAdmin() {
   const [nome, setNome] = useState('')
   const [ordem, setOrdem] = useState(0)
   const [ativo, setAtivo] = useState(true)
+  const [pesquisa,setPesquisa]=useState('')
+  const filtradas=categorias.filter(c=>normalizar(`${c.nome} ${c.slug||''}`).includes(normalizar(pesquisa.trim())))
 
   async function carregar() {
     setLoading(true); setErro('')
@@ -126,13 +129,14 @@ export default function CategoriasAdmin() {
 
     <div className="bg-white border border-zinc-200 rounded-[22px] overflow-hidden">
       <div className="p-5 flex items-center justify-between">
-        <div><h2 className="font-black">Categorias cadastradas</h2><p className="text-xs text-zinc-500">{categorias.length} registro(s)</p></div>
+        <div><h2 className="font-black">Categorias cadastradas</h2><p className="text-xs text-zinc-500">{filtradas.length} de {categorias.length} registro(s)</p></div>
         <button onClick={carregar} className="w-10 h-10 rounded-xl border border-zinc-200 grid place-items-center"><RefreshCw size={16}/></button>
       </div>
+      <div className="px-5 pb-4"><input className="input" value={pesquisa} onChange={e=>setPesquisa(e.target.value)} placeholder="Pesquisar categoria"/></div>
       {loading ? <div className="py-16 grid place-items-center"><RefreshCw className="animate-spin text-[#c80082]"/></div> :
       <div className="overflow-x-auto"><table className="w-full min-w-[560px] text-sm">
         <thead className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500"><tr><th className="text-left px-5 py-3">Categoria</th><th>Ordem</th><th>Status</th><th className="pr-5"></th></tr></thead>
-        <tbody>{categorias.map(c=><tr key={c.id} className="border-t border-zinc-100">
+        <tbody>{filtradas.map(c=><tr key={c.id} className="border-t border-zinc-100">
           <td className="px-5 py-3 font-bold">{c.nome}</td>
           <td className="text-center">{c.ordem}</td>
           <td className="text-center"><button onClick={()=>alternar(c)} className={`px-3 py-1 rounded-full text-[10px] font-black ${c.ativo?'bg-emerald-50 text-emerald-700':'bg-zinc-100 text-zinc-500'}`}>{c.ativo?'ATIVA':'INATIVA'}</button></td>
