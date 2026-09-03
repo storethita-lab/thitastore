@@ -1,31 +1,11 @@
-# THITA Store V17.24
+# THITA Store V17.24 — instalação
 
-## SQL obrigatório
+1. Faça backup do banco e da versão publicada.
+2. No Supabase, abra **SQL Editor**.
+3. Execute o arquivo `V17.24_SQL_PARCELAMENTO_ENTRADA.sql` inteiro, uma única vez.
+4. Publique a pasta `dist` ou faça o deploy do projeto completo com `npm ci` e `npm run build`.
+5. Abra **Entrada de mercadorias** e confirme que aparece `V17.24` ao lado do título.
 
-No Supabase, abra **SQL Editor > New query**, copie todo o conteúdo de
-`V17.24_SQL_TAMANHO_UNICO_DESCONTO_ENTRADA.sql` e execute uma única vez.
+Teste recomendado: escolha **Cartão de Crédito**, selecione 3x e confira o resumo; salve o rascunho, atualize a página e confirme a recuperação. Depois finalize uma nota cujo total tenha centavos e confira em **Contas a Pagar** se a última parcela absorveu a diferença. Também teste Pix e Transferência com desconto.
 
-Ordem esperada para uma base ainda não atualizada:
-
-1. Execute primeiro `V17.23_SQL_RASCUNHO_ENTRADA.sql` (presente na pasta `thitastore`).
-2. Execute depois `V17.24_SQL_TAMANHO_UNICO_DESCONTO_ENTRADA.sql`.
-3. Publique a nova pasta `dist` ou faça o deploy normal do projeto.
-
-Se o V17.23 já foi aplicado, execute somente o V17.24.
-
-## O que mudou
-
-- Tamanho `Único` no cadastro e na edição de produtos.
-- Ordenação lógica dos tamanhos no cadastro, listas, Entrada/NF e catálogo.
-- Campo de desconto visível apenas para Pix e Transferência.
-- Trocar para outra forma de pagamento zera e oculta o desconto.
-- Total da nota: subtotal dos itens + frete - desconto, nunca negativo.
-- Forma de pagamento e desconto persistem no rascunho do Supabase.
-- Validação do desconto também ocorre dentro da transação no banco.
-- Entrada final, total financeiro e eventuais parcelas permanecem coerentes.
-- Forma de pagamento e desconto aparecem nas entradas recentes.
-
-## Observação
-
-Não execute `npm audit fix --force`: ele pode trocar versões principais. As versões
-usadas no build permanecem fixadas pelo `package-lock.json` original.
+Este SQL é incremental, não apaga dados existentes e deve ser aplicado depois do SQL V17.23. Pix, Transferência, Débito e Boleto ficam em 1x. Somente Cartão de Crédito permite de 1x a 12x.
