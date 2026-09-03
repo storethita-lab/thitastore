@@ -15,7 +15,11 @@ begin
   if v_user is null then raise exception 'Usuario nao autenticado.'; end if;
   perform pg_advisory_xact_lock(hashtextextended(v_user::text, 1725));
 
-  select e.* into v_original
+  select e.*,
+         (select min(c.vencimento)
+            from public.contas_pagar_v17_17 c
+           where c.entrada_id=e.id) as primeiro_vencimento
+    into v_original
     from public.entradas_mercadorias e
    where e.id=p_entrada_id and coalesce(e.status,'ativa')<>'cancelada'
    for update;
