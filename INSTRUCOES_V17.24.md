@@ -2,7 +2,7 @@
 
 1. Faça backup do banco e da versão publicada.
 2. No Supabase, abra **SQL Editor**.
-3. Execute o arquivo `V17.24_SQL_PARCELAMENTO_ENTRADA.sql` inteiro, uma única vez.
+3. Execute o arquivo `V17.24_SQL_PARCELAMENTO_ENTRADA.sql` inteiro. Ele pode ser reaplicado com segurança caso uma tentativa anterior tenha sido interrompida.
 4. Publique a pasta `dist` ou faça o deploy do projeto completo com `npm ci` e `npm run build`.
 5. Abra **Entrada de mercadorias** e confirme que aparece `V17.24` ao lado do título.
 

@@ -33,7 +33,12 @@ begin
   return v_result;
 end $$;
 
-create or replace function public.salvar_rascunho_entrada_v17_24(
+-- PostgreSQL não permite renomear parâmetros com CREATE OR REPLACE. A remoção
+-- abaixo torna este incremental reaplicável caso uma tentativa anterior tenha
+-- criado a mesma assinatura usando o nome p_desconto.
+drop function if exists public.salvar_rascunho_entrada_v17_24(uuid,uuid,text,date,numeric,numeric,text,text,integer,date,jsonb);
+
+create function public.salvar_rascunho_entrada_v17_24(
   p_entrada_id uuid, p_fornecedor_id uuid, p_numero_documento text, p_data_entrada date,
   p_frete numeric, p_desconto_nota numeric, p_observacoes text, p_forma_pagamento text,
   p_parcelas_pagamento integer, p_primeiro_vencimento date, p_itens jsonb
