@@ -37,6 +37,11 @@ begin
   -- A rotina já existente estorna estoque, financeiro e contas a pagar.
   perform public.cancelar_entrada_v17_15(p_entrada_id,'Entrada reaberta para edição');
 
+  -- Libera o número original para a versão corrigida sem apagar o histórico.
+  update public.entradas_mercadorias
+     set numero_documento=numero_documento || ' [EDITADA ' || left(id::text,8) || ']'
+   where id=p_entrada_id and status='cancelada';
+
   select * into v_rascunho from public.entradas
    where usuario_id=v_user and status='rascunho' order by created_at limit 1 for update;
   if not found then

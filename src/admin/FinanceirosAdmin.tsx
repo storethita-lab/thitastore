@@ -1,14 +1,16 @@
 import React,{useState}from'react'
-import {CircleDollarSign,WalletCards,CalendarClock}from'lucide-react'
+import {CircleDollarSign,WalletCards,CalendarClock,Users}from'lucide-react'
 import FinanceiroAdmin from'./FinanceiroAdminV18'
 import CrediarioAdmin from'./CrediarioAdmin'
 import ContasPagarAdmin from'./ContasPagarAdminV1711'
+import ComissoesTaxasAdmin from'./ComissoesTaxasAdminV1731'
 
-type Aba='Caixa e Despesas'|'Crediário'|'Contas a Pagar'
+type Aba='Caixa e Despesas'|'Crediário'|'Contas a Pagar'|'Comissões e Taxas'
 const itens=[
  ['Caixa e Despesas',CircleDollarSign],
  ['Crediário',WalletCards],
  ['Contas a Pagar',CalendarClock]
+ ,['Comissões e Taxas',Users]
 ]as const
 
 export default function FinanceirosAdmin(){
@@ -25,5 +27,6 @@ export default function FinanceirosAdmin(){
   {aba==='Caixa e Despesas'&&<FinanceiroAdmin/>}
   {aba==='Crediário'&&<CrediarioAdmin/>}
   {aba==='Contas a Pagar'&&<ContasPagarAdmin/>}
+  {aba==='Comissões e Taxas'&&<ComissoesTaxasAdmin/>}
  </div>
 }
