@@ -65,7 +65,9 @@ export default function App() {
     const { data, error } = await supabase.from('catalogo_produtos').select('*')
       .order('destaque', { ascending: false }).order('created_at', { ascending: false })
     if (error) { setErro(error.message); setProdutos([]) }
-    else setProdutos((data || []) as ProdutoCatalogo[])
+    else setProdutos(((data || []) as ProdutoCatalogo[])
+      .filter(p => Number(p.estoque_total) > 0)
+      .map(p => ({ ...p, variantes: (p.variantes || []).filter(v => v.disponivel) })))
     setLoading(false)
   }
 
