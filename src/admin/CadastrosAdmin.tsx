@@ -7,10 +7,11 @@ import FornecedoresAdmin from'./FornecedoresAdmin'
 import CategoriasFinanceirasAdmin from'./CategoriasFinanceirasAdmin'
 import UsuariosAdmin from'./UsuariosAdminV20'
 import AparenciaBannersAdmin from'./AparenciaBannersAdmin'
+import VendedoresAdmin from'./VendedoresAdmin'
 
-type Aba='Clientes'|'Categorias'|'Categorias Financeiras'|'Fornecedores'|'Produtos'|'Aparência e Banners'|'Usuários e Permissões'
+type Aba='Clientes'|'Vendedores'|'Categorias'|'Categorias Financeiras'|'Fornecedores'|'Produtos'|'Aparência e Banners'|'Usuários e Permissões'
 const itens:[Aba,LucideIcon][]=[
- ['Clientes',Users],['Categorias',Tag],['Categorias Financeiras',WalletCards],['Fornecedores',Truck],['Produtos',Package],['Aparência e Banners',ImageIcon],['Usuários e Permissões',ShieldCheck]
+ ['Clientes',Users],['Vendedores',Users],['Categorias',Tag],['Categorias Financeiras',WalletCards],['Fornecedores',Truck],['Produtos',Package],['Aparência e Banners',ImageIcon],['Usuários e Permissões',ShieldCheck]
 ]
 
 export default function CadastrosAdmin({admin=false}:{admin?:boolean}){
@@ -26,6 +27,7 @@ export default function CadastrosAdmin({admin=false}:{admin?:boolean}){
    {visiveis.map(([nome,Icon])=><button key={nome} onClick={()=>setAba(nome)} className={`shrink-0 h-11 px-4 rounded-xl border inline-flex items-center gap-2 text-xs font-black ${aba===nome?'bg-[#c80082] border-[#c80082] text-white':'bg-white border-zinc-200 text-zinc-600'}`}><Icon size={15}/>{nome}</button>)}
   </div>
   {aba==='Clientes'&&<ClientesAdmin/>}
+  {aba==='Vendedores'&&<VendedoresAdmin/>}
   {aba==='Categorias'&&<CategoriasAdmin/>}
   {aba==='Categorias Financeiras'&&<CategoriasFinanceirasAdmin/>}
   {aba==='Fornecedores'&&<FornecedoresAdmin/>}
