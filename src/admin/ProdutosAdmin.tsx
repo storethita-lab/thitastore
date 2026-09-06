@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { AlertCircle, Check, ImagePlus, Package, Pencil, Plus, RefreshCw, Star, Trash2, UploadCloud, X } from 'lucide-react'
 import { supabase } from '../supabase'
+import SearchSelect from '../components/SearchSelect'
 import { compressToWebp, safeFileName } from '../lib/images'
 const normalizar=(v:string)=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR');
 
@@ -196,7 +197,7 @@ export default function ProdutosAdmin() {
         <Field label="Nome" required className="md:col-span-2"><input required value={form.nome} onChange={e=>setForm({...form,nome:e.target.value})} className="input" placeholder="Ex: Baby Doll Elegance"/></Field>
         <Field label="SKU / Referência" required><input required readOnly value={skuLoading && !editing ? 'Gerando...' : form.sku} className="input bg-zinc-100 text-zinc-700 cursor-not-allowed" placeholder="THI-000001"/><span className="text-[10px] text-zinc-400 mt-1 block">Gerada automaticamente pelo Supabase e preservada na edição.</span></Field>
         <Field label="Categoria" required><select required value={form.categoria_id} onChange={e=>setForm({...form,categoria_id:e.target.value})} className="input"><option value="">Selecione</option>{categorias.map(c=><option key={c.id} value={c.id}>{c.nome}</option>)}</select></Field>
-        <Field label="Fornecedor" required><select required value={form.fornecedor_id} onChange={e=>setForm({...form,fornecedor_id:e.target.value})} className="input"><option value="">Selecione</option>{fornecedores.map(f=><option key={f.id} value={f.id}>{f.nome}</option>)}</select></Field>
+        <Field label="Fornecedor" required><SearchSelect value={form.fornecedor_id} onChange={fornecedor_id=>setForm({...form,fornecedor_id})} options={fornecedores.map(f=>({value:f.id,label:f.nome}))} placeholder="Pesquisar fornecedor..."/></Field>
         <Field label="Descrição" required className="md:col-span-3"><textarea required value={form.descricao} onChange={e=>setForm({...form,descricao:e.target.value})} className="input min-h-24 py-3" placeholder="Material, caimento, detalhes..."/></Field>
         <Field label="Custo (R$)" required><input required type="number" min="0.01" step="0.01" value={form.custo} onChange={e=>alterarCusto(Number(e.target.value))} className="input"/></Field>
         <Field label="Margem sobre custo (%)"><input type="number" step="0.01" value={form.margem} onChange={e=>alterarMargem(Number(e.target.value))} className="input"/><span className="text-[10px] text-zinc-400 mt-1 block">Alterar a margem recalcula o preço.</span></Field>
