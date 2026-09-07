@@ -39,7 +39,7 @@ export default function ProdutosAdmin() {
   async function carregar(){
     setLoading(true); setErro('')
     const [p,c,f]=await Promise.all([
-      supabase.from('produtos').select(`*, produto_variantes(id,tamanho,sku,estoque,estoque_minimo,ativo), produto_imagens(id,storage_path,url,ordem,capa)`).order('created_at',{ascending:false}),
+      supabase.from('produtos').select(`*, produto_variantes(id,tamanho,sku,estoque,estoque_minimo,ativo), produto_imagens(id,storage_path,url,ordem,capa)`).order('nome',{ascending:true}),
       supabase.from('categorias').select('id,nome').eq('ativo',true).order('ordem'),
       supabase.from('fornecedores').select('id,nome').eq('ativo',true).order('nome')
     ])
