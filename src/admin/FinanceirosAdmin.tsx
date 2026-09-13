@@ -4,6 +4,7 @@ import FinanceiroAdmin from'./FinanceiroAdmin'
 import CrediarioAdmin from'./CrediarioAdmin'
 import ContasPagarAdmin from'./ContasPagarAdminV1711'
 import ComissoesTaxasAdmin from'./ComissoesTaxasAdminV1731'
+import SaldoInicial from'./SaldoInicialV1758'
 
 type Aba='Caixa e Despesas'|'Crediário'|'Contas a Pagar'|'Comissões e Taxas'
 const itens=[
@@ -24,7 +25,7 @@ export default function FinanceirosAdmin(){
   <div className="bg-white border rounded-[22px] p-3 flex gap-2 overflow-x-auto">
    {itens.map(([nome,Icon])=><button key={nome} onClick={()=>setAba(nome)} className={`shrink-0 h-11 px-4 rounded-xl border inline-flex items-center gap-2 text-xs font-black ${aba===nome?'bg-[#c80082] border-[#c80082] text-white':'bg-white border-zinc-200 text-zinc-600'}`}><Icon size={15}/>{nome}</button>)}
   </div>
-  {aba==='Caixa e Despesas'&&<FinanceiroAdmin/>}
+  {aba==='Caixa e Despesas'&&<><SaldoInicial/><FinanceiroAdmin/></>}
   {aba==='Crediário'&&<CrediarioAdmin/>}
   {aba==='Contas a Pagar'&&<ContasPagarAdmin/>}
   {aba==='Comissões e Taxas'&&<ComissoesTaxasAdmin/>}
