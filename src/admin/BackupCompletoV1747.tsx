@@ -3,7 +3,7 @@ import{Download,Database,ShieldCheck}from'lucide-react'
 import{supabase}from'../supabase'
 
 const obrigatorias=['clientes','fornecedores','categorias','produtos','produto_variantes','produto_imagens','entradas_mercadorias','vendas_v17_12','venda_itens_v17_12','crediario_parcelas_v17_13','recebimentos_clientes_v17_36']
-const opcionais=['entradas','entrada_rascunho_itens','vendas_rascunhos_v17_28','vendas_rascunho_itens_v17_28','movimentacoes_estoque_v17_11','ajustes_estoque_v17_37','eventos_clientes_v17_36','despesas_v17_16','contas_pagar_v17_17','categorias_financeiras_v17_18','vendedores_v17_30','config_taxas_cartao_v17_31','catalogo_config_v17_22','banners_catalogo_v17_22','saldos_iniciais_v17_58','app_usuarios','auditoria_v17_19']
+const opcionais=['entradas','entrada_rascunho_itens','vendas_rascunhos_v17_28','vendas_rascunho_itens_v17_28','movimentacoes_estoque_v17_11','ajustes_estoque_v17_37','eventos_clientes_v17_36','despesas_v17_16','contas_pagar_v17_17','categorias_financeiras_v17_18','vendedores_v17_30','config_taxas_cartao_v17_31','catalogo_config_v17_22','banners_catalogo_v17_22','saldos_iniciais_v17_58','config_empresa_v17_62','fretes_cep_v17_62','fretes_localidade_v17_62','pedidos_catalogo_v17_62','app_usuarios','auditoria_v17_19']
 
 async function lerTabela(nome:string){const todos:unknown[]=[];for(let inicio=0;;inicio+=1000){const{data,error}=await supabase.from(nome).select('*').range(inicio,inicio+999);if(error)throw error;const lote=data||[];todos.push(...lote);if(lote.length<1000)break}return todos}
 const bytes=(s:string)=>new TextEncoder().encode(s)

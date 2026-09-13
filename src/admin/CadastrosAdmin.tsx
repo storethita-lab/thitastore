@@ -1,5 +1,5 @@
 import React,{useState}from'react'
-import {Package,Tag,Users,Truck,WalletCards,ShieldCheck,Image as ImageIcon,DatabaseBackup,type LucideIcon}from'lucide-react'
+import {Building2,Package,Tag,Users,Truck,WalletCards,ShieldCheck,Image as ImageIcon,DatabaseBackup,type LucideIcon}from'lucide-react'
 import ProdutosAdmin from'./ProdutosAdmin'
 import CategoriasAdmin from'./CategoriasAdmin'
 import ClientesAdmin from'./ClientesAdmin'
@@ -9,15 +9,16 @@ import UsuariosAdmin from'./UsuariosAdminV20'
 import AparenciaBannersAdmin from'./AparenciaBannersAdmin'
 import VendedoresAdmin from'./VendedoresAdmin'
 import BackupCompletoV1747 from'./BackupCompletoV1747'
+import ConfigEmpresaAdmin from'./ConfigEmpresaAdmin'
 
-type Aba='Clientes'|'Vendedores'|'Categorias'|'Categorias Financeiras'|'Fornecedores'|'Produtos'|'Aparência e Banners'|'Usuários e Permissões'|'Backup completo'
+type Aba='Clientes'|'Vendedores'|'Categorias'|'Categorias Financeiras'|'Fornecedores'|'Produtos'|'Config Empresa'|'Aparência e Banners'|'Usuários e Permissões'|'Backup completo'
 const itens:[Aba,LucideIcon][]=[
- ['Clientes',Users],['Vendedores',Users],['Categorias',Tag],['Categorias Financeiras',WalletCards],['Fornecedores',Truck],['Produtos',Package],['Aparência e Banners',ImageIcon],['Usuários e Permissões',ShieldCheck],['Backup completo',DatabaseBackup]
+ ['Clientes',Users],['Vendedores',Users],['Categorias',Tag],['Categorias Financeiras',WalletCards],['Fornecedores',Truck],['Produtos',Package],['Config Empresa',Building2],['Aparência e Banners',ImageIcon],['Usuários e Permissões',ShieldCheck],['Backup completo',DatabaseBackup]
 ]
 
 export default function CadastrosAdmin({admin=false}:{admin?:boolean}){
  const[aba,setAba]=useState<Aba>('Clientes')
- const visiveis=admin?itens:itens.filter(([nome])=>nome!=='Usuários e Permissões'&&nome!=='Aparência e Banners'&&nome!=='Backup completo')
+ const visiveis=admin?itens:itens.filter(([nome])=>nome!=='Usuários e Permissões'&&nome!=='Aparência e Banners'&&nome!=='Backup completo'&&nome!=='Config Empresa')
  return <div className="space-y-5">
   <div className="rounded-[24px] bg-zinc-950 text-white p-6">
    <p className="text-[10px] uppercase tracking-[.2em] font-black text-[#ff70c8]">THITA Store</p>
@@ -33,6 +34,7 @@ export default function CadastrosAdmin({admin=false}:{admin?:boolean}){
   {aba==='Categorias Financeiras'&&<CategoriasFinanceirasAdmin/>}
   {aba==='Fornecedores'&&<FornecedoresAdmin/>}
   {aba==='Produtos'&&<ProdutosAdmin/>}
+  {aba==='Config Empresa'&&admin&&<ConfigEmpresaAdmin/>}
   {aba==='Aparência e Banners'&&admin&&<AparenciaBannersAdmin/>}
   {aba==='Usuários e Permissões'&&<UsuariosAdmin/>}
   {aba==='Backup completo'&&admin&&<BackupCompletoV1747/>}

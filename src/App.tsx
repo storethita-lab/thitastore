@@ -19,6 +19,7 @@ import ContasPagarAdmin from './admin/ContasPagarAdminV1711'
 import CategoriasFinanceirasAdmin from './admin/CategoriasFinanceirasAdmin'
 import CadastrosAdmin from './admin/CadastrosAdmin'
 import FinanceirosAdmin from './admin/FinanceirosAdmin'
+import LojaCheckout,{type ItemSacola}from'./LojaCheckoutV1762'
 
 type Variante = { id: string; tamanho: string; disponivel: boolean }
 type Imagem = { id: string; url: string | null; ordem: number; capa: boolean }
@@ -59,6 +60,11 @@ export default function App() {
   const [catalogoLogo,setCatalogoLogo]=useState('/logo-thita.png')
   const [banners,setBanners]=useState<BannerCatalogo[]>([])
   const [bannerAtual,setBannerAtual]=useState(0)
+  const [tamanhoSelecionado,setTamanhoSelecionado]=useState('')
+  const [sacola,setSacola]=useState<ItemSacola[]>(()=>{try{return JSON.parse(localStorage.getItem('thita_sacola')||'[]')}catch{return[]}})
+  const [checkout,setCheckout]=useState(false)
+  const [adicionado,setAdicionado]=useState(false)
+  const [whatsappLoja,setWhatsappLoja]=useState('5575999304778')
 
   async function carregarCatalogo() {
     setLoading(true); setErro('')
@@ -71,7 +77,7 @@ export default function App() {
     setLoading(false)
   }
 
-  async function carregarAparencia(){const[c,b]=await Promise.all([supabase.from('catalogo_config_v17_22').select('logo_url').eq('id',1).maybeSingle(),supabase.from('banners_catalogo_v17_22').select('id,titulo,subtitulo,imagem_url,imagem_mobile_url,texto_botao,link_url,ordem').order('ordem')]);if(c.data?.logo_url)setCatalogoLogo(c.data.logo_url);if(!b.error)setBanners((b.data||[])as BannerCatalogo[])}
+  async function carregarAparencia(){const[c,b,e]=await Promise.all([supabase.from('catalogo_config_v17_22').select('logo_url').eq('id',1).maybeSingle(),supabase.from('banners_catalogo_v17_22').select('id,titulo,subtitulo,imagem_url,imagem_mobile_url,texto_botao,link_url,ordem').order('ordem'),supabase.from('config_empresa_v17_62').select('whatsapp').eq('id',1).maybeSingle()]);if(c.data?.logo_url)setCatalogoLogo(c.data.logo_url);if(!b.error)setBanners((b.data||[])as BannerCatalogo[]);if(e.data?.whatsapp)setWhatsappLoja(String(e.data.whatsapp).replace(/\D/g,''))}
 
   async function carregarPerfil(userId?: string) {
     if (!userId) { setProfile(null); return }
@@ -101,7 +107,11 @@ export default function App() {
 
   useEffect(() => {
     setImagemAtual(0)
+    setTamanhoSelecionado('')
+    setAdicionado(false)
   }, [produtoAberto?.id])
+
+  useEffect(()=>localStorage.setItem('thita_sacola',JSON.stringify(sacola)),[sacola])
 
   const categorias = useMemo(() =>
     ['Todos', ...Array.from(new Set(produtos.map(p => p.categoria).filter(Boolean) as string[])).sort()]
@@ -138,6 +148,8 @@ export default function App() {
     setFavoritos(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
   }
 
+  function adicionarSacola(p:ProdutoCatalogo,preco:number){const v=p.variantes.find(x=>x.id===tamanhoSelecionado);if(!v)return;setSacola(a=>{const existe=a.find(x=>x.variante_id===v.id);return existe?a.map(x=>x.variante_id===v.id?{...x,quantidade:x.quantidade+1}:x):[...a,{produto_id:p.id,variante_id:v.id,nome:p.nome,sku:p.sku,tamanho:v.tamanho,quantidade:1,preco,imagem:p.imagem_capa}]});setAdicionado(true)}
+
   if (!sessionReady) return <div className="min-h-screen grid place-items-center bg-[#fffafc]"><RefreshCw className="animate-spin text-[#c80082]" /></div>
   if (adminOpen && profile) return <AdminShell profile={profile} onLogout={logout} onVoltar={() => setAdminOpen(false)} />
 
@@ -154,10 +166,10 @@ export default function App() {
           <Search size={17} className="text-zinc-400" />
           <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar produto, categoria ou referência..." className="w-full bg-transparent outline-none text-sm" />
         </div>
-        <button onClick={() => profile ? setAdminOpen(true) : document.getElementById('login')?.scrollIntoView({behavior:'smooth'})}
+        <div className="flex items-center gap-2"><button onClick={()=>setCheckout(true)} className="relative w-10 h-10 rounded-full border grid place-items-center"><ShoppingBag size={17}/>{sacola.length>0&&<span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-[#c80082] text-white text-[10px] grid place-items-center">{sacola.reduce((a,x)=>a+x.quantidade,0)}</span>}</button><button onClick={() => profile ? setAdminOpen(true) : document.getElementById('login')?.scrollIntoView({behavior:'smooth'})}
           className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 h-10 text-xs font-semibold hover:border-[#c80082] hover:text-[#c80082] transition">
           {profile ? <LayoutDashboard size={16}/> : <LogIn size={16}/>}<span className="hidden sm:inline">{profile ? 'Painel' : 'Admin'}</span>
-        </button>
+        </button></div>
       </div>
     </header>
 
@@ -222,7 +234,7 @@ export default function App() {
       const tamanhos = (produtoAberto.variantes || []).filter(v => v.disponivel)
       const prev = () => setImagemAtual(i => galeria.length ? (i - 1 + galeria.length) % galeria.length : 0)
       const next = () => setImagemAtual(i => galeria.length ? (i + 1) % galeria.length : 0)
-      const waMsg = encodeURIComponent(`Olá! Vim pelo catálogo THITA e gostaria de saber mais sobre ${produtoAberto.nome}${produtoAberto.sku ? ` (Ref. ${produtoAberto.sku})` : ''}.`)
+      const waMsg = encodeURIComponent(`Olá! Vim pelo catálogo THITA e gostaria de saber mais sobre ${produtoAberto.nome}${produtoAberto.sku ? ` (Ref. ${produtoAberto.sku})` : ''}.${produtoAberto.imagem_capa?`\nImagem do produto: ${produtoAberto.imagem_capa}`:''}`)
       return <div className="fixed inset-0 z-[70] bg-black/55 backdrop-blur-sm p-3 md:p-6 overflow-y-auto" onClick={() => setProdutoAberto(null)}>
         <div className="min-h-full grid place-items-center">
           <div className="w-full max-w-5xl bg-white rounded-[26px] overflow-hidden shadow-2xl grid md:grid-cols-[1.08fr_.92fr]" onClick={e => e.stopPropagation()}>
@@ -267,7 +279,7 @@ export default function App() {
                 <p className="text-xs font-bold text-zinc-700 mb-2">Tamanhos disponíveis</p>
                 <div className="flex flex-wrap gap-2">
                   {tamanhos.length > 0
-                    ? tamanhos.map(v => <span key={v.id} className="min-w-10 h-10 px-3 rounded-xl border border-zinc-300 bg-white grid place-items-center text-xs font-black">{v.tamanho}</span>)
+                    ? tamanhos.map(v => <button key={v.id} onClick={()=>setTamanhoSelecionado(v.id)} className={`min-w-10 h-10 px-3 rounded-xl border grid place-items-center text-xs font-black ${tamanhoSelecionado===v.id?'bg-zinc-950 text-white border-zinc-950':'border-zinc-300 bg-white'}`}>{v.tamanho}</button>)
                     : <span className="text-sm text-zinc-400">Sem tamanhos disponíveis no momento.</span>
                   }
                 </div>
@@ -282,8 +294,10 @@ export default function App() {
               </div>
 
               <div className="mt-auto pt-7">
-                <a href={`https://wa.me/5575999304778?text=${waMsg}`} target="_blank" rel="noopener noreferrer"
-                  className="w-full h-12 rounded-xl bg-[#25D366] text-white font-black text-sm flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition">
+                <button disabled={!tamanhoSelecionado} onClick={()=>adicionarSacola(produtoAberto,precoAtual)} className="w-full h-12 rounded-xl bg-[#c80082] text-white font-black text-sm disabled:opacity-40">Adicionar à sacola</button>
+                {adicionado&&<div className="mt-3 rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-sm"><b>Produto adicionado à sacola!</b><div className="flex gap-2 mt-2"><button onClick={()=>setProdutoAberto(null)} className="acao">Continuar comprando</button><button onClick={()=>{setProdutoAberto(null);setCheckout(true)}} className="botao">Finalizar compra</button></div></div>}
+                <a href={`https://wa.me/${whatsappLoja}?text=${waMsg}`} target="_blank" rel="noopener noreferrer"
+                  className="mt-3 w-full h-12 rounded-xl bg-[#25D366] text-white font-black text-sm flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition">
                   <MessageCircle size={18}/> Consultar pelo WhatsApp
                 </a>
                 <p className="mt-2 text-center text-[11px] text-zinc-400">Informe o tamanho desejado no atendimento.</p>
@@ -293,6 +307,8 @@ export default function App() {
         </div>
       </div>
     })()}
+
+    <LojaCheckout itens={sacola} aberto={checkout} fechar={()=>setCheckout(false)} alterar={setSacola}/>
 
 
     <footer className="bg-zinc-950 text-zinc-400"><div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs"><img src={catalogoLogo} alt="THITA" className="h-14 w-auto object-contain"/><p>THITA Store • Catálogo conectado à nuvem</p></div></footer>
