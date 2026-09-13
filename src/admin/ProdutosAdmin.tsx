@@ -14,10 +14,11 @@ type Produto = {
   categoria_id: string | null; fornecedor_id: string | null; custo: number; preco: number
   preco_promocional: number | null; estoque_minimo: number; novo: boolean; promocao: boolean
   destaque: boolean; ativo: boolean; produto_variantes?: Variante[]; produto_imagens?: Imagem[]
+  peso_kg:number|null;altura_cm:number|null;largura_cm:number|null;comprimento_cm:number|null
 }
 type VariantDraft = { id?: string; tamanho: string; sku: string; estoque_minimo: number; estoque: number }
 const tamanhosPadrao = ['PP','P','M','G','GG','G1','G2','2','4','6','8','10','12','14','16']
-const initialForm = { nome:'', sku:'', descricao:'', categoria_id:'', fornecedor_id:'', custo:0, margem:70, preco:0, preco_promocional:'', novo:true, promocao:false, destaque:false, ativo:true }
+const initialForm = { nome:'', sku:'', descricao:'', categoria_id:'', fornecedor_id:'', custo:0, margem:70, preco:0, preco_promocional:'',peso_kg:'',altura_cm:'',largura_cm:'',comprimento_cm:'', novo:true, promocao:false, destaque:false, ativo:true }
 
 export default function ProdutosAdmin() {
   const [produtos,setProdutos]=useState<Produto[]>([])
@@ -149,6 +150,7 @@ export default function ProdutosAdmin() {
         })
         if(error)throw error
         const produtoId=data as string
+        if(form.peso_kg&&form.altura_cm&&form.largura_cm&&form.comprimento_cm){const d=await supabase.rpc('salvar_dimensoes_produto_v17_63',{p_produto_id:produtoId,p_peso_kg:Number(form.peso_kg),p_altura_cm:Number(form.altura_cm),p_largura_cm:Number(form.largura_cm),p_comprimento_cm:Number(form.comprimento_cm)});if(d.error)throw d.error}
         await uploadImages(produtoId,pendingImages.slice(0,8))
         setOk('Produto cadastrado e sincronizado com a nuvem.')
         setSkuPendente('')
@@ -159,6 +161,7 @@ export default function ProdutosAdmin() {
           p_novo:form.novo,p_promocao:form.promocao,p_destaque:form.destaque,p_ativo:form.ativo
         })
         if(error)throw error
+        if(form.peso_kg&&form.altura_cm&&form.largura_cm&&form.comprimento_cm){const d=await supabase.rpc('salvar_dimensoes_produto_v17_63',{p_produto_id:editing.id,p_peso_kg:Number(form.peso_kg),p_altura_cm:Number(form.altura_cm),p_largura_cm:Number(form.largura_cm),p_comprimento_cm:Number(form.comprimento_cm)});if(d.error)throw d.error}
         const sync=await supabase.rpc('sincronizar_variantes_produto',{p_produto_id:editing.id,p_variantes:variantes.map(v=>({tamanho:v.tamanho,sku:v.sku||null,estoque_minimo:Number(v.estoque_minimo)||0}))})
         if(sync.error)throw sync.error
         if(pendingImages.length)await uploadImages(editing.id,pendingImages.slice(0,Math.max(0,8-currentImages.length)))
@@ -170,7 +173,7 @@ export default function ProdutosAdmin() {
 
   function editar(p:Produto){
     setEditing(p)
-    setForm({nome:p.nome,sku:p.sku||'',descricao:p.descricao||'',categoria_id:p.categoria_id||'',fornecedor_id:p.fornecedor_id||'',custo:Number(p.custo)||0,margem:calcMargem(Number(p.custo)||0,Number(p.preco)||0),preco:Number(p.preco)||0,preco_promocional:p.preco_promocional==null?'':String(p.preco_promocional),novo:p.novo,promocao:p.promocao,destaque:p.destaque,ativo:p.ativo})
+    setForm({nome:p.nome,sku:p.sku||'',descricao:p.descricao||'',categoria_id:p.categoria_id||'',fornecedor_id:p.fornecedor_id||'',custo:Number(p.custo)||0,margem:calcMargem(Number(p.custo)||0,Number(p.preco)||0),preco:Number(p.preco)||0,preco_promocional:p.preco_promocional==null?'':String(p.preco_promocional),peso_kg:p.peso_kg==null?'':String(p.peso_kg),altura_cm:p.altura_cm==null?'':String(p.altura_cm),largura_cm:p.largura_cm==null?'':String(p.largura_cm),comprimento_cm:p.comprimento_cm==null?'':String(p.comprimento_cm),novo:p.novo,promocao:p.promocao,destaque:p.destaque,ativo:p.ativo})
     setVariantes((p.produto_variantes||[]).filter(v=>v.ativo).map(v=>({id:v.id,tamanho:v.tamanho,sku:v.sku||'',estoque_minimo:Number(v.estoque_minimo)||0,estoque:Number(v.estoque)||0})))
     setPendingImages([]);setErro('');setOk('');setModalOpen(true)
   }
@@ -203,6 +206,8 @@ export default function ProdutosAdmin() {
         <Field label="Margem sobre custo (%)"><input type="number" step="0.01" value={form.margem} onChange={e=>alterarMargem(Number(e.target.value))} className="input"/><span className="text-[10px] text-zinc-400 mt-1 block">Alterar a margem recalcula o preço.</span></Field>
         <Field label="Preço de venda (R$)" required><input required type="number" min="0.01" step="0.01" value={form.preco} onChange={e=>alterarPreco(Number(e.target.value))} className="input"/><span className="text-[10px] text-zinc-400 mt-1 block">Alterar o preço recalcula a margem.</span></Field>
         <Field label="Preço promocional (R$)" required={form.promocao}><input required={form.promocao} type="number" min="0.01" step="0.01" value={form.preco_promocional} onChange={e=>setForm({...form,preco_promocional:e.target.value})} className="input" placeholder={form.promocao?'Obrigatório em promoção':'Opcional'}/></Field>
+        <div className="md:col-span-3"><p className="text-xs font-black">Medidas para o Melhor Envio</p><p className="text-[10px] text-zinc-500">Obrigatórias apenas para produtos enviados por transportadora.</p></div>
+        {([['peso_kg','Peso (kg)'],['altura_cm','Altura (cm)'],['largura_cm','Largura (cm)'],['comprimento_cm','Comprimento (cm)']] as const).map(([k,l])=><Field key={k} label={l}><input type="number" min="0.01" step="0.01" value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})} className="input"/></Field>)}
       </div>
       <div className="flex flex-wrap gap-4 mt-5 py-4 border-y border-zinc-100">{(['novo','promocao','destaque','ativo'] as const).map(k=><label key={k} className="flex items-center gap-2 text-xs font-bold capitalize"><input type="checkbox" checked={form[k]} onChange={e=>setForm({...form,[k]:e.target.checked})} className="accent-[#c80082]"/>{k==='promocao'?'Promoção':k}</label>)}</div>
 
