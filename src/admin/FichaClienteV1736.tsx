@@ -114,7 +114,7 @@ function CrediarioCliente({ parcelas, vendas, recebidoVenda, saldoVenda, saldoPa
           <td className="font-bold text-emerald-700">{brl(recebido)}</td>
           <td className="font-black">{brl(falta)}</td>
           <td>{fechada ? "PAGA" : recebido > 0 ? "PARCIAL" : p.vencimento < hoje() ? "VENCIDA" : "ABERTA"}</td>
-          <td>{fechada ? <span className="inline-flex items-center gap-2 font-bold text-emerald-700"><input type="checkbox" checked readOnly /> Mês fechado</span> : <button className="acao" onClick={() => abrirParcela(p)}><CheckCircle size={13} />Receber restante</button>}</td>
+          <td>{fechada ? <span className="inline-flex items-center gap-2 font-bold text-emerald-700"><input type="checkbox" checked readOnly /> Mês fechado</span> : <button className="acao" onClick={() => abrirParcela(p)}><CheckCircle size={13} />{recebido > 0 ? "Fechar mês" : "Receber"}</button>}</td>
         </tr>;
       })}</tbody>
     </Tabela>
