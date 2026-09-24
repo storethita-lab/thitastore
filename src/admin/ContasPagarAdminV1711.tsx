@@ -1,9 +1,10 @@
 import React,{useEffect,useMemo,useState}from'react'
+import{dataLoja}from'../utils/dataLoja'
 import{Check,RefreshCw,RotateCcw,WalletCards}from'lucide-react'
 import{supabase}from'../supabase'
 import SearchSelect from'../components/SearchSelect'
 type P={id:string;parcela_numero:number;parcelas_total:number;vencimento:string;valor:number;status:string;data_pagamento:string|null;ignorar_caixa:boolean;entradas_mercadorias:{numero_documento:string;forma_pagamento:string;fornecedores:{nome:string}|null}|null;despesas_v17_16:{descricao:string;categoria:string;forma_pagamento:string}|null}
-const brl=(v:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(v)||0),hoje=()=>new Date().toISOString().slice(0,10)
+const brl=(v:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(v)||0),hoje=()=>dataLoja()
 export default function ContasPagarAdmin(){
  const[dados,setDados]=useState<P[]>([]),[status,setStatus]=useState('aberta'),[origem,setOrigem]=useState(''),[inicio,setInicio]=useState(''),[fim,setFim]=useState(''),[loading,setLoading]=useState(true),[erro,setErro]=useState(''),[ok,setOk]=useState('')
  async function carregar(){setLoading(true);setErro('');const{data,error}=await supabase.from('contas_pagar_v17_17').select('id,parcela_numero,parcelas_total,vencimento,valor,status,data_pagamento,ignorar_caixa,entradas_mercadorias(numero_documento,forma_pagamento,fornecedores(nome)),despesas_v17_16(descricao,categoria,forma_pagamento)').order('vencimento');if(error)setErro(error.message);else setDados(((data||[])as unknown as P[]).filter(x=>!x.ignorar_caixa));setLoading(false)}

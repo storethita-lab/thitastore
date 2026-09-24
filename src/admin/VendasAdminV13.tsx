@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import{dataLoja}from'../utils/dataLoja'
 import { Check, Cloud, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { supabase } from "../supabase";
 import SearchSelect from "../components/SearchSelect";
 let filaVenda = Promise.resolve();
 function VendasAdminV13() {
-  const [clientes, setClientes] = useState([]), [vendedores, setVendedores] = useState([]), [produtos, setProdutos] = useState([]), [itens, setItens] = useState([]), [cliente, setCliente] = useState(""), [vendedor, setVendedor] = useState(""), [forma, setForma] = useState("Pix"), [data, setData] = useState((/* @__PURE__ */ new Date()).toISOString().slice(0, 10)), [parcelas, setParcelas] = useState(2), [valoresParcelas, setValoresParcelas] = useState([]), [vencimento, setVencimento] = useState(new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10)), [buscaProduto, setBuscaProduto] = useState(""), [produtoId, setProdutoId] = useState(""), [varianteId, setVarianteId] = useState(""), [qtd, setQtd] = useState(1), [preco, setPreco] = useState(0), [desconto, setDesconto] = useState(0), [entrega, setEntrega] = useState(0), [obs, setObs] = useState(""), [saving, setSaving] = useState(false), [erro, setErro] = useState(""), [ok, setOk] = useState(""), [rascunhoId, setRascunhoId] = useState(""), [nuvem, setNuvem] = useState("Salvo na nuvem");
+  const [clientes, setClientes] = useState([]), [vendedores, setVendedores] = useState([]), [produtos, setProdutos] = useState([]), [itens, setItens] = useState([]), [cliente, setCliente] = useState(""), [vendedor, setVendedor] = useState(""), [forma, setForma] = useState("Pix"), [data, setData] = useState(dataLoja()), [parcelas, setParcelas] = useState(2), [valoresParcelas, setValoresParcelas] = useState([]), [vencimento, setVencimento] = useState(dataLoja(new Date(Date.now() + 30 * 864e5))), [buscaProduto, setBuscaProduto] = useState(""), [produtoId, setProdutoId] = useState(""), [varianteId, setVarianteId] = useState(""), [qtd, setQtd] = useState(1), [preco, setPreco] = useState(0), [desconto, setDesconto] = useState(0), [entrega, setEntrega] = useState(0), [obs, setObs] = useState(""), [saving, setSaving] = useState(false), [erro, setErro] = useState(""), [ok, setOk] = useState(""), [rascunhoId, setRascunhoId] = useState(""), [nuvem, setNuvem] = useState("Salvo na nuvem");
   const pronto = useRef(false);
   async function carregar() {
     pronto.current = false;
@@ -24,13 +25,13 @@ function VendasAdminV13() {
         setCliente(r.cliente_id || "");
         setVendedor(r.vendedor_id || "");
         setValoresParcelas((r.parcelas_personalizadas || []).map(Number));
-        setData(r.data_venda || (/* @__PURE__ */ new Date()).toISOString().slice(0, 10));
+        setData(r.data_venda || dataLoja());
         setForma(r.forma_pagamento || "Pix");
         setDesconto(Number(r.desconto) || 0);
         setEntrega(Number(r.entrega) || 0);
         setObs(r.observacoes || "");
         setParcelas(Number(r.parcelas) || 2);
-        setVencimento(r.primeiro_vencimento || new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10));
+        setVencimento(r.primeiro_vencimento || dataLoja(new Date(Date.now() + 30 * 864e5)));
         setItens((r.itens || []).map((i) => {
           const prod = ps.find((x) => x.produto_variantes.some((y) => y.id === i.variante_id)), vari = prod?.produto_variantes.find((y) => y.id === i.variante_id);
           return { ...i, quantidade: Number(i.quantidade), preco_unitario: Number(i.preco_unitario), produto: prod?.nome || "Produto", tamanho: vari?.tamanho || "\u2014" };

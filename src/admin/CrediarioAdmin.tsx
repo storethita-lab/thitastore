@@ -1,9 +1,10 @@
 import React,{useEffect,useMemo,useState}from'react'
+import{dataLoja}from'../utils/dataLoja'
 import{CheckCircle,RefreshCw,RotateCcw,WalletCards,X}from'lucide-react'
 import{supabase}from'../supabase'
 import SearchSelect from'../components/SearchSelect'
 type Parcela={id:string;venda_id:string;numero_venda:string;cliente:string;parcela_numero:number;parcelas_total:number;vencimento:string;valor:number;valor_recebido:number;status:string;data_pagamento:string|null}
-const hoje=()=>new Date().toISOString().slice(0,10),brl=(v:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(v)||0)
+const hoje=()=>dataLoja(),brl=(v:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(v)||0)
 export default function CrediarioAdmin(){
  const[lista,setLista]=useState<Parcela[]>([]),[status,setStatus]=useState('aberta'),[cliente,setCliente]=useState(''),[inicio,setInicio]=useState(''),[fim,setFim]=useState(''),[loading,setLoading]=useState(true),[erro,setErro]=useState(''),[ok,setOk]=useState(''),[receber,setReceber]=useState<Parcela|null>(null),[valor,setValor]=useState(''),[dataRecebimento,setDataRecebimento]=useState(hoje()),[salvando,setSalvando]=useState(false)
  async function carregar(){setLoading(true);setErro('');const{data,error}=await supabase.from('crediario_parcelas_v17_13').select('id,venda_id,parcela_numero,parcelas_total,vencimento,valor,valor_recebido,status,data_pagamento,vendas_v17_12(numero,status,clientes(nome))').order('vencimento');if(error)setErro(error.message);else setLista(((data||[])as unknown as Array<Record<string,unknown>>).map(x=>{const v=x.vendas_v17_12 as {numero?:string;status?:string;clientes?:{nome?:string}}|null;return{id:String(x.id),venda_id:String(x.venda_id),numero_venda:v?.numero||'—',cliente:v?.clientes?.nome||'—',parcela_numero:Number(x.parcela_numero),parcelas_total:Number(x.parcelas_total),vencimento:String(x.vencimento),valor:Number(x.valor)||0,valor_recebido:Number(x.valor_recebido)||0,status:String(x.status),data_pagamento:x.data_pagamento?String(x.data_pagamento):null}}).filter(x=>x.numero_venda!=='—'));setLoading(false)}
