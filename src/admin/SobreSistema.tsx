@@ -2,7 +2,16 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.71',data:'25/09/2026',titulo:'Área Sobre e histórico de versões',atual:true,
+    versao:'V17.72',data:'26/09/2026',titulo:'Parcelamento no cartão de crédito',atual:true,
+    itens:[
+      'Inclusão da quantidade de parcelas ao selecionar Cartão de Crédito na venda.',
+      'Exibição automática do valor estimado de cada parcela.',
+      'Gravação da quantidade de parcelas junto à venda para consultas futuras.',
+      'Separação preservada entre parcelamento do cartão e crediário do cliente.'
+    ]
+  },
+  {
+    versao:'V17.71',data:'25/09/2026',titulo:'Área Sobre e histórico de versões',
     itens:[
       'Inclusão do campo Sobre no menu administrativo.',
       'Apresentação da versão instalada e da data de atualização.',

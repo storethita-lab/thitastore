@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import{dataLoja}from'../utils/dataLoja'
+import { dataLoja } from "../utils/dataLoja";
 import { Check, Cloud, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { supabase } from "../supabase";
 import SearchSelect from "../components/SearchSelect";
 let filaVenda = Promise.resolve();
+let contextoParcelasCartao = null;
 function VendasAdminV13() {
   const [clientes, setClientes] = useState([]), [vendedores, setVendedores] = useState([]), [produtos, setProdutos] = useState([]), [itens, setItens] = useState([]), [cliente, setCliente] = useState(""), [vendedor, setVendedor] = useState(""), [forma, setForma] = useState("Pix"), [data, setData] = useState(dataLoja()), [parcelas, setParcelas] = useState(2), [valoresParcelas, setValoresParcelas] = useState([]), [vencimento, setVencimento] = useState(dataLoja(new Date(Date.now() + 30 * 864e5))), [buscaProduto, setBuscaProduto] = useState(""), [produtoId, setProdutoId] = useState(""), [varianteId, setVarianteId] = useState(""), [qtd, setQtd] = useState(1), [preco, setPreco] = useState(0), [desconto, setDesconto] = useState(0), [entrega, setEntrega] = useState(0), [obs, setObs] = useState(""), [saving, setSaving] = useState(false), [erro, setErro] = useState(""), [ok, setOk] = useState(""), [rascunhoId, setRascunhoId] = useState(""), [nuvem, setNuvem] = useState("Salvo na nuvem");
   const pronto = useRef(false);
@@ -30,7 +31,7 @@ function VendasAdminV13() {
         setDesconto(Number(r.desconto) || 0);
         setEntrega(Number(r.entrega) || 0);
         setObs(r.observacoes || "");
-        setParcelas(Number(r.parcelas) || 2);
+        setParcelas(Number(r.forma_pagamento === "Cart\xE3o de Cr\xE9dito" ? r.parcelas_cartao : r.parcelas) || (r.forma_pagamento === "Cart\xE3o de Cr\xE9dito" ? 1 : 2));
         setVencimento(r.primeiro_vencimento || dataLoja(new Date(Date.now() + 30 * 864e5)));
         setItens((r.itens || []).map((i) => {
           const prod = ps.find((x) => x.produto_variantes.some((y) => y.id === i.variante_id)), vari = prod?.produto_variantes.find((y) => y.id === i.variante_id);
@@ -44,9 +45,9 @@ function VendasAdminV13() {
   useEffect(() => {
     void carregar();
   }, []);
-  const args = () => ({ p_rascunho_id: rascunhoId, p_cliente_id: cliente || null, p_vendedor_id: vendedor || null, p_data_venda: data, p_forma_pagamento: forma, p_desconto: Number(desconto) || 0, p_entrega: Number(entrega) || 0, p_observacoes: obs, p_parcelas: forma === "Credi\xE1rio" ? parcelas : 1, p_primeiro_vencimento: forma === "Credi\xE1rio" ? vencimento : null, p_parcelas_personalizadas: forma === "Credi\xE1rio" ? valoresParcelas : [], p_itens: itens.map(({ variante_id, quantidade, preco_unitario }) => ({ variante_id, quantidade, preco_unitario })) });
+  const args = () => ({ p_rascunho_id: rascunhoId, p_cliente_id: cliente || null, p_vendedor_id: vendedor || null, p_data_venda: data, p_forma_pagamento: forma, p_desconto: Number(desconto) || 0, p_entrega: Number(entrega) || 0, p_observacoes: obs, p_parcelas: forma === "Credi\xE1rio" ? parcelas : 1, p_primeiro_vencimento: forma === "Credi\xE1rio" ? vencimento : null, p_parcelas_personalizadas: forma === "Credi\xE1rio" ? valoresParcelas : [], p_itens: itens.map(({ variante_id, quantidade, preco_unitario }) => ({ variante_id, quantidade, preco_unitario })), p_parcelas_cartao: forma === "Cart\xE3o de Cr\xE9dito" ? parcelas : 1 });
   async function persistir(a = args()) {
-    const r = await supabase.rpc("salvar_rascunho_venda_v17_30", a);
+    const r = await supabase.rpc("salvar_rascunho_venda_v17_72", a);
     if (r.error) throw r.error;
   }
   useEffect(() => {
@@ -108,10 +109,11 @@ function VendasAdminV13() {
       if (!vendedor) throw new Error("Selecione o vendedor.");
       if (!itens.length) throw new Error("Adicione produtos.");
       if (forma === "Credi\xE1rio" && (!vencimento || parcelas < 1 || parcelas > 24)) throw new Error("Informe de 1 a 24 parcelas e o primeiro vencimento.");
+      if (forma === "Cart\xE3o de Cr\xE9dito" && (parcelas < 1 || parcelas > 24)) throw new Error("Informe de 1 a 24 parcelas do cart\xE3o.");
       if (forma === "Credi\xE1rio" && Math.round(valoresParcelas.reduce((a, v) => a + Number(v || 0), 0) * 100) !== Math.round(total * 100)) throw new Error("A soma das parcelas deve ser exatamente igual ao total da venda.");
       await filaVenda;
       await persistir();
-      const { data: numero, error } = await supabase.rpc("finalizar_rascunho_venda_v17_30", { p_rascunho_id: rascunhoId });
+      const { data: numero, error } = await supabase.rpc("finalizar_rascunho_venda_v17_72", { p_rascunho_id: rascunhoId, p_parcelas_cartao: forma === "Cart\xE3o de Cr\xE9dito" ? parcelas : 1 });
       if (error) throw error;
       setOk(`Venda ${numero} conclu\xEDda.`);
       await carregar();
@@ -136,12 +138,14 @@ function VendasAdminV13() {
       setSaving(false);
     }
   }
+  contextoParcelasCartao = { forma, parcelas, setParcelas, total };
   return <form onSubmit={(e) => e.preventDefault()} onKeyDown={(e) => {
     if (e.key === "Enter") e.preventDefault();
   }} className="bg-white border rounded-[22px] p-5 md:p-6 space-y-5"><div className="flex gap-3 items-center"><ShoppingBag className="text-[#c80082]" /><div><p className="text-[10px] uppercase font-black text-[#c80082]">V17.33</p><h2 className="text-xl font-black">Nova venda</h2></div></div><span className={`text-xs flex gap-2 items-center ${nuvem.includes("Falha") ? "text-red-600" : "text-zinc-500"}`}><Cloud size={14} />{nuvem}</span>{erro && <div className="aviso erro">{erro}</div>}{ok && <div className="aviso ok">{ok}</div>}<div className="grid md:grid-cols-4 gap-3"><Campo label="Cliente *"><SearchSelect value={cliente} onChange={setCliente} options={clientes.map((c) => ({ value: c.id, label: c.nome }))} placeholder="Pesquisar cliente..." /></Campo><Campo label="Vendedor *"><select className="input" value={vendedor} onChange={(e) => setVendedor(e.target.value)}><option value="">Selecione</option>{vendedores.map((v) => <option key={v.id} value={v.id}>{v.nome} — {Number(v.comissao_percentual).toFixed(2)}%</option>)}</select></Campo><Campo label="Data"><input type="date" className="input" value={data} onChange={(e) => setData(e.target.value)} /></Campo><Campo label="Pagamento"><select className="input" value={forma} onChange={(e) => setForma(e.target.value)}>{["Dinheiro", "Pix", "Cart\xE3o de D\xE9bito", "Cart\xE3o de Cr\xE9dito", "Credi\xE1rio"].map((x) => <option key={x}>{x}</option>)}</select></Campo></div>{forma === "Credi\xE1rio" && <div className="grid sm:grid-cols-2 gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4"><Campo label="Quantidade de parcelas"><input type="number" min="1" max="24" className="input" value={parcelas} onChange={(e) => setParcelas(Number(e.target.value))} /></Campo><Campo label="Primeiro vencimento"><input type="date" className="input" value={vencimento} onChange={(e) => setVencimento(e.target.value)} /></Campo><div className="sm:col-span-2"><p className="text-xs font-black text-amber-900 mb-2">Defina o valor de cada parcela — soma: R$ {valoresParcelas.reduce((a, v) => a + Number(v || 0), 0).toFixed(2)} de R$ {total.toFixed(2)}</p><div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">{valoresParcelas.map((valor, i) => <Campo key={i} label={`Parcela ${i + 1}`}><input type="number" min="0.01" step="0.01" className="input" value={valor} onChange={(e) => setValoresParcelas((x) => x.map((v, j) => j === i ? Number(e.target.value) : v))} /></Campo>)}</div></div></div>}<div className="rounded-2xl bg-zinc-50 border p-4"><label className="block mb-3"><span className="text-xs font-bold block mb-1">Pesquisar produto</span><input className="input" value={buscaProduto} onChange={(e) => setBuscaProduto(e.target.value)} placeholder="Digite o nome ou SKU do produto" autoComplete="off" /></label><div className="grid md:grid-cols-[2fr_1fr_90px_130px_auto] gap-2"><SearchSelect value={produtoId} onChange={selProduto} options={produtosFiltrados.map((p2) => ({ value: p2.id, label: `${p2.nome} \u2014 ${p2.sku || "Sem SKU"}` }))} placeholder="Pesquisar produto ou SKU..." /><select className="input" value={varianteId} onChange={(e) => setVarianteId(e.target.value)}><option value="">Tamanho</option>{vars.map((v) => <option key={v.id} value={v.id}>{v.tamanho} ({v.estoque})</option>)}</select><input type="number" min="1" className="input" value={qtd} onChange={(e) => setQtd(Number(e.target.value))} /><input type="number" min=".01" step=".01" className="input" value={preco} onChange={(e) => setPreco(Number(e.target.value))} /><button type="button" onClick={adicionar} className="h-11 rounded-xl bg-zinc-950 text-white grid place-items-center"><Plus /></button></div>{itens.map((i) => <div key={i.variante_id} className="mt-2 p-3 bg-white border rounded-xl flex justify-between text-sm"><span><b>{i.produto}</b> • {i.tamanho} • {i.quantidade} un.</span><span className="flex gap-3"><b>R$ {(i.quantidade * i.preco_unitario).toFixed(2)}</b><button type="button" onClick={() => setItens((a) => a.filter((x) => x.variante_id !== i.variante_id))} className="text-red-600"><Trash2 size={14} /></button></span></div>)}</div><div className="grid md:grid-cols-3 gap-3"><Campo label="Desconto"><input type="number" min="0" step=".01" className="input" value={desconto} onChange={(e) => setDesconto(Number(e.target.value))} /></Campo><Campo label="Entrega"><input type="number" min="0" step=".01" className="input" value={entrega} onChange={(e) => setEntrega(Number(e.target.value))} /></Campo><Campo label="Observações"><input className="input" value={obs} onChange={(e) => setObs(e.target.value)} /></Campo></div><div className="flex justify-between items-end"><div><p>Subtotal: <b>R$ {subtotal.toFixed(2)}</b></p><p className="text-xl">Total: <b>R$ {total.toFixed(2)}</b></p></div><div className="flex gap-2"><button type="button" disabled={saving} onClick={cancelarRascunho} className="h-12 px-5 rounded-xl border text-red-700 font-black inline-flex gap-2 items-center"><X size={16} />Cancelar venda</button><button type="button" onClick={salvar} disabled={saving || nuvem.includes("Falha")} className="h-12 px-6 rounded-xl bg-[#c80082] text-white font-black inline-flex gap-2 items-center"><Check size={16} />{saving ? "Concluindo..." : "Concluir venda"}</button></div></div></form>;
 }
 function Campo({ label, children }) {
-  return <label><span className="text-[11px] font-bold text-zinc-600 block mb-1.5">{label}</span>{children}</label>;
+  const cartao = label === "Pagamento" ? contextoParcelasCartao : null;
+  return <label><span className="text-[11px] font-bold text-zinc-600 block mb-1.5">{label}</span>{children}{cartao?.forma === "Cartão de Crédito" && <span className="block mt-2 rounded-xl border border-sky-200 bg-sky-50 p-2"><span className="text-[11px] font-bold text-sky-900 block mb-1">Parcelas do cartão</span><select className="input" value={cartao.parcelas} onChange={(e) => cartao.setParcelas(Number(e.target.value))}>{Array.from({ length: 24 }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}x de R$ {(cartao.total / n).toFixed(2)}</option>)}</select><small className="block mt-1 text-sky-800">Não gera parcelas no crediário.</small></span>}</label>;
 }
 export {
   VendasAdminV13 as default
