@@ -2,7 +2,15 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.72',data:'26/09/2026',titulo:'Parcelamento no cartão de crédito',atual:true,
+    versao:'V17.73',data:'26/09/2026',titulo:'Registro informativo do parcelamento no cartão',atual:true,
+    itens:[
+      'Registro somente da quantidade de vezes da venda no cartão de crédito.',
+      'Remoção do cálculo e da exibição do valor de cada parcela.',
+      'A informação não cria parcelas, recebimentos ou movimentações no crediário.'
+    ]
+  },
+  {
+    versao:'V17.72',data:'26/09/2026',titulo:'Parcelamento no cartão de crédito',
     itens:[
       'Inclusão da quantidade de parcelas ao selecionar Cartão de Crédito na venda.',
       'Exibição automática do valor estimado de cada parcela.',
