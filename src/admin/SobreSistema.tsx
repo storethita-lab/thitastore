@@ -2,7 +2,16 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.73',data:'26/09/2026',titulo:'Registro informativo do parcelamento no cartão',atual:true,
+    versao:'V17.74',data:'27/09/2026',titulo:'Taxas do cartão de crédito',atual:true,
+    itens:[
+      'Separação entre taxa de crédito à vista e taxa de crédito parcelado.',
+      'Aplicação automática da taxa à vista nas vendas em 1x.',
+      'Aplicação automática da taxa parcelada nas vendas em 2x ou mais.',
+      'Registro do percentual, valor da taxa e valor líquido da venda.'
+    ]
+  },
+  {
+    versao:'V17.73',data:'26/09/2026',titulo:'Registro informativo do parcelamento no cartão',
     itens:[
       'Registro somente da quantidade de vezes da venda no cartão de crédito.',
       'Remoção do cálculo e da exibição do valor de cada parcela.',
