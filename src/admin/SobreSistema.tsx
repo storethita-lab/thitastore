@@ -2,7 +2,25 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.74',data:'27/09/2026',titulo:'Taxas do cartão de crédito',atual:true,
+    versao:'V17.76',data:'30/09/2026',titulo:'Despesas parceladas no cartão',atual:true,
+    itens:[
+      'Habilitação automática do número de parcelas para despesas no cartão de crédito.',
+      'Geração dos vencimentos mensais em Contas a Pagar.',
+      'Distribuição exata do valor total entre as parcelas, inclusive nos centavos.',
+      'Entrada da parcela no Caixa somente quando o pagamento for confirmado.'
+    ]
+  },
+  {
+    versao:'V17.75',data:'27/09/2026',titulo:'Valor líquido do cartão no Caixa',
+    itens:[
+      'Manutenção do valor bruto da venda no faturamento.',
+      'Desconto da taxa administrativa no valor que entra no Caixa.',
+      'Registro do recebimento do cartão no dia seguinte à venda.',
+      'Unificação do valor líquido entre Caixa e Fluxo de Caixa.'
+    ]
+  },
+  {
+    versao:'V17.74',data:'27/09/2026',titulo:'Taxas do cartão de crédito',
     itens:[
       'Separação entre taxa de crédito à vista e taxa de crédito parcelado.',
       'Aplicação automática da taxa à vista nas vendas em 1x.',
