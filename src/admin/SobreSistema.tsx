@@ -2,7 +2,16 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.78',data:'02/10/2026',titulo:'Resultado mensal no Dashboard',atual:true,
+    versao:'V17.79',data:'02/10/2026',titulo:'Relatório de resultado líquido',atual:true,
+    itens:[
+      'Nova aba Resultado líquido em Relatórios financeiros.',
+      'Filtros por mês, trimestre, semestre, ano ou intervalo personalizado.',
+      'Composição por faturamento, CMV, fretes, comissões, taxas e despesas operacionais.',
+      'Resumo mensal, margem líquida e exportação CSV.'
+    ]
+  },
+  {
+    versao:'V17.78',data:'02/10/2026',titulo:'Resultado mensal no Dashboard',
     itens:[
       'Seletor de mês com o mês atual preenchido automaticamente.',
       'Lucro estimado passa a descontar CMV, fretes de entrada, comissões e taxas de cartão.',
