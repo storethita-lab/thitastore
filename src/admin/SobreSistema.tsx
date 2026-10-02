@@ -2,7 +2,16 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.77',data:'02/10/2026',titulo:'Unificação dos recebimentos e filtros',atual:true,
+    versao:'V17.78',data:'02/10/2026',titulo:'Resultado mensal no Dashboard',atual:true,
+    itens:[
+      'Seletor de mês com o mês atual preenchido automaticamente.',
+      'Lucro estimado passa a descontar CMV, fretes de entrada, comissões e taxas de cartão.',
+      'Detalhamento dos componentes descontados exibido no próprio indicador.',
+      'Entradas e faturamento passam a acompanhar o mês selecionado.'
+    ]
+  },
+  {
+    versao:'V17.77',data:'02/10/2026',titulo:'Unificação dos recebimentos e filtros',
     itens:[
       'Fechar mês passa a registrar o recebimento no livro financeiro único.',
       'Recuperação do fechamento de R$ 18,00 da cliente Caroline.',
