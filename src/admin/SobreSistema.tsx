@@ -2,7 +2,16 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.79',data:'02/10/2026',titulo:'Relatório de resultado líquido',atual:true,
+    versao:'V17.80',data:'02/10/2026',titulo:'Resultados por competência e por caixa',atual:true,
+    itens:[
+      'Separação entre resultado líquido das vendas e resultado financeiro realizado.',
+      'Saldo acumulado do caixa e valores atuais a receber no mesmo painel.',
+      'Filtros mensal, trimestral, semestral, anual e personalizado.',
+      'Comissões efetivamente pagas passam a compor as saídas do Fluxo de Caixa.'
+    ]
+  },
+  {
+    versao:'V17.79',data:'02/10/2026',titulo:'Relatório de resultado líquido',
     itens:[
       'Nova aba Resultado líquido em Relatórios financeiros.',
       'Filtros por mês, trimestre, semestre, ano ou intervalo personalizado.',
