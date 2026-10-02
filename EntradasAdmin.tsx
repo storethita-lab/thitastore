@@ -1,4 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react'
+import{dataLoja}from'../utils/dataLoja'
 import { Check, PackagePlus, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import { supabase } from '../supabase'
 
@@ -9,7 +10,7 @@ type Item={variante_id:string;produto_id:string;produto:string;tamanho:string;qu
 type Entrada={id:string;numero_documento:string;data_entrada:string;total:number;frete:number;forma_pagamento:string|null;parcelas_pagamento:number;fornecedores:{nome:string}|null}
 export default function EntradasAdmin(){
  const [fornecedores,setFornecedores]=useState<Fornecedor[]>([]),[produtos,setProdutos]=useState<Produto[]>([]),[entradas,setEntradas]=useState<Entrada[]>([]),[itens,setItens]=useState<Item[]>([])
- const [fornecedorId,setFornecedorId]=useState(''),[numero,setNumero]=useState(''),[data,setData]=useState(new Date().toISOString().slice(0,10)),[frete,setFrete]=useState(0),[formaPagamento,setFormaPagamento]=useState(''),[parcelas,setParcelas]=useState(1),[obs,setObs]=useState('')
+ const [fornecedorId,setFornecedorId]=useState(''),[numero,setNumero]=useState(''),[data,setData]=useState(dataLoja()),[frete,setFrete]=useState(0),[formaPagamento,setFormaPagamento]=useState(''),[parcelas,setParcelas]=useState(1),[obs,setObs]=useState('')
  const [produtoId,setProdutoId]=useState(''),[varianteId,setVarianteId]=useState(''),[qtd,setQtd]=useState(1),[custo,setCusto]=useState(0),[loading,setLoading]=useState(true),[saving,setSaving]=useState(false),[erro,setErro]=useState(''),[ok,setOk]=useState('')
  async function carregar(){setLoading(true);const [f,p,e]=await Promise.all([supabase.from('fornecedores').select('id,nome').eq('ativo',true).order('nome'),supabase.from('produtos').select('id,nome,sku,custo,produto_variantes(id,tamanho,estoque,ativo)').eq('ativo',true).order('nome'),supabase.from('entradas_mercadorias').select('id,numero_documento,data_entrada,total,frete,forma_pagamento,parcelas_pagamento,fornecedores(nome)').order('created_at',{ascending:false}).limit(30)]);if(f.error||p.error||e.error)setErro(f.error?.message||p.error?.message||e.error?.message||'Erro ao carregar.');else{setFornecedores(f.data||[]);setProdutos((p.data||[]) as Produto[]);setEntradas((e.data||[]) as unknown as Entrada[])}setLoading(false)}
  useEffect(()=>{void carregar()},[])

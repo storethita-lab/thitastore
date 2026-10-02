@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import {
-  Search, Heart, ShoppingBag, LogIn, LogOut, LayoutDashboard, Package,
+  Search, Heart, ShoppingBag, LogIn, LogOut, LayoutDashboard, Package, Info,
   Users, Truck, ReceiptText, WalletCards, Menu, X, ShieldCheck, RefreshCw, ChevronLeft, ChevronRight, MessageCircle, Tag, BarChart3, Settings2, CircleDollarSign
 } from 'lucide-react'
 import { supabase } from './supabase'
@@ -19,6 +19,7 @@ import ContasPagarAdmin from './admin/ContasPagarAdminV1711'
 import CategoriasFinanceirasAdmin from './admin/CategoriasFinanceirasAdmin'
 import CadastrosAdmin from './admin/CadastrosAdmin'
 import FinanceirosAdmin from './admin/FinanceirosAdmin'
+import SobreSistema from './admin/SobreSistema'
 import LojaCheckout,{type ItemSacola}from'./LojaCheckoutV1762'
 
 type Variante = { id: string; tamanho: string; disponivel: boolean }
@@ -174,7 +175,7 @@ export default function App() {
     </header>
 
     <main>
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 pt-8">{banners.length>0?(()=>{const b=banners[Math.min(bannerAtual,banners.length-1)];return <div className="relative overflow-hidden rounded-[28px] bg-zinc-950 min-h-[300px] md:min-h-[390px]"><picture><source media="(max-width: 640px)" srcSet={b.imagem_mobile_url||b.imagem_url}/><img src={b.imagem_url} alt={b.titulo} className="absolute inset-0 w-full h-full object-cover"/></picture><div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent"/><div className="relative min-h-[300px] md:min-h-[390px] p-7 md:p-12 max-w-2xl text-white flex flex-col justify-end"><span className="inline-flex self-start rounded-full bg-white/15 border border-white/20 px-3 py-1 text-[11px] font-bold tracking-widest uppercase">Destaque THITA</span><h1 className="mt-4 text-4xl md:text-6xl font-black tracking-[-0.04em] leading-[.95]">{b.titulo}</h1>{b.subtitulo&&<p className="mt-4 max-w-lg text-sm md:text-base text-zinc-100 leading-relaxed">{b.subtitulo}</p>}{b.texto_botao&&b.link_url&&<a href={b.link_url} className="mt-5 self-start h-11 px-5 rounded-full bg-white text-zinc-950 font-black text-xs flex items-center">{b.texto_botao}</a>}</div>{banners.length>1&&<div className="absolute bottom-4 right-5 flex gap-2">{banners.map((x,i)=><button key={x.id} aria-label={`Banner ${i+1}`} onClick={()=>setBannerAtual(i)} className={`h-2 rounded-full transition-all ${i===bannerAtual?'w-8 bg-white':'w-2 bg-white/50'}`}/>)}</div>}</div>})():<div className="relative overflow-hidden rounded-[28px] bg-zinc-950 min-h-[300px] md:min-h-[390px] flex items-end"><div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_75%_20%,#c80082,transparent_38%)]"/><div className="relative p-7 md:p-12 max-w-2xl text-white"><span className="inline-flex rounded-full bg-white/10 border border-white/15 px-3 py-1 text-[11px] font-bold tracking-widest uppercase">THITA Store</span><h1 className="mt-5 text-4xl md:text-6xl font-black tracking-[-0.04em] leading-[.95]">Seu estilo,<br/><span className="text-[#ff70c8]">do seu jeito.</span></h1><p className="mt-5 max-w-lg text-sm md:text-base text-zinc-300 leading-relaxed">Conheça as novidades, encontre seu tamanho e fale conosco para garantir sua peça.</p></div></div>}</section>
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 pt-8">{banners.length>0?(()=>{const b=banners[Math.min(bannerAtual,banners.length-1)];return <div className="relative overflow-hidden rounded-[28px] bg-zinc-950 min-h-[300px] md:min-h-[390px]"><picture><source media="(max-width: 640px)" srcSet={b.imagem_mobile_url||b.imagem_url}/><img src={b.imagem_url} alt={b.titulo} className="absolute inset-0 w-full h-full object-cover"/></picture><div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-transparent"/><div className="relative min-h-[300px] md:min-h-[390px] p-7 md:p-12 max-w-2xl text-white flex flex-col justify-end"><span className="inline-flex self-start rounded-full bg-white/15 border border-white/20 px-3 py-1 text-[11px] font-bold tracking-widest uppercase">Destaque THITA</span>{b.subtitulo&&<p className="mt-4 max-w-lg text-sm md:text-base text-zinc-100 leading-relaxed">{b.subtitulo}</p>}{b.texto_botao&&b.link_url&&<a href={b.link_url} className="mt-5 self-start h-11 px-5 rounded-full bg-white text-zinc-950 font-black text-xs flex items-center">{b.texto_botao}</a>}</div>{banners.length>1&&<div className="absolute bottom-4 right-5 flex gap-2">{banners.map((x,i)=><button key={x.id} aria-label={`Banner ${i+1}`} onClick={()=>setBannerAtual(i)} className={`h-2 rounded-full transition-all ${i===bannerAtual?'w-8 bg-white':'w-2 bg-white/50'}`}/>)}</div>}</div>})():<div className="relative overflow-hidden rounded-[28px] bg-zinc-950 min-h-[300px] md:min-h-[390px] flex items-end"><div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_75%_20%,#c80082,transparent_38%)]"/><div className="relative p-7 md:p-12 max-w-2xl text-white"><span className="inline-flex rounded-full bg-white/10 border border-white/15 px-3 py-1 text-[11px] font-bold tracking-widest uppercase">THITA Store</span><h1 className="mt-5 text-4xl md:text-6xl font-black tracking-[-0.04em] leading-[.95]">Seu estilo,<br/><span className="text-[#ff70c8]">do seu jeito.</span></h1><p className="mt-5 max-w-lg text-sm md:text-base text-zinc-300 leading-relaxed">Conheça as novidades, encontre seu tamanho e fale conosco para garantir sua peça.</p></div></div>}</section>
 
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-7">
         <div className="md:hidden flex items-center gap-2 rounded-2xl bg-white border border-zinc-200 px-4 h-12 mb-4">
@@ -321,8 +322,8 @@ function AdminShell({ profile, onLogout, onVoltar }: { profile: AdminProfile; on
   const primeiraAba=profile.role==='admin'?'Dashboard':profile.acesso_cadastros?'Cadastros':profile.acesso_entradas?'Entradas':profile.acesso_relatorios?'Relatórios':profile.acesso_vendas?'Vendas':profile.acesso_financeiros?'Financeiros':profile.acesso_ajustes?'Ajustes':''
   const [tab, setTab] = useState(primeiraAba)
   const itens = ([
-    [LayoutDashboard,'Dashboard'], [Users,'Cadastros'], [ReceiptText,'Entradas'], [BarChart3,'Relatórios'], [ShoppingBag,'Vendas'], [CircleDollarSign,'Financeiros'], [Settings2,'Ajustes']
-  ] as const).filter(([,label])=>profile.role==='admin'||(label==='Cadastros'&&profile.acesso_cadastros)||(label==='Entradas'&&profile.acesso_entradas)||(label==='Relatórios'&&profile.acesso_relatorios)||(label==='Vendas'&&profile.acesso_vendas)||(label==='Financeiros'&&profile.acesso_financeiros)||(label==='Ajustes'&&profile.acesso_ajustes))
+    [LayoutDashboard,'Dashboard'], [Users,'Cadastros'], [ReceiptText,'Entradas'], [BarChart3,'Relatórios'], [ShoppingBag,'Vendas'], [CircleDollarSign,'Financeiros'], [Settings2,'Ajustes'], [Info,'Sobre']
+  ] as const).filter(([,label])=>label==='Sobre'||profile.role==='admin'||(label==='Cadastros'&&profile.acesso_cadastros)||(label==='Entradas'&&profile.acesso_entradas)||(label==='Relatórios'&&profile.acesso_relatorios)||(label==='Vendas'&&profile.acesso_vendas)||(label==='Financeiros'&&profile.acesso_financeiros)||(label==='Ajustes'&&profile.acesso_ajustes))
 
   return <div className="min-h-screen bg-[#f7f7f8]">
     <header className="h-16 bg-white border-b border-zinc-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
@@ -347,11 +348,12 @@ function AdminShell({ profile, onLogout, onVoltar }: { profile: AdminProfile; on
       {tab === 'Vendas' && <VendasAdmin />}
       {tab === 'Crediário' && <CrediarioAdmin />}
       {tab === 'Ajustes' && <AjustesAdmin admin={profile.role==='admin'} />}
+      {tab === 'Sobre' && <SobreSistema />}
       {tab === 'Financeiro' && <FinanceiroAdmin />}
       {tab === 'Contas a Pagar' && <ContasPagarAdmin />}
       {tab === 'Categorias Financeiras' && <CategoriasFinanceirasAdmin />}
       {!tab&&<div className="rounded-[24px] bg-white border border-zinc-200 p-10 text-center"><ShieldCheck className="mx-auto text-zinc-300"/><h2 className="mt-3 font-black">Nenhum módulo liberado</h2><p className="mt-1 text-sm text-zinc-500">Peça ao administrador para configurar suas permissões.</p></div>}
-      {!['Dashboard','Cadastros','Financeiros','Produtos','Categorias','Fornecedores','Entradas','Relatórios','Clientes','Vendas','Crediário','Financeiro','Contas a Pagar','Categorias Financeiras','Ajustes',''].includes(tab) && <div className="rounded-[24px] bg-white border border-zinc-200 p-10 text-center"><Package className="mx-auto text-zinc-300"/><h2 className="mt-3 font-black">{tab}</h2><p className="mt-1 text-sm text-zinc-500">Este módulo entra nas próximas etapas da migração.</p></div>}
+      {!['Dashboard','Cadastros','Financeiros','Produtos','Categorias','Fornecedores','Entradas','Relatórios','Clientes','Vendas','Crediário','Financeiro','Contas a Pagar','Categorias Financeiras','Ajustes','Sobre',''].includes(tab) && <div className="rounded-[24px] bg-white border border-zinc-200 p-10 text-center"><Package className="mx-auto text-zinc-300"/><h2 className="mt-3 font-black">{tab}</h2><p className="mt-1 text-sm text-zinc-500">Este módulo entra nas próximas etapas da migração.</p></div>}
     </div>
   </div>
 }

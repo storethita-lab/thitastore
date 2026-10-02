@@ -1,9 +1,10 @@
 import React,{useEffect,useMemo,useState}from'react'
+import{dataLoja}from'../utils/dataLoja'
 import{Download,RefreshCw,UsersRound}from'lucide-react'
 import{supabase}from'../supabase'
 import SearchSelect from'../components/SearchSelect'
 type R={id:string;data_recebimento:string;valor:number;historico_mensal:boolean;observacoes:string|null;vendas_v17_12:{numero:string;clientes:{nome:string}|null}|null}
-const brl=(v:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v||0),hoje=()=>new Date().toISOString().slice(0,10)
+const brl=(v:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v||0),hoje=()=>dataLoja()
 export default function RecebimentosClientesV1738(){const[lista,setLista]=useState<R[]>([]),[inicio,setInicio]=useState('2025-01-01'),[fim,setFim]=useState(hoje()),[cliente,setCliente]=useState(''),[loading,setLoading]=useState(true),[erro,setErro]=useState('')
  async function carregar(){setLoading(true);setErro('');const{data,error}=await supabase.from('recebimentos_clientes_v17_36').select('id,data_recebimento,valor,historico_mensal,observacoes,vendas_v17_12(numero,clientes(nome))').eq('cancelado',false).order('data_recebimento',{ascending:false});if(error)setErro('Aplique o SQL V17.37 antes de usar esta tela: '+error.message);else setLista((data||[])as unknown as R[]);setLoading(false)}
  useEffect(()=>{void carregar()},[]);const clientes=useMemo(()=>[...new Set(lista.map(r=>r.vendas_v17_12?.clientes?.nome||'Cliente não identificado'))].sort(),[lista]),filtrada=lista.filter(r=>(!inicio||r.data_recebimento>=inicio)&&(!fim||r.data_recebimento<=fim)&&(!cliente||(r.vendas_v17_12?.clientes?.nome||'Cliente não identificado')===cliente)),total=filtrada.reduce((a,r)=>a+Number(r.valor),0)

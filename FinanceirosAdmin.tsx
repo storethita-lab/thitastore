@@ -1,6 +1,6 @@
 import React,{useState}from'react'
 import {CircleDollarSign,WalletCards,CalendarClock,Users}from'lucide-react'
-import FinanceiroAdmin from'./FinanceiroAdmin'
+import FinanceiroAdmin from'./FinanceiroAdminV18'
 import CrediarioAdmin from'./CrediarioAdmin'
 import ContasPagarAdmin from'./ContasPagarAdminV1711'
 import ComissoesTaxasAdmin from'./ComissoesTaxasAdminV1731'
