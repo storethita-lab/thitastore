@@ -58,7 +58,7 @@ function FichaClienteV1736({ cliente, onClose }) {
       return;
     }
     setSalvando(true);
-    const { error } = modal.tipo === "parcela" ? await supabase.rpc("receber_parcela_crediario_v17_29", { p_parcela_id: modal.parcela.id, p_valor_recebido: n, p_data_recebimento: data }) : await supabase.rpc("receber_compra_cliente_v17_36", { p_venda_id: modal.venda.id, p_parcela_id: null, p_valor: n, p_data: data, p_observacoes: obs, p_historico_mensal: modal.tipo === "mensal" });
+    const { error } = modal.tipo === "parcela" ? await supabase.rpc("receber_parcela_crediario_v17_77", { p_parcela_id: modal.parcela.id, p_valor_recebido: n, p_data_recebimento: data }) : await supabase.rpc("receber_compra_cliente_v17_36", { p_venda_id: modal.venda.id, p_parcela_id: null, p_valor: n, p_data: data, p_observacoes: obs, p_historico_mensal: modal.tipo === "mensal" });
     if (error) setErro(error.message);
     else {
       setOk(modal.tipo === "mensal" ? "Pagamento passado lan\xE7ado no hist\xF3rico." : modal.tipo === "parcela" ? "Parcela quitada e m\xEAs fechado." : "Recebimento registrado.");

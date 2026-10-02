@@ -20,7 +20,7 @@ function CrediarioAdmin() {
   useEffect(() => {
     void carregar();
   }, []);
-  const saldoParcela = (p) => p.status === "paga" ? 0 : Math.max(0, Number(p.valor) - Number(p.valor_recebido || 0)), valorExibido = (p) => p.status === "paga" ? Number(p.valor) : saldoParcela(p), clientes = useMemo(() => [...new Set(lista.map((x) => x.cliente))].sort(), [lista]), dia = hoje(), atendeStatus = (p) => status === "todas" ? true : status === "vencida" ? p.status === "aberta" && p.vencimento < dia : p.status === status, filtrada = lista.filter((p) => (!cliente || p.cliente === cliente) && (!inicio || p.vencimento >= inicio) && (!fim || p.vencimento <= fim) && atendeStatus(p)), totalPesquisa = filtrada.reduce((a, p) => a + valorExibido(p), 0), aberto = lista.filter((p) => p.status === "aberta").reduce((a, p) => a + saldoParcela(p), 0), vencido = lista.filter((p) => p.status === "aberta" && p.vencimento < dia).reduce((a, p) => a + saldoParcela(p), 0);
+  const saldoParcela = (p) => p.status === "paga" ? 0 : Math.max(0, Number(p.valor) - Number(p.valor_recebido || 0)), valorExibido = (p) => p.status === "paga" ? Number(p.valor) : saldoParcela(p), clientes = useMemo(() => [...new Set(lista.map((x) => x.cliente))].sort(), [lista]), dia = hoje(), atendeStatus = (p) => status === "todas" ? true : status === "vencida" ? p.status === "aberta" && p.vencimento < dia : p.status === status, dataDoFiltro = (p) => p.status === "paga" ? p.data_pagamento || p.vencimento : p.vencimento, filtrada = lista.filter((p) => { const dataReferencia = dataDoFiltro(p); return (!cliente || p.cliente === cliente) && (!inicio || dataReferencia >= inicio) && (!fim || dataReferencia <= fim) && atendeStatus(p); }), totalPesquisa = filtrada.reduce((a, p) => a + valorExibido(p), 0), aberto = lista.filter((p) => p.status === "aberta").reduce((a, p) => a + saldoParcela(p), 0), vencido = lista.filter((p) => p.status === "aberta" && p.vencimento < dia).reduce((a, p) => a + saldoParcela(p), 0);
   function abrirRecebimento(p) {
     setReceber(p);
     setValor(saldoParcela(p).toFixed(2));
@@ -41,7 +41,7 @@ function CrediarioAdmin() {
     }
     setSalvando(true);
     setErro("");
-    const { error } = await supabase.rpc("receber_parcela_crediario_v17_29", { p_parcela_id: receber.id, p_valor_recebido: recebido, p_data_recebimento: dataRecebimento });
+    const { error } = await supabase.rpc("receber_parcela_crediario_v17_77", { p_parcela_id: receber.id, p_valor_recebido: recebido, p_data_recebimento: dataRecebimento });
     if (error) setErro(error.message);
     else {
       setOk("Recebimento registrado com o valor e a data informados.");

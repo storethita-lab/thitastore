@@ -2,7 +2,16 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.76',data:'30/09/2026',titulo:'Despesas parceladas no cartão',atual:true,
+    versao:'V17.77',data:'02/10/2026',titulo:'Unificação dos recebimentos e filtros',atual:true,
+    itens:[
+      'Fechar mês passa a registrar o recebimento no livro financeiro único.',
+      'Recuperação do fechamento de R$ 18,00 da cliente Caroline.',
+      'Filtro de parcelas pagas passa a usar a data efetiva do pagamento.',
+      'Forma de pagamento incluída em Relatórios > Saídas.'
+    ]
+  },
+  {
+    versao:'V17.76',data:'30/09/2026',titulo:'Despesas parceladas no cartão',
     itens:[
       'Habilitação automática do número de parcelas para despesas no cartão de crédito.',
       'Geração dos vencimentos mensais em Contas a Pagar.',
