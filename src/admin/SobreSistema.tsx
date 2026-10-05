@@ -2,7 +2,16 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.80',data:'02/10/2026',titulo:'Resultados por competência e por caixa',atual:true,
+    versao:'V17.81',data:'05/10/2026',titulo:'Devolução parcial integrada',atual:true,
+    itens:[
+      'Devolução parcial passa a reduzir o total financeiro da venda.',
+      'Crédito aplicado automaticamente às últimas parcelas abertas do crediário.',
+      'Recalculo de comissão, taxa do cartão, faturamento e CMV após devolução.',
+      'Identificação separada de eventual valor que ainda precisa ser reembolsado ao cliente.'
+    ]
+  },
+  {
+    versao:'V17.80',data:'02/10/2026',titulo:'Resultados por competência e por caixa',
     itens:[
       'Separação entre resultado líquido das vendas e resultado financeiro realizado.',
       'Saldo acumulado do caixa e valores atuais a receber no mesmo painel.',
