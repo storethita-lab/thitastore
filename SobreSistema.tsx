@@ -2,7 +2,52 @@ import {CalendarDays,CheckCircle2,Info,ShieldCheck} from 'lucide-react'
 
 const versoes=[
   {
-    versao:'V17.77',data:'02/10/2026',titulo:'Unificação dos recebimentos e filtros',atual:true,
+    versao:'V17.82',data:'16/10/2026',titulo:'Estoque por tamanho',atual:true,
+    itens:[
+      'Novo filtro por tamanho no relatório de Estoque.',
+      'O total passa a mostrar a quantidade disponível somente do tamanho selecionado.',
+      'O filtro pode ser combinado com produto, busca geral e comparação de quantidade.',
+      'A exportação CSV respeita o tamanho selecionado.'
+    ]
+  },
+  {
+    versao:'V17.81',data:'05/10/2026',titulo:'Devolução parcial integrada',
+    itens:[
+      'Devolução parcial passa a reduzir o total financeiro da venda.',
+      'Crédito aplicado automaticamente às últimas parcelas abertas do crediário.',
+      'Recalculo de comissão, taxa do cartão, faturamento e CMV após devolução.',
+      'Identificação separada de eventual valor que ainda precisa ser reembolsado ao cliente.'
+    ]
+  },
+  {
+    versao:'V17.80',data:'02/10/2026',titulo:'Resultados por competência e por caixa',
+    itens:[
+      'Separação entre resultado líquido das vendas e resultado financeiro realizado.',
+      'Saldo acumulado do caixa e valores atuais a receber no mesmo painel.',
+      'Filtros mensal, trimestral, semestral, anual e personalizado.',
+      'Comissões efetivamente pagas passam a compor as saídas do Fluxo de Caixa.'
+    ]
+  },
+  {
+    versao:'V17.79',data:'02/10/2026',titulo:'Relatório de resultado líquido',
+    itens:[
+      'Nova aba Resultado líquido em Relatórios financeiros.',
+      'Filtros por mês, trimestre, semestre, ano ou intervalo personalizado.',
+      'Composição por faturamento, CMV, fretes, comissões, taxas e despesas operacionais.',
+      'Resumo mensal, margem líquida e exportação CSV.'
+    ]
+  },
+  {
+    versao:'V17.78',data:'02/10/2026',titulo:'Resultado mensal no Dashboard',
+    itens:[
+      'Seletor de mês com o mês atual preenchido automaticamente.',
+      'Lucro estimado passa a descontar CMV, fretes de entrada, comissões e taxas de cartão.',
+      'Detalhamento dos componentes descontados exibido no próprio indicador.',
+      'Entradas e faturamento passam a acompanhar o mês selecionado.'
+    ]
+  },
+  {
+    versao:'V17.77',data:'02/10/2026',titulo:'Unificação dos recebimentos e filtros',
     itens:[
       'Fechar mês passa a registrar o recebimento no livro financeiro único.',
       'Recuperação do fechamento de R$ 18,00 da cliente Caroline.',
